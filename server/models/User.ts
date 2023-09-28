@@ -30,11 +30,12 @@ const userSchema = new Schema<IUser>({
   password: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 8,
   },
-  role:{
+  role: {
     type: String,
     required: true,
+    enum: ["admin", "owner", "user"],
   },
   products: [
     {
@@ -59,7 +60,7 @@ userSchema.methods.isCorrectPassword = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
 
-const User: Model<IUser> = model("User", userSchema);
+const User: Model<IUser> = model("User", userSchema, "user");
 
 export type { IUser };
 export default User;

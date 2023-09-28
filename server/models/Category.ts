@@ -14,7 +14,7 @@ const categorySchema = new Schema<ICategory>({
 });
 
 // Create the Category model with the ICategory interface
-const Category: Model<ICategory> = model("Category", categorySchema);
+const Category: Model<ICategory> = model("Category", categorySchema, "category");
 
 export type { ICategory };
 export default Category;

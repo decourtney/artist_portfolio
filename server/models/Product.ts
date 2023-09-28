@@ -25,15 +25,17 @@ const productSchema = new Schema<IProduct>({
     type: String,
     required: true,
   },
-  category: {
-    type: Types.ObjectId,
-    ref: "Category",
-    required: true,
-  },
+  category: [
+    {
+      type: Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
+  ],
 });
 
 // Create the Product model with the IProduct interface
-const Product: Model<IProduct> = model("Product", productSchema);
+const Product: Model<IProduct> = model("Product", productSchema, "product");
 
 export type { IProduct };
 export default Product;
