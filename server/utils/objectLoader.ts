@@ -14,7 +14,7 @@ const s3Client = new S3({
 // binary type def for imageFile
 type ImageFile = Buffer;
 
-export const uploadImage = async (imageFile: ImageFile, fileName:string) => {
+export const uploadObject = async (imageFile: ImageFile, fileName:string) => {
   const params = {
     Bucket: "chum.bucket", 
     Key: `artist_portfolio/${fileName}`, 
@@ -36,7 +36,25 @@ export const uploadImage = async (imageFile: ImageFile, fileName:string) => {
   }
 };
 
-export const downloadImage = async (fileName: string) => {
+export const deleteObject = async (fileName: string) => {
+  const params = {
+    Bucket: "chum.bucket",
+    Key: `artist_portfolio/${fileName}`,
+  };
+
+  try {
+    const data = await s3Client.send(new DeleteObjectCommand(params));
+    console.log(
+      "Successfully deleted object: " + params.Bucket + "/" + params.Key
+    );
+    return data;
+  } catch (err) {
+    console.log("Error", err);
+  }
+};
+
+// Downloading isn't necessary - this is just in case
+export const downloadObject = async (fileName: string) => {
   const params = {
     Bucket: "chum.bucket",
     Key: `artist_portfolio/${fileName}`,
@@ -49,22 +67,5 @@ export const downloadImage = async (fileName: string) => {
     return imageFile;
   } catch (err) {
     console.log(err);
-  }
-};
-
-export const deleteImage = async (fileName: string) => {
-  const params = {
-    Bucket: "chum.bucket",
-    Key: `artist_portfolio/${fileName}`,
-  };
-
-  try {
-    const data = await s3Client.send(new DeleteObjectCommand(params));
-    console.log(
-      "Successfully deleted image: " + params.Bucket + "/" + params.Key
-    );
-    return data;
-  } catch (err) {
-    console.log("Error", err);
   }
 };

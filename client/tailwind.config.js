@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{html,js,tsx,jsx}"],
+  content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
   presets: [],
   darkMode: "media", // or 'class'
   theme: {
@@ -163,6 +163,11 @@ module.exports = {
       fuchsia: colors.fuchsia,
       pink: colors.pink,
       rose: colors.rose,
+      secondary: "#183D3D",
+      primary: "#5C8374",
+      dark: "#040D12",
+      light: "#93B1A6",
+      contrast: "#64CCC5",
     }),
     columns: {
       auto: "auto",
@@ -791,11 +796,12 @@ module.exports = {
       150: "1.5",
     },
     screens: {
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px",
+      xs: "320px",
+      sm: "480px",
+      md: "600px",
+      lg: "801px",
+      xl: "1025px",
+      "2xl": "1281px",
     },
     scrollMargin: ({ theme }) => ({
       ...theme("spacing"),
