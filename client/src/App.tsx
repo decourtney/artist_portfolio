@@ -7,6 +7,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { StoreProvider } from "./utils/GlobalState";
 
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -44,21 +45,21 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div className="min-h-screen flex flex-col  bg-primary">
-          <Header />
-          <div className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Profile />} />
-              {/* This is just for initial development stages. delete when necessary */}
-              {/* <Route path="/" element={<Home />} /> */}
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/profile" element={<Profile />} />
-            </Routes>
+        <StoreProvider>
+          <div className="flex flex-col min-h-screen">
+            <Header />
+              <Routes>
+                <Route path="/" element={<Profile />} />{" "}
+                {/* This is just for initial development stages. delete when necessary */}
+                {/* <Route path="/" element={<Home />} /> */}
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/profile" element={<Profile />} />
+              </Routes>
+            <Footer />
           </div>
-          <Footer />
-        </div>
+        </StoreProvider>
       </Router>
     </ApolloProvider>
   );

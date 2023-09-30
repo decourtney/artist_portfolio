@@ -17,12 +17,13 @@ export const authMiddleware = ({ req }: any) => {
     return req;
   }
 
-  // changed for typescript... maybe? its right??
-  const decodedToken = jwt.verify(token, secret, { maxAge: expiration });
-  if (typeof decodedToken === "string") {
-    throw new Error("Invalid token"); // Token is a string, not an object
+  try {
+    const data = jwt.verify(token, secret, { maxAge: expiration });
+    req.user = data;
+  } catch {
+    console.log("Invalid token");
   }
-  req.user = decodedToken.data;
+
   return req;
 };
 

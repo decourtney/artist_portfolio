@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.profile_hero_image {
+  background-image: url("./images/gallery_hall.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}

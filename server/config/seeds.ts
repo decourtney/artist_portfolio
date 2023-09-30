@@ -47,20 +47,21 @@ db.once("open", async () => {
     console.log(err);
   }
 
+  let category;
+  try {
+    category = await Category.findOne({ name: "Category Name" });
+  } catch (err) {
+    console.log(err);
+  }
+
   try {
     await uploadObject(imageBuffer, "image.png");
-    const category = await Category.findOne({ name: "Category Name" });
-
-    if (!category)
-      console.log(
-        "There was an issue finding the requested category... Continuing with Product creation."
-      );
 
     const newProduct = await Product.create({
       name: "Image",
       description: "description provided by user",
       image: "image.png",
-      category: category?._id,
+      categories: category?._id,
     });
 
     if (newUser)

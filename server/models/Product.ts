@@ -8,7 +8,7 @@ interface IProduct {
   image?: string;
   price: number;
   quantity: number;
-  category: Types.ObjectId | ICategory;
+  categories: ICategory[];
 }
 
 const productSchema = new Schema<IProduct>({
@@ -25,7 +25,7 @@ const productSchema = new Schema<IProduct>({
     type: String,
     required: true,
   },
-  category: [
+  categories: [
     {
       type: Types.ObjectId,
       ref: "Category",
