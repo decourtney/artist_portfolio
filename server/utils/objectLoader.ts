@@ -16,10 +16,10 @@ type ImageFile = Buffer;
 
 export const uploadObject = async (imageFile: ImageFile, fileName:string) => {
   const params = {
-    Bucket: "chum.bucket", 
+    Bucket: "chumbucket", 
     Key: `artist_portfolio/${fileName}`, 
     Body: imageFile, 
-    ACL: "private", 
+    ACL: "public", 
     Metadata: {
       "x-amz-meta-my-key": "your-value",
     },
@@ -38,7 +38,7 @@ export const uploadObject = async (imageFile: ImageFile, fileName:string) => {
 
 export const deleteObject = async (fileName: string) => {
   const params = {
-    Bucket: "chum.bucket",
+    Bucket: "chumbucket",
     Key: `artist_portfolio/${fileName}`,
   };
 
@@ -56,7 +56,7 @@ export const deleteObject = async (fileName: string) => {
 // Downloading isn't necessary - this is just in case
 export const downloadObject = async (fileName: string) => {
   const params = {
-    Bucket: "chum.bucket",
+    Bucket: "chumbucket",
     Key: `artist_portfolio/${fileName}`,
   };
 

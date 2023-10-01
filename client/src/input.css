@@ -6,4 +6,5 @@
   background-image: url("./images/gallery_hall.jpg");
   background-size: cover;
   background-repeat: no-repeat;
+  background-position-y: 55%;
 }

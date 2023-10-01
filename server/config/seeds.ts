@@ -4,7 +4,9 @@ import { uploadObject, deleteObject } from "../utils/objectLoader";
 import fs from "fs";
 
 const imagePath = "../BangEqual.png";
+const profilePicPath = "../profile_pic.png";
 const imageBuffer = fs.readFileSync(imagePath);
+const profilePicBuffer = fs.readFileSync(profilePicPath);
 
 db.once("open", async () => {
   try {
@@ -42,7 +44,13 @@ db.once("open", async () => {
       email: "tempuser@gmail.com",
       password: "password",
       role: "owner",
+      profilePic: "profilePic.png",
     });
+
+    await uploadObject(
+      profilePicBuffer,
+      `${newUser.email.split("@")[0]}/${newUser.profilePic}`
+    );
   } catch (err) {
     console.log(err);
   }
@@ -55,14 +63,17 @@ db.once("open", async () => {
   }
 
   try {
-    await uploadObject(imageBuffer, "image.png");
-
     const newProduct = await Product.create({
       name: "Image",
       description: "description provided by user",
       image: "image.png",
       categories: category?._id,
     });
+
+    await uploadObject(
+      imageBuffer,
+      `${newUser?.email.split("@")[0]}/${newProduct.image}`
+    );
 
     if (newUser)
       await User.findOneAndUpdate(

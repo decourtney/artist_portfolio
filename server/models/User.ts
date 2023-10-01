@@ -8,6 +8,7 @@ interface IUser {
   email: string;
   password: string;
   role: string;
+  profilePic: string;
   products: IProduct[];
 }
 
@@ -37,6 +38,10 @@ const userSchema = new Schema<IUser>({
     required: true,
     enum: ["admin", "owner", "user"],
   },
+  profilePic: {
+    type: String,
+    required: false,
+  },
   products: [
     {
       type: Types.ObjectId,
@@ -59,6 +64,19 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.isCorrectPassword = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
+
+userSchema.virtual("fullname").get(function () {
+  return `${this.firstName} ${this.lastName}`;
+});
+
+userSchema.virtual("username").get(function () {
+  // Extract a username from the email address
+  const emailParts: string[] = this.email.split("@");
+
+  return emailParts[0];
+});
+
+userSchema.set("toJSON", { virtuals: true });
 
 const User: Model<IUser> = model("User", userSchema, "user");
 

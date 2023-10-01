@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 
 const Header = () => {
   return (
-    <>
       <nav className="relative">
         <section className="absolute top-0 left-0 flex justify-center items-center w-full">
           <div className="flex justify-between items-center w-full mx-[2%] p-[1%]">
@@ -29,7 +28,6 @@ const Header = () => {
           </div>
         </section>
       </nav>
-    </>
   );
 };
 

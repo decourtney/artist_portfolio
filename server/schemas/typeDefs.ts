@@ -18,9 +18,12 @@ const typeDefs = gql`
     _id: ID
     firstName: String
     lastName: String
+    fullname: String
+    username: String
     email: String
     password: String
     role: String
+    profilePic: String
     products: [Product]
   }
 
