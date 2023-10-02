@@ -1,7 +1,7 @@
 import { AuthenticationError } from "apollo-server-core";
+import { UserInputError } from "apollo-server-core";
 import { User, Product, Category } from "../models";
 import { signToken } from "../utils/auth";
-// import GraphQLUpload from "graphql-upload-ts";
 
 // Need to figure out the correct type definitions
 
@@ -34,6 +34,15 @@ const resolvers = {
   Mutation: {
     uploadFiles: async (parent: any, { files }: any, context: any) => {
       console.log(files);
+      try {
+        if (!files || files.length === 0)
+          throw new UserInputError(
+            "No files were uploaded. Please select at least one file."
+          );
+        return true;
+      } catch (err) {
+        throw err;
+      }
     },
   },
 };

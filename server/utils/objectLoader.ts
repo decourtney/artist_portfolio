@@ -2,12 +2,12 @@ import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3 } from "@aw
 import { Buffer } from "buffer";
 
 const s3Client = new S3({
-  endpoint: "https://nyc3.digitaloceanspaces.com",
+  endpoint: process.env.REACT_APP_ORIGIN_ENDPOINT,
   forcePathStyle: false,
   region: "us-east-1",
   credentials: {
-    accessKeyId: "DO003J77NP2J6V9TFM2H",
-    secretAccessKey: "IP/VZfidNhscpJJ7i8HozvxhfsyIJ5h5gn+7xbTit38", // THIS DOES NOT STAY HERE!!! USE ENV
+    accessKeyId: process.env.REACT_APP_BUCKET_KEY || "",
+    secretAccessKey: process.env.REACT_APP_BUCKET_SECRET || "", // THIS DOES NOT STAY HERE!!! USE ENV
   },
 });
 

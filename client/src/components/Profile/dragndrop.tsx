@@ -6,18 +6,20 @@ import { useMutation } from "@apollo/client";
 const DragnDrop = () => {
   const [upload] = useMutation(UPLOAD_FILES);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     console.log(acceptedFiles);
-    
-    if(acceptedFiles)
-      upload({ variables: { files: acceptedFiles } });
+    try {
+      const response = await upload({ variables: { files: acceptedFiles } });
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/jpeg": [],
-      "image/png": [],
+      "image/*": [".jpeg", ".png"],
     },
     maxFiles: 300,
   });

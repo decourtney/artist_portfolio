@@ -49,9 +49,9 @@ function App() {
           <div className="flex flex-col min-h-screen scrollbar-hide">
             <Header />
             <Routes>
-              <Route path="/" element={<Profile />} />{" "}
+              {/* <Route path="/" element={<Profile />} />{" "} */}
               {/* This is just for initial development stages. delete when necessary */}
-              {/* <Route path="/" element={<Home />} /> */}
+              <Route path="/" element={<Home />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
