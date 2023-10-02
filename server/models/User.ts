@@ -10,6 +10,9 @@ interface IUser {
   role: string;
   profilePic: string;
   products: IProduct[];
+
+  // Include custom methods like isCorrectPassword
+  isCorrectPassword(password: string): Promise<boolean>;
 }
 
 const userSchema = new Schema<IUser>({
