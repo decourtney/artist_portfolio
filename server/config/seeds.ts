@@ -46,10 +46,15 @@ db.once("open", async () => {
       role: "owner",
       profilePic: "profilePic.png",
     });
+  } catch (err) {
+    console.log(err);
+  }
+  console.log(newUser?.email.split("@")[0]);
 
+  try {
     await uploadObject(
       profilePicBuffer,
-      `${newUser.email.split("@")[0]}/${newUser.profilePic}`
+      `${newUser?.email.split("@")[0]}/${newUser?.profilePic}`
     );
   } catch (err) {
     console.log(err);

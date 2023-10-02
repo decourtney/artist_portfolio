@@ -1,4 +1,9 @@
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3 } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3,
+} from "@aws-sdk/client-s3";
 import { Buffer } from "buffer";
 
 const s3Client = new S3({
@@ -11,27 +16,25 @@ const s3Client = new S3({
   },
 });
 
-// binary type def for imageFile
-type ImageFile = Buffer;
-
-export const uploadObject = async (imageFile: ImageFile, fileName:string) => {
-  console.log(imageFile, fileName )
-  const params = {
-    Bucket: "chumbucket",
-    Key: `artist_portfolio/${fileName}`,
-    Body: imageFile,
-    ACL: "public-read",
-    Metadata: {
-      "x-amz-meta-my-key": "your-value",
-    },
-  };
-
+export const uploadObject = async (imageFiles: File[]) => {
   try {
-    const data = await s3Client.send(new PutObjectCommand(params));
-    console.log(
-      "Successfully uploaded object: " + params.Bucket + "/" + params.Key
-    );
-    return data;
+    const uploadPromises = imageFiles.map(async (file) => {
+      const params = {
+        Bucket: "chumbucket",
+        Key: `artist_portfolio/tempuser/${file.name}`,
+        Body: file,
+        ACL: "public-read",
+        Metadata: {
+          "x-amz-meta-my-key": "your-value",
+        },
+      };
+
+      const response = await s3Client.send(new PutObjectCommand(params));
+      console.log(response);
+    });
+
+    await Promise.all(uploadPromises);
+    console.log("bulk upload complete");
   } catch (err) {
     console.log("Error", err);
   }
@@ -54,7 +57,7 @@ export const deleteObject = async (fileName: string) => {
   }
 };
 
-// Downloading isn't necessary but just in case
+// Downloading isn't necessary - this is just in case
 export const downloadObject = async (fileName: string) => {
   const params = {
     Bucket: "chumbucket",

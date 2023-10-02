@@ -2,9 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
 .profile_hero_image {
   background-image: url("./images/gallery_hall.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position-y: 55%;
 }
+

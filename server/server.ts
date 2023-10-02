@@ -5,14 +5,18 @@ import { authMiddleware } from "./utils/auth";
 import cors from "cors";
 import { typeDefs, resolvers } from "./schemas";
 import db from "./config/connection";
+const { graphqlUploadExpress } = require("graphql-upload-ts");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  csrfPrevention: true,
   context: authMiddleware,
+  cache: 'bounded',
 });
+
 
 // Configure CORS to allow requests from specific origins
 app.use(
@@ -20,6 +24,12 @@ app.use(
     origin: "https://studio.apollographql.com", // Replace with the allowed origin(s)
     credentials: true, // Enable sending cookies or authentication headers
   })
+);
+
+app.use(
+  "/graphql",
+  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
+  // expressGraphql({ schema: require("./my-schema") })
 );
 
 app.use(express.urlencoded({ extended: false }));

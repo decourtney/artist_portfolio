@@ -1,6 +1,8 @@
 import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
+  scalar Upload
+
   type Category {
     _id: ID
     name: String
@@ -55,6 +57,7 @@ const typeDefs = gql`
       product: String
     ): User
     login(email: String!, password: String!): Auth
+    uploadFiles(files: [Upload]): Boolean
   }
 `;
 

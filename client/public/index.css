@@ -596,8 +596,8 @@ video {
   position: relative;
 }
 
-.bottom-20 {
-  bottom: 5rem;
+.bottom-0 {
+  bottom: 0px;
 }
 
 .left-0 {
@@ -612,24 +612,12 @@ video {
   top: 0px;
 }
 
-.bottom-10 {
-  bottom: 2.5rem;
-}
-
-.bottom-14 {
-  bottom: 3.5rem;
-}
-
-.bottom-16 {
-  bottom: 4rem;
-}
-
-.bottom-0 {
-  bottom: 0px;
-}
-
 .z-50 {
   z-index: 50;
+}
+
+.m-5 {
+  margin: 1.25rem;
 }
 
 .mx-\[2\%\] {
@@ -645,6 +633,10 @@ video {
 .my-\[1\%\] {
   margin-top: 1%;
   margin-bottom: 1%;
+}
+
+.mt-20 {
+  margin-top: 5rem;
 }
 
 .flex {
@@ -733,6 +725,10 @@ video {
   justify-content: space-around;
 }
 
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
 .rounded-full {
   border-radius: 9999px;
 }
@@ -752,18 +748,26 @@ video {
   background-color: rgb(4 13 18 / var(--tw-bg-opacity));
 }
 
-.bg-pdark {
-  --tw-bg-opacity: 1;
-  background-color: rgb(3 0 28 / var(--tw-bg-opacity));
-}
-
 .bg-light {
   --tw-bg-opacity: 1;
   background-color: rgb(147 177 166 / var(--tw-bg-opacity));
 }
 
+.bg-pdark {
+  --tw-bg-opacity: 1;
+  background-color: rgb(3 0 28 / var(--tw-bg-opacity));
+}
+
+.p-12 {
+  padding: 3rem;
+}
+
 .p-\[1\%\] {
   padding: 1%;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .align-middle {
@@ -803,6 +807,11 @@ video {
   color: rgb(100 204 197 / var(--tw-text-opacity));
 }
 
+.text-dark {
+  --tw-text-opacity: 1;
+  color: rgb(4 13 18 / var(--tw-text-opacity));
+}
+
 .text-light {
   --tw-text-opacity: 1;
   color: rgb(147 177 166 / var(--tw-text-opacity));
@@ -828,9 +837,17 @@ video {
           filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-.filter {
-  -webkit-filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-          filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+
+body {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .profile_hero_image {
@@ -839,3 +856,4 @@ video {
   background-repeat: no-repeat;
   background-position-y: 55%;
 }
+

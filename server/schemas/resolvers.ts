@@ -1,11 +1,12 @@
-// const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
 import { AuthenticationError } from "apollo-server-core";
 import { User, Product, Category } from "../models";
 import { signToken } from "../utils/auth";
+// import GraphQLUpload from "graphql-upload-ts";
 
 // Need to figure out the correct type definitions
 
 const resolvers = {
+  Upload: require("graphql-upload-ts").GraphQLUpload,
   Query: {
     me: async (parent: any, args: any, context: any) => {
       if (context.user) {
@@ -30,7 +31,11 @@ const resolvers = {
     },
   },
 
-  Mutation: {},
+  Mutation: {
+    uploadFiles: async (parent: any, { files }: any, context: any) => {
+      console.log(files);
+    },
+  },
 };
 
 export default resolvers;
