@@ -24,7 +24,7 @@ const ProfileCard = ({
   }, [profilePic]);
 
   return (
-    <div className="absolute bottom-0">
+    <div className="">
       <div className="relative w-full">
         <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 rounded-full">
           <img

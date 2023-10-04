@@ -14,10 +14,19 @@ body {
   /* Firefox */
 }
 
-.profile_hero_image {
+.profile_hero_image::before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  width: auto;
+  height: 18rem;
   background-image: url("./images/gallery_hall.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position-y: 55%;
+  border-radius: 0 0 100% 100%;
+  opacity: 30%;
 }
-

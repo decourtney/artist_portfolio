@@ -9,10 +9,10 @@ import {
 } from "framer-motion";
 
 interface NavProps {
-  handleOnClick: () => void;
+  handleOnNavClick: () => void;
 }
 
-const Nav = ({ handleOnClick }: NavProps) => {
+const Nav = ({ handleOnNavClick }: NavProps) => {
   const [isPresent, safeToRemove] = usePresence();
   const [navCardRef, animateNavCardRef] = useAnimate();
 
@@ -48,8 +48,8 @@ const Nav = ({ handleOnClick }: NavProps) => {
   return (
     <motion.div
       ref={navCardRef}
-      className="absolute font-black text-2xl flex flex-col justify-center items-center w-full h-[100vh] bg-light pointer-events-auto [&>p]:opacity-0"
-      onClick={handleOnClick}
+      className="absolute flex flex-col justify-center items-center w-full h-[100vh] font-black text-[5vh] text-dark bg-light pointer-events-auto [&>p]:opacity-0"
+      onClick={handleOnNavClick}
     >
       <Link to={"/"}>
         <p>Home</p>

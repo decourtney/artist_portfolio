@@ -24,7 +24,6 @@ const typeDefs = gql`
     username: String
     email: String
     password: String
-    role: String
     profilePic: String
     products: [Product]
   }
@@ -46,14 +45,12 @@ const typeDefs = gql`
       lastName: String!
       email: String!
       password: String!
-      role: String!
     ): Auth
     updateUser(
       firstName: String
       lastName: String
       email: String
       password: String
-      role: String
       product: String
     ): User
     login(email: String!, password: String!): Auth
