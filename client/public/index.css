@@ -648,11 +648,6 @@ video {
   margin-right: 5%;
 }
 
-.my-2 {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
 .my-\[1\%\] {
   margin-top: 1%;
   margin-bottom: 1%;
@@ -666,16 +661,16 @@ video {
   margin-right: 1.5rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .mt-20 {
   margin-top: 5rem;
 }
 
 .mt-3 {
   margin-top: 0.75rem;
-}
-
-.mt-4 {
-  margin-top: 1rem;
 }
 
 .mt-5 {
@@ -886,6 +881,11 @@ video {
   font-size: 5vh;
 }
 
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -996,6 +996,28 @@ body {
   background-position-y: 55%;
   border-radius: 0 0 100% 100%;
   opacity: 30%;
+}
+
+/* Checkmark */
+
+.checkmark::before {
+  position: absolute;
+  top:50%;
+  translate: 0 -50% 0;
+  right: 101%;
+  content: "\2713";
+  color: green;
+}
+
+/* X-mark */
+
+.xmark:nth-child(6)::before {
+  position: absolute;
+  top:50%;
+  translate: 0 -50% 0;
+  right: 101%;
+  content: "\2717";
+  color: red;
 }
 
 .\[\&\>p\]\:opacity-0>p {

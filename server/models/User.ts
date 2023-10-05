@@ -10,6 +10,7 @@ interface IUser {
   role: string;
   profilePic: string;
   products: IProduct[];
+  confirmPassword: string;
 
   // Include custom methods like isCorrectPassword
   isCorrectPassword(password: string): Promise<boolean>;
@@ -34,7 +35,7 @@ const userSchema = new Schema<IUser>({
   password: {
     type: String,
     required: true,
-    minlength: 8,
+    minlength: [8,'Password must be at least 8 characters long']
   },
   role: {
     type: String,

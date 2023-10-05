@@ -10,12 +10,14 @@ const resolvers = {
   Query: {
     me: async (parent: any, args: any, context: any) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id });
+        const stuff = await User.findOne({ _id: context.user._id });
+        console.log(stuff);
+        return stuff;
       }
-      throw new AuthenticationError("You need to be logged in!");
+      // throw new AuthenticationError("You need to be logged in!");
     },
-    user: async (parent: any, { email }: { email: String }, context: any) => {
-      return User.findOne({ email }).populate({
+    user: async (parent: any, args: any, context: any) => {
+      return await User.findById(context.user._id).populate({
         path: "products",
         model: "Product",
         populate: [
@@ -32,6 +34,15 @@ const resolvers = {
   },
 
   Mutation: {
+    addUser: async (parent: any, args: any) => {
+      const user = await User.create(args);
+      // signToken is expecting _id to be a string
+      const userIdAsString = user._id.toString();
+
+      const token = signToken({ ...user, _id: userIdAsString });
+
+      return { token, user };
+    },
     uploadFiles: async (parent: any, { files }: any, context: any) => {
       console.log(files);
       try {
@@ -44,20 +55,23 @@ const resolvers = {
         throw err;
       }
     },
-    login: async (parent: any, { email, password }: {email: any, password: any}) => {
+    login: async (
+      parent: any,
+      { email, password }: { email: any; password: any }
+    ) => {
       const user = await User.findOne({ email });
 
       if (!user) {
         throw new AuthenticationError("Incorrect credentials");
       }
-      
+
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
         throw new AuthenticationError("Incorrect credentials");
       }
 
-      const token = signToken({...user, _id: user._id.toString()});
+      const token = signToken({ ...user, _id: user._id.toString() });
       return { token, user };
     },
   },

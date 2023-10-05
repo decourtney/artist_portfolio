@@ -30,3 +30,23 @@ body {
   border-radius: 0 0 100% 100%;
   opacity: 30%;
 }
+
+/* Checkmark */
+.checkmark::before {
+  position: absolute;
+  top:50%;
+  translate: 0 -50% 0;
+  right: 101%;
+  content: "\2713";
+  color: green;
+}
+
+/* X-mark */
+.xmark:nth-child(6)::before {
+  position: absolute;
+  top:50%;
+  translate: 0 -50% 0;
+  right: 101%;
+  content: "\2717";
+  color: red;
+}

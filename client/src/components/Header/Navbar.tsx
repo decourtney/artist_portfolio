@@ -63,9 +63,11 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
       <Link to={"/contact"}>
         <p>Contact</p>
       </Link>
-      <Link to={"/profile"}>
-        <p>Profile</p>
-      </Link>
+      {Auth.loggedIn() && (
+        <Link to={"/profile"}>
+          <p>Profile</p>
+        </Link>
+      )}
     </motion.div>
   );
 };

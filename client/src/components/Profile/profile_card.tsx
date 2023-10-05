@@ -11,7 +11,7 @@ interface UserInfo {
 const ProfileCard = ({
   fullname,
   username,
-  numOfProducts,
+  numOfProducts = 1,
   profilePic,
 }: UserInfo) => {
   const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);

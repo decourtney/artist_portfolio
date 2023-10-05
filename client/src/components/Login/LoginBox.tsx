@@ -1,6 +1,5 @@
-import React, { FormEvent, FormEventHandler, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMutation } from "@apollo/client";
-import { Link } from "react-router-dom";
 import { LOGIN_USER } from "../../utils/mutations";
 import Auth from "../../utils/auth";
 
@@ -10,7 +9,17 @@ interface LoginProps {
 
 function Login({ handleLoginDisplay }: LoginProps) {
   const [formState, setFormState] = useState({ email: "", password: "" });
-  const [login, { error }] = useMutation(LOGIN_USER);
+  const [login] = useMutation(LOGIN_USER);
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [errorMsg, setErrorMsg] = useState<String | null>(null);
+
+  useEffect(() => {
+    if (errorMsg) {
+      setTimeout(() => {
+        setErrorMsg(null);
+      }, 5000);
+    }
+  }, [errorMsg]);
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -20,9 +29,11 @@ function Login({ handleLoginDisplay }: LoginProps) {
       });
       const token = mutationResponse.data.login.token;
       Auth.login(token);
-    } catch (e) {
-      console.log(e);
+    } catch (err: any) {
+      setErrorMsg(err.message);
     }
+
+    if (formRef.current) formRef.current.reset();
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,23 +47,23 @@ function Login({ handleLoginDisplay }: LoginProps) {
   return (
     <section className="flex flex-col w-80 mt-20 py-3 text-center text-pdark rounded-2xl bg-plight z-10">
       <h2 className="text-2xl font-semibold">Login</h2>
-      <form
-        onSubmit={handleFormSubmit}
-        className="flex flex-col justify-center items-center w-full"
-      >
-        {error ? (
-          <div className="my-2">
-            <p className="font-medium text-xs text-red-500">
-              The provided credentials are incorrect
-            </p>
-          </div>
-        ) : (
-          // Space placeholder for error text
-          <div className="my-2 invisible font-medium text-xs text-red-500">
-            error
-          </div>
-        )}
-        <div className="flex-col space-y-3 mx-10">
+      <div className="mx-10">
+        <form
+          ref={formRef}
+          onSubmit={handleFormSubmit}
+          className="flex flex-col justify-center items-center w-full space-y-3"
+        >
+          {errorMsg ? (
+            <div className="mt-1">
+              <p className="font-medium text-xs text-red-500">{errorMsg}</p>
+            </div>
+          ) : (
+            // Space placeholder for error text
+            <div className="mt-1 invisible font-medium text-xs text-red-500">
+              error
+            </div>
+          )}
+          {/* <div className="flex-col space-y-3 mx-10"> */}
           <input
             className="h-8 rounded-md px-2 w-full"
             placeholder="Email"
@@ -60,6 +71,7 @@ function Login({ handleLoginDisplay }: LoginProps) {
             type="email"
             id="email"
             onChange={handleChange}
+            required
           />
           <input
             className="h-8 rounded-md px-2 w-full"
@@ -68,26 +80,27 @@ function Login({ handleLoginDisplay }: LoginProps) {
             type="password"
             id="pwd"
             onChange={handleChange}
+            required
           />
-        </div>
-        <div className="flex justify-center items-center w-2/3 h-8 mt-3 rounded-full bg-psecondary">
-          <button
-            className="w-full font-bold text-pprimary pointer-events-auto"
-            type="submit"
-          >
-            LOGIN
-          </button>
-        </div>
-      </form>
-
+          {/* </div> */}
+          <div className="flex justify-center items-center w-2/3 h-8 mt-3 rounded-full bg-psecondary">
+            <button
+              className="w-full font-bold text-pprimary pointer-events-auto"
+              type="submit"
+            >
+              LOGIN
+            </button>
+          </div>
+        </form>
+      </div>
       <div
-        className="flex flex-col justify-center items-center mt-5 text-xs "
+        className="flex flex-col justify-center items-center mt-5 text-xs pointer-events-none"
         // onClick={() => handleLoginDisplay}
       >
         <p>Don't have an account?</p>
         <span
-          className="w-fit font-bold text-lg text-pprimary pointer-events-auto cursor-pointer z-10"
-          onClick={() => handleLoginDisplay}
+          className="w-fit font-bold text-lg text-pprimary pointer-events-auto cursor-pointer"
+          onClick={handleLoginDisplay}
         >
           Signup
         </span>
