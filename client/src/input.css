@@ -42,7 +42,7 @@ body {
 }
 
 /* X-mark */
-.xmark:nth-child(6)::before {
+.xmark::before {
   position: absolute;
   top:50%;
   translate: 0 -50% 0;

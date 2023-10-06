@@ -10,41 +10,21 @@ import {
 import Nav from "./Navbar";
 import Menu from "./Menu";
 import tempPic from "../../images/profile_pic.png";
+import Auth from "../../utils/auth";
 
 const UserMenu = () => {
-  const [isDisplayMenu, setIsDisplayMenu] = useState(false);
-
-  const handleOnClick = () => {
-    setIsDisplayMenu(!isDisplayMenu);
-  };
-
-  const handleMouseEnter = () => {
-    setIsDisplayMenu(true);
-  };
-
-  const handleMouseLeave = () =>{
-    setIsDisplayMenu(false);
-  }
 
   return (
-    <motion.div
-      className=" flex justify-end items-center"
-      onClick={handleOnClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      exit={{ opacity: [1, 0] }}
+    <div
+      className="flex justify-center items-center"
     >
-      <AnimatePresence>
-        {isDisplayMenu && <Menu handleOnClick={handleOnClick} />}
-      </AnimatePresence>
-      {/* <div className=""> */}
-      <img
-        src={tempPic}
-        className="h-8 drop-shadow-2xl pointer-events-auto z-10"
-        alt="User profile picture"
-      />
-      {/* </div> */}
-    </motion.div>
+      <span
+        className="material-symbols-rounded text-2xl text-light text-center"
+        onClick={() => Auth.logout()}
+      >
+        logout
+      </span>
+    </div>
   );
 };
 

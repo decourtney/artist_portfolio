@@ -12,7 +12,6 @@ import UserMenu from "./UserMenu";
 import tempPic from "../../images/profile_pic.png";
 import Auth from "../../utils/auth";
 
-
 const Header = () => {
   const [isDisplayNavMenu, setIsDisplayNavMenu] = useState(false);
   const [isDisplayUserMenu, setIsDisplayUserMenu] = useState(true);
@@ -29,6 +28,7 @@ const Header = () => {
 
       <section className="absolute top-0 left-0 flex justify-center w-full">
         <div className="flex justify-between items-center w-full mx-[2%] p-[1%]">
+          {/* Artist brand/name/icon */}
           <div className="flex justify-start w-full">
             <motion.button
               className=""
@@ -42,7 +42,18 @@ const Header = () => {
           </div>
 
           <div className="flex justify-end items-center w-full">
-            <AnimatePresence>{Auth.loggedIn() && <UserMenu />}</AnimatePresence>
+            {/* Display logout icon */}
+            {Auth.loggedIn() && (
+              <div className="flex justify-center items-center">
+                <span
+                  className="material-symbols-rounded text-2xl text-light text-center"
+                  onClick={() => Auth.logout()}
+                >
+                  logout
+                </span>
+              </div>
+            )}
+            {/* Display nav menu icon */}
             <motion.button
               className=""
               whileHover={{ scale: 1.2 }}

@@ -9,7 +9,7 @@ interface LoginProps {
 
 function Login({ handleLoginDisplay }: LoginProps) {
   const [formState, setFormState] = useState({ email: "", password: "" });
-  const [login] = useMutation(LOGIN_USER);
+  const [loginUserMutation] = useMutation(LOGIN_USER);
   const formRef = useRef<HTMLFormElement | null>(null);
   const [errorMsg, setErrorMsg] = useState<String | null>(null);
 
@@ -24,11 +24,14 @@ function Login({ handleLoginDisplay }: LoginProps) {
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const mutationResponse = await login({
+      const mutationResponse = await loginUserMutation({
         variables: { email: formState.email, password: formState.password },
       });
-      const token = mutationResponse.data.login.token;
-      Auth.login(token);
+
+      Auth.login(
+        mutationResponse.data.login.token,
+        mutationResponse.data.login.user.username
+      );
     } catch (err: any) {
       setErrorMsg(err.message);
     }

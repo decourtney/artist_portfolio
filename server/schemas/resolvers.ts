@@ -9,15 +9,20 @@ const resolvers = {
   Upload: require("graphql-upload-ts").GraphQLUpload,
   Query: {
     me: async (parent: any, args: any, context: any) => {
+      console.log("Query me context " + context);
       if (context.user) {
         const stuff = await User.findOne({ _id: context.user._id });
         console.log(stuff);
         return stuff;
       }
-      // throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError("You need to be logged in!");
     },
-    user: async (parent: any, args: any, context: any) => {
-      return await User.findById(context.user._id).populate({
+    user: async (
+      parent: any,
+      { username }: { username: string },
+      context: any
+    ) => {
+      const user = await User.findOne({ username }).populate({
         path: "products",
         model: "Product",
         populate: [
@@ -27,6 +32,8 @@ const resolvers = {
           },
         ],
       });
+
+      return user;
     },
     categories: async (parent: any, args: any, context: any) => {
       return Category.find();
@@ -35,13 +42,17 @@ const resolvers = {
 
   Mutation: {
     addUser: async (parent: any, args: any) => {
-      const user = await User.create(args);
-      // signToken is expecting _id to be a string
-      const userIdAsString = user._id.toString();
+      // try {
+        const user = await User.create(args);
+        // signToken is expecting _id to be a string
+        const userIdAsString = user._id.toString();
 
-      const token = signToken({ ...user, _id: userIdAsString });
+        const token = signToken({ ...user, _id: userIdAsString });
 
-      return { token, user };
+        return { token, user };
+    //   } catch (err) {
+    //     console.log({ err });
+    //   }
     },
     uploadFiles: async (parent: any, { files }: any, context: any) => {
       console.log(files);
@@ -50,6 +61,10 @@ const resolvers = {
           throw new UserInputError(
             "No files were uploaded. Please select at least one file."
           );
+
+          
+
+          // Finish logic for uploading files
         return true;
       } catch (err) {
         throw err;

@@ -35,11 +35,11 @@ class AuthService {
     return localStorage.getItem("id_token");
   }
 
-  login(idToken: string): void {
+  login(idToken: string, username?: string): void {
     // Saves user token to localStorage
     localStorage.setItem("id_token", idToken);
 
-    window.location.assign("/profile");
+    window.location.assign(`/profile/${username}`);
   }
 
   logout() {

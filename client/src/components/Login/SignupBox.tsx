@@ -10,8 +10,7 @@ interface SignupProps {
 
 function Signup({ handleLoginDisplay }: SignupProps) {
   const [formState, setFormState] = useState({
-    firstName: "",
-    lastName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -19,7 +18,7 @@ function Signup({ handleLoginDisplay }: SignupProps) {
   const [addUser, { error }] = useMutation(ADD_USER);
   const formRef = useRef<HTMLFormElement | null>(null);
   const [errorMsg, setErrorMsg] = useState<String | null>(null);
-  const [isPasswordMatch, setIsPasswordMatch] = useState(true);
+  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
 
   useEffect(() => {
     if (errorMsg) {
@@ -37,20 +36,24 @@ function Signup({ handleLoginDisplay }: SignupProps) {
       else {
         const mutationResponse = await addUser({
           variables: {
-            firstName: formState.firstName,
-            lastName: formState.lastName,
+            username: formState.username,
             email: formState.email,
             password: formState.password,
           },
         });
-        const token = mutationResponse.data.addUser.token;
-        Auth.login(token);
+      Auth.login(
+        mutationResponse.data.login.token,
+        mutationResponse.data.login.user.username
+      );
       }
     } catch (err: any) {
-      if(err.name === "ApolloError"){
-        const errorMsg = err.message.split(':').pop().trim();
-        setErrorMsg(errorMsg)
-      } else{setErrorMsg(err.message)}
+      if (err.name === "ApolloError") {
+        console.log({err})
+        const errorMsg = err.message.split(":").pop().trim();
+        setErrorMsg(errorMsg);
+      } else {
+        setErrorMsg(err.message);
+      }
     }
 
     if (formRef.current) formRef.current.reset();
@@ -64,10 +67,14 @@ function Signup({ handleLoginDisplay }: SignupProps) {
     });
 
     //Create logic to display message if password/confirm don't match
-    if (name === "confirmPassword")
-      setIsPasswordMatch(formState.password === value);
-    if (name === "password")
-      setIsPasswordMatch(formState.confirmPassword === value);
+    if (value.length < 8) {
+      setIsPasswordMatch(false);
+    } else {
+      if (name === "confirmPassword")
+        setIsPasswordMatch(formState.password === value);
+      if (name === "password")
+        setIsPasswordMatch(formState.confirmPassword === value);
+    }
   };
 
   return (
@@ -90,21 +97,11 @@ function Signup({ handleLoginDisplay }: SignupProps) {
               error
             </div>
           )}
-          {/* <div className="flex-col space-y-3 mx-10"> */}
           <input
             className="h-8 text-base rounded-md px-2 w-full"
-            placeholder="First"
-            name="firstName"
-            type="firstName"
-            id="firstName"
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="h-8 text-base rounded-md px-2 w-full"
-            placeholder="Last"
-            name="lastName"
-            type="lastName"
+            placeholder="Username"
+            name="username"
+            type="username"
             id="lastName"
             onChange={handleChange}
             required
@@ -118,15 +115,6 @@ function Signup({ handleLoginDisplay }: SignupProps) {
             onChange={handleChange}
             required
           />
-          <input
-            className="h-8 rounded-md px-2 w-full"
-            placeholder="Password"
-            name="password"
-            type="password"
-            id="pwd"
-            onChange={handleChange}
-            required
-          />
           <span
             className={`test relative w-full ${
               isPasswordMatch ? "checkmark" : "xmark"
@@ -135,6 +123,21 @@ function Signup({ handleLoginDisplay }: SignupProps) {
             <input
               className="h-8 rounded-md px-2 w-full"
               placeholder="Password"
+              name="password"
+              type="password"
+              id="pwd"
+              onChange={handleChange}
+              required
+            />
+          </span>
+          <span
+            className={`test relative w-full ${
+              isPasswordMatch ? "checkmark" : "xmark"
+            }`}
+          >
+            <input
+              className="h-8 rounded-md px-2 w-full"
+              placeholder="Confirm"
               name="confirmPassword"
               type="password"
               id="cnf"
@@ -142,7 +145,6 @@ function Signup({ handleLoginDisplay }: SignupProps) {
               required
             />
           </span>
-          {/* </div> */}
           <div className="flex justify-center items-center w-2/3 h-8 mt-3 rounded-full bg-psecondary">
             <button
               className="w-full font-bold text-pprimary pointer-events-auto"

@@ -14,32 +14,38 @@ const ProfileCard = ({
   numOfProducts = 1,
   profilePic,
 }: UserInfo) => {
-  const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
+  const [picUrl, setPicUrl] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const fullcdn =
-      process.env.REACT_APP_BASE_CDN + "/" + username + "/" + profilePic;
-    console.log(fullcdn);
-    if (fullcdn) setProfilePicUrl(fullcdn);
-  }, [profilePic]);
+    if (profilePic === "default_avatar.png")
+      setPicUrl(`${process.env.REACT_APP_BASE_CDN}/${profilePic}`);
+    else
+      setPicUrl(`${process.env.REACT_APP_BASE_CDN}/${username}/${profilePic}`);
+  }, []);
 
   return (
-    <div className="">
-      <div className="relative w-full">
-        <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 rounded-full">
-          <img
-            src={profilePicUrl || tempPic}
-            className="drop-shadow-2xl"
-            alt="User profile picture"
-          />
+    <>
+      {/* <div className="flex flex-col items-center z-10"> */}
+      <div className="w-36 h-72 z-10">
+        <div className="flex flex-col justify-center items-center w-36 h-72 translate-y-14">
+          <div className="w-28 rounded-full">
+            <img
+              src={picUrl}
+              className="drop-shadow-2xl"
+              alt="User profile picture"
+            />
+          </div>
+          {/* <div> */}
+            <span className="font-bold text-2xl text-plight">{username}</span>
+          {/* </div> */}
         </div>
       </div>
-
-      <div className="flex flex-col justify-center items-center w-72 h-auto text-contrast translate-y-16">
-        <p className="font-black text-xl">{fullname}</p>
-        <p className="font-medium text-xs">collection: {numOfProducts}</p>
-      </div>
-    </div>
+      {/* <div className="flex flex-col justify-center items-center w-72 h-auto text-contrast bg-pdark">
+          <p className="font-black text-xl">{fullname}</p>
+          <p className="font-medium text-xs">collection: {numOfProducts}</p>
+        </div> */}
+      {/* </div> */}
+    </>
   );
 };
 

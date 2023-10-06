@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import menu_icon from "../../images/menu_FILL0_wght200_GRAD-25_opsz20.svg";
+// Not currently in use but I don't want to lose this component yet.
+
+import React, { useEffect } from "react";
 import {
   motion,
-  AnimatePresence,
   useAnimate,
   usePresence,
 } from "framer-motion";

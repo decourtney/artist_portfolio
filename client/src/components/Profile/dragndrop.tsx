@@ -10,7 +10,7 @@ const DragnDrop = () => {
     console.log(acceptedFiles);
     try {
       const response = await upload({ variables: { files: acceptedFiles } });
-      console.log(response);
+      // console.log(response);
     } catch (err) {
       console.log(err);
     }
