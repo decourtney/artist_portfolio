@@ -2,14 +2,14 @@
   "name": "artist_portfolio",
   "version": "1.0.0",
   "description": "",
-  "main": "server/server.js",
+  "main": "server/server.ts",
   "scripts": {
-    "start": "node server/server.js",
+    "start": "ts-node server/server.ts",
     "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm start\"",
+    "watch:css": "cd client && npm run watch:css",
     "install": "cd server && npm i && cd ../client && npm i",
     "seed": "cd server && npm run seed",
-    "build": "cd client && npm run build",
-    "watchcss": "cd client && npx tailwindcss -i ./src/input.css -o ./public/output.css --watch"
+    "build": "cd client && npm run build"
   },
   "license": "ISC",
   "devDependencies": {

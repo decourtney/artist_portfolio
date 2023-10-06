@@ -1,3 +1,52 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.profile_hero_image::before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  width: auto;
+  height: 18rem;
+  background-image: url("./images/gallery_hall.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position-y: 55%;
+  border-radius: 0 0 100% 100%;
+  opacity: 30%;
+}
+
+/* Checkmark */
+.checkmark::before {
+  position: absolute;
+  top:50%;
+  translate: 0 -50% 0;
+  right: 101%;
+  content: "\2713";
+  color: green;
+}
+
+/* X-mark */
+.xmark::before {
+  position: absolute;
+  top:50%;
+  translate: 0 -50% 0;
+  right: 101%;
+  content: "\2717";
+  color: red;
+}
