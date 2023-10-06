@@ -27,5 +27,8 @@
       "path": "./server/"
     }
   ],
-  "include": [".**/*"]
+  "include": [".**/*"],
+  "ts-node": {
+    "swc": true
+  }
 }

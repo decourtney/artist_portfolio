@@ -48,7 +48,7 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
   return (
     <motion.div
       ref={navCardRef}
-      className="absolute flex flex-col justify-center items-center w-full h-[100vh] font-black text-[5vh] text-dark bg-light pointer-events-auto [&>p]:opacity-0"
+      className="absolute flex flex-col justify-center items-center w-full h-[100vh] font-black text-[5vh] text-dark bg-light pointer-events-auto z-20"
       onClick={handleOnNavClick}
     >
       <Link to={"/"}>

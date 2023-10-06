@@ -42,7 +42,6 @@ const resolvers = {
 
   Mutation: {
     addUser: async (parent: any, args: any) => {
-      // try {
         const user = await User.create(args);
         // signToken is expecting _id to be a string
         const userIdAsString = user._id.toString();
@@ -50,9 +49,6 @@ const resolvers = {
         const token = signToken({ ...user, _id: userIdAsString });
 
         return { token, user };
-    //   } catch (err) {
-    //     console.log({ err });
-    //   }
     },
     uploadFiles: async (parent: any, { files }: any, context: any) => {
       console.log(files);
@@ -62,7 +58,7 @@ const resolvers = {
             "No files were uploaded. Please select at least one file."
           );
 
-          
+
 
           // Finish logic for uploading files
         return true;

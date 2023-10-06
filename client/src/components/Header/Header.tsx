@@ -21,7 +21,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="relative z-50">
+    <nav className="relative z-20">
       <AnimatePresence mode="wait">
         {isDisplayNavMenu && <Nav handleOnNavClick={handleOnNavClick} />}
       </AnimatePresence>
