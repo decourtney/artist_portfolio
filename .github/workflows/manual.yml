@@ -18,4 +18,4 @@ jobs:
             mkdir /var/www/test
             cd /var/www/test
             git clone git@github.com:decourtney/artist_portfolio.git
-            echo 'Deployment successful to digital ocean'
+            echo 'Deployment successful to DigitalOcean'
