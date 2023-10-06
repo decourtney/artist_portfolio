@@ -39,7 +39,6 @@ const Profile = () => {
             {loading ? (
               <></>
             ) : (
-              // <div className="flex flex-col flex-grow justify-center items-center">
               <>
                 <ProfileCard
                   fullname={user?.fullname}
@@ -50,7 +49,6 @@ const Profile = () => {
                 <div className="flex flex-grow justify-center items-center m-5 p-12 rounded-2xl font-medium text-center text-pdark bg-plight z-10">
                   <DragnDrop />
                 </div>
-              {/* </div> */}
               </>
             )}
           </div>
