@@ -46,7 +46,7 @@ const Header = () => {
             {Auth.loggedIn() && (
               <div className="flex justify-center items-center">
                 <span
-                  className="material-symbols-rounded text-2xl text-light text-center"
+                  className="material-symbols-rounded text-2xl text-light text-center cursor-pointer"
                   onClick={() => Auth.logout()}
                 >
                   logout
@@ -55,12 +55,12 @@ const Header = () => {
             )}
             {/* Display nav menu icon */}
             <motion.button
-              className=""
+              className="ml-3"
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 1 }}
               onClick={() => handleOnNavClick()}
             >
-              <span className="material-symbols-rounded mx-[5%] align-middle text-plight">
+              <span className="material-symbols-rounded align-middle text-plight">
                 more_vert
               </span>
             </motion.button>
