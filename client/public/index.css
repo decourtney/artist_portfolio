@@ -616,12 +616,12 @@ video {
   z-index: 10;
 }
 
-.z-50 {
-  z-index: 50;
-}
-
 .z-20 {
   z-index: 20;
+}
+
+.z-50 {
+  z-index: 50;
 }
 
 .m-5 {
@@ -653,6 +653,11 @@ video {
   margin-bottom: 1%;
 }
 
+.mx-1 {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+
 .ml-2 {
   margin-left: 0.5rem;
 }
@@ -675,6 +680,22 @@ video {
 
 .mt-5 {
   margin-top: 1.25rem;
+}
+
+.ml-1 {
+  margin-left: 0.25rem;
+}
+
+.ml-5 {
+  margin-left: 1.25rem;
+}
+
+.ml-3 {
+  margin-left: 0.75rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
 }
 
 .flex {
@@ -1014,12 +1035,4 @@ body {
   right: 101%;
   content: "\2717";
   color: red;
-}
-
-.\[\&\>p\]\:opacity-0>p {
-  opacity: 0;
-}
-
-.\[\&\>p\]\:opacity-100>p {
-  opacity: 1;
 }

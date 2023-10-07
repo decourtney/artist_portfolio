@@ -53,7 +53,7 @@ const Menu = ({ handleOnClick }: MenuProps) => {
       style={{ direction: "rtl" }}
     >
       <div className="w-full bg-light">
-        <p className="ml-2 mr-6 font-bold text-sm pointer-events-auto cursor-pointer" onClick={()=> Auth.logout()}>LOGOUT</p>
+        <p className="ml-2 mr-6 font-bold text-sm pointer-events-auto cursor-pointer" onClick={()=> Auth.logout()}></p>
       </div>
     </motion.div>
   );

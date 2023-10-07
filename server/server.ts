@@ -5,7 +5,8 @@ import { authMiddleware } from "./utils/auth";
 import cors from "cors";
 import { typeDefs, resolvers } from "./schemas";
 import db from "./config/connection";
-const { graphqlUploadExpress } = require("graphql-upload-ts");
+import { graphqlUploadExpress } from "graphql-upload-ts";
+// const { graphqlUploadExpress } = require("graphql-upload-ts");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -42,7 +43,7 @@ app.get("/", (req, res) => {
 });
 
 // Create a new instance of an Apollo server with the GraphQL schema
-const startApolloServer = async () => {
+const startApolloServer = async (typeDefs: any, resolvers: any) => {
   await server.start();
   server.applyMiddleware({ app });
 
@@ -57,5 +58,5 @@ const startApolloServer = async () => {
 };
 
 // Call the async function to start the server
-startApolloServer();
+startApolloServer(typeDefs, resolvers);
 // removed passing of typedefs and resolvers ** if this becomes an issue revisist this

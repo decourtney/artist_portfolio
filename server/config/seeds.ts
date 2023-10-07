@@ -3,9 +3,7 @@ import { User, Product, Category } from "../models";
 import { uploadObject, deleteObject } from "../utils/objectLoader";
 import fs from "fs";
 
-const imagePath = "../BangEqual.png";
 const profilePicPath = "../profile_pic.png";
-const imageBuffer = fs.readFileSync(imagePath);
 const profilePicBuffer = fs.readFileSync(profilePicPath);
 
 db.once("open", async () => {
@@ -41,6 +39,7 @@ db.once("open", async () => {
     newUser = await User.create({
       firstName: "Temp",
       lastName: "User",
+      username: "tempuser",
       email: "tempuser@gmail.com",
       password: "password",
       role: "owner",
@@ -76,7 +75,7 @@ db.once("open", async () => {
     });
 
     await uploadObject(
-      imageBuffer,
+      profilePicBuffer,
       `${newUser?.email.split("@")[0]}/${newProduct.image}`
     );
 
@@ -92,28 +91,5 @@ db.once("open", async () => {
   }
 
   console.warn("DB is seeded");
-  // try {
-  //   const deletedImage = await deleteObject("image.png");
-  //   if (!deletedImage) throw new Error("Could not find image by that name");
-
-  //   const deletedProduct = await Product.findOneAndDelete({
-  //     image: "image.png",
-  //   });
-
-  //   if (!deletedProduct)
-  //     throw new Error("Could not find the Product entry in the DB");
-
-  //   if (deletedProduct) {
-  //     await User.updateMany(
-  //       { products: { $in: [deletedProduct._id] } },
-  //       { $pull: { products: deletedProduct._id } }
-  //     );
-
-  //     console.log("Removed Product and references to Users");
-  //   }
-  // } catch (err) {
-  //   console.log(err);
-  // }
-
   process.exit();
 });
