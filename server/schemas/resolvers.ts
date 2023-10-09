@@ -2,9 +2,9 @@ import { AuthenticationError } from "apollo-server-core";
 import { UserInputError } from "apollo-server-core";
 import { User, Product, Category } from "../models";
 import { signToken } from "../utils/auth";
+import { uploadObject, deleteObject } from "../utils/objectLoader";
 
 // Need to figure out the correct type definitions
-
 const resolvers = {
   Upload: require("graphql-upload-ts").GraphQLUpload,
   Query: {
@@ -42,25 +42,22 @@ const resolvers = {
 
   Mutation: {
     addUser: async (parent: any, args: any) => {
-        const user = await User.create(args);
-        // signToken is expecting _id to be a string
-        const userIdAsString = user._id.toString();
+      const user = await User.create(args);
+      // signToken is expecting _id to be a string
+      const userIdAsString = user._id.toString();
 
-        const token = signToken({ ...user, _id: userIdAsString });
+      const token = signToken({ ...user, _id: userIdAsString });
 
-        return { token, user };
+      return { token, user };
     },
-    uploadFiles: async (parent: any, { files }: any, context: any) => {
-      console.log(files);
+    uploadFiles: async (parent: any, {files}: any) => {
+      const resolvedFiles = await Promise.all(files);
+      // console.log(resolvedFiles);
+
       try {
-        if (!files || files.length === 0)
-          throw new UserInputError(
-            "No files were uploaded. Please select at least one file."
-          );
-
-
-
-          // Finish logic for uploading files
+        const bucketResponse = await uploadObject(resolvedFiles);
+   // might change logic here. iterate through the files here so each entry can be linked to the db.
+        // Finish logic for uploading files
         return true;
       } catch (err) {
         throw err;
@@ -82,7 +79,11 @@ const resolvers = {
         throw new AuthenticationError("Incorrect credentials");
       }
 
-      const token = signToken({ ...user, _id: user._id.toString() });
+      const token = signToken({
+        username: user.username,
+        email: user.email,
+        _id: user._id.toString(),
+      });
       return { token, user };
     },
   },

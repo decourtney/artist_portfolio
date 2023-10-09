@@ -6,10 +6,10 @@ import profilePic from "../images/profile_pic.png";
 import galleryPic from "../images/gallery_pic.png";
 import { QUERY_ME, QUERY_USER } from "../utils/queries";
 import Auth from "../utils/auth";
-import ProfileCard from "../components/Profile/profile_card";
-import DragnDrop from "../components/Profile/dragndrop";
-import LoginBox from "../components/Login/LoginBox";
-import SignupBox from "../components/Login/SignupBox";
+import ProfileCard from "../components/profile/profile_card";
+import DragnDrop from "../components/profile/dragndrop";
+import LoginBox from "../components/login";
+import SignupBox from "../components/login/signupBox";
 
 const Login = () => {
   const [isShowLogin, setIsShowLogin] = useState(true);

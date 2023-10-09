@@ -6,7 +6,6 @@ import cors from "cors";
 import { typeDefs, resolvers } from "./schemas";
 import db from "./config/connection";
 import { graphqlUploadExpress } from "graphql-upload-ts";
-// const { graphqlUploadExpress } = require("graphql-upload-ts");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -15,7 +14,6 @@ const server = new ApolloServer({
   resolvers,
   csrfPrevention: true,
   context: authMiddleware,
-  cache: "bounded",
 });
 
 app.use("/graphql", graphqlUploadExpress());

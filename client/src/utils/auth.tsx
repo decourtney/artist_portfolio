@@ -1,14 +1,16 @@
 import decode from "jwt-decode";
 
-interface DecodedToken {
+interface myToken {
   exp: number;
+  username: string;
+  email: string;
 }
 
 class AuthService {
   getProfile() {
     const token = this.getToken();
     if (token) {
-      return decode(token);
+      return decode<myToken>(token);
     }
     return null;
   }
@@ -21,7 +23,7 @@ class AuthService {
 
   isTokenExpired(token: string): boolean {
     try {
-      const decoded:DecodedToken = decode(token);
+      const decoded = decode<myToken>(token);
       if (decoded.exp < Date.now() / 1000) {
         return true;
       } else return false;

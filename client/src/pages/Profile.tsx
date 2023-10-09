@@ -6,9 +6,9 @@ import profilePic from "../images/profile_pic.png";
 import galleryPic from "../images/gallery_pic.png";
 import { QUERY_ME, QUERY_USER } from "../utils/queries";
 import Auth from "../utils/auth";
-import ProfileCard from "../components/Profile/profile_card";
-import DragnDrop from "../components/Profile/dragndrop";
-import Signup from "../components/Login/SignupBox";
+import ProfileCard from "../components/profile/profile_card";
+import DragnDrop from "../components/profile/dragndrop";
+import Signup from "../components/login/signupBox";
 
 const Profile = () => {
   const { username: userParam } = useParams();
@@ -17,16 +17,18 @@ const Profile = () => {
     variables: { username: userParam },
   });
 
-  // if (!loading) {
-  //   console.log(userParam);
-  //   console.log(data);
+  const user = data?.me || data?.user || {};
+  // This snippet isnt necessary for this build but keeping here for future reference
+  // if (Auth.loggedIn() && Auth.getProfile()?.username === userParam) {
+  //   return <Navigate to={`/profile/${userParam}`} />;
   // }
 
-  const user = data?.me || data?.user || {};
-  if (Auth.loggedIn() && Auth.getProfile() === userParam) {
-    console.log("its true");
-    return <Navigate to="/profile" />;
-  }
+  // if (!loading) {
+  //   console.log("userParams: ", userParam);
+  //   console.log("data: ", data);
+  //   console.log("getProfile: ", Auth.getProfile());
+  //   console.log("data.user: ", user);
+  // }
 
   return (
     <>
@@ -41,10 +43,8 @@ const Profile = () => {
             ) : (
               <>
                 <ProfileCard
-                  fullname={user?.fullname}
-                  username={user?.username}
-                  numOfProducts={2}
-                  profilePic={user?.profilePic}
+                  username={user.username}
+                  profilePic={user.profilePic}
                 />
                 <div className="flex flex-grow justify-center items-center m-5 p-12 rounded-2xl font-medium text-center text-pdark bg-plight z-10">
                   <DragnDrop />

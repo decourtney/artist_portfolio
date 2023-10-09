@@ -15,8 +15,8 @@ import Gallery from "./pages/Gallery";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
+import Header from "./components/header";
+import Footer from "./components/footer/footer";
 
 // Construct main GraphQL API endpoint
 const httpLink = createHttpLink({

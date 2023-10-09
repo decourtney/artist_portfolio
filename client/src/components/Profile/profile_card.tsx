@@ -2,25 +2,25 @@ import { useEffect, useState } from "react";
 import tempPic from "../../images/profile_pic.png";
 
 interface UserInfo {
-  fullname: string;
   username: string;
-  numOfProducts: number;
   profilePic: string;
 }
 
+  const baseCDN =
+    process.env.BASE_CDN ||
+    "https://chumbucket.donovancourtney.dev/artist_portfolio";
+
 const ProfileCard = ({
-  fullname,
   username,
-  numOfProducts = 1,
   profilePic,
 }: UserInfo) => {
   const [picUrl, setPicUrl] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (profilePic === "default_avatar.png")
-      setPicUrl(`${process.env.REACT_APP_BASE_CDN}/${profilePic}`);
+      setPicUrl(`${baseCDN}/${profilePic}`);
     else
-      setPicUrl(`${process.env.REACT_APP_BASE_CDN}/${username}/${profilePic}`);
+      setPicUrl(`${baseCDN}/${username}/${profilePic}`);
   }, []);
 
   return (

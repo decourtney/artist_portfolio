@@ -41,14 +41,14 @@ function Signup({ handleLoginDisplay }: SignupProps) {
             password: formState.password,
           },
         });
-      Auth.login(
-        mutationResponse.data.login.token,
-        mutationResponse.data.login.user.username
-      );
+        Auth.login(
+          mutationResponse.data.login.token,
+          mutationResponse.data.login.user.username
+        );
       }
     } catch (err: any) {
+      console.log(err);
       if (err.name === "ApolloError") {
-        console.log({err})
         const errorMsg = err.message.split(":").pop().trim();
         setErrorMsg(errorMsg);
       } else {
@@ -56,7 +56,9 @@ function Signup({ handleLoginDisplay }: SignupProps) {
       }
     }
 
+    // Reset field values and password match state
     if (formRef.current) formRef.current.reset();
+    setIsPasswordMatch(false);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +68,7 @@ function Signup({ handleLoginDisplay }: SignupProps) {
       [name]: value,
     });
 
-    //Create logic to display message if password/confirm don't match
+    // Check if password/confirm is 8+ characters and match
     if (value.length < 8) {
       setIsPasswordMatch(false);
     } else {

@@ -7,8 +7,10 @@ const DragnDrop = () => {
   const [upload] = useMutation(UPLOAD_FILES);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    console.log(acceptedFiles);
+    // console.log(acceptedFiles);
     try {
+
+
       const response = await upload({ variables: { files: acceptedFiles } });
       // console.log(response);
     } catch (err) {

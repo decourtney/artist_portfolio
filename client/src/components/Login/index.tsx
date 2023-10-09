@@ -25,7 +25,7 @@ function Login({ handleLoginDisplay }: LoginProps) {
     event.preventDefault();
     try {
       const mutationResponse = await loginUserMutation({
-        variables: { email: formState.email, password: formState.password },
+        variables: { ...formState },
       });
 
       Auth.login(
@@ -33,7 +33,13 @@ function Login({ handleLoginDisplay }: LoginProps) {
         mutationResponse.data.login.user.username
       );
     } catch (err: any) {
-      setErrorMsg(err.message);
+      console.log(err)
+      if (err.name === "ApolloError") {
+        const errorMsg = err.message.split(":").pop().trim();
+        setErrorMsg(errorMsg);
+      } else {
+        setErrorMsg(err.message);
+      }
     }
 
     if (formRef.current) formRef.current.reset();

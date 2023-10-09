@@ -653,9 +653,8 @@ video {
   margin-bottom: 1%;
 }
 
-.mx-1 {
+.ml-1 {
   margin-left: 0.25rem;
-  margin-right: 0.25rem;
 }
 
 .ml-2 {
@@ -680,22 +679,6 @@ video {
 
 .mt-5 {
   margin-top: 1.25rem;
-}
-
-.ml-1 {
-  margin-left: 0.25rem;
-}
-
-.ml-5 {
-  margin-left: 1.25rem;
-}
-
-.ml-3 {
-  margin-left: 0.75rem;
-}
-
-.ml-4 {
-  margin-left: 1rem;
 }
 
 .flex {
