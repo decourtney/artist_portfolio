@@ -43,21 +43,21 @@ db.once("open", async () => {
       email: "tempuser@gmail.com",
       password: "password",
       role: "owner",
-      profilePic: "profilePic.png",
+      profilePic: "default_avatar.png",
     });
   } catch (err) {
     console.log(err);
   }
   console.log(newUser?.email.split("@")[0]);
 
-  try {
-    await uploadObject(
-      profilePicBuffer,
-      `${newUser?.email.split("@")[0]}/${newUser?.profilePic}`
-    );
-  } catch (err) {
-    console.log(err);
-  }
+  // try {
+  //   await uploadObject(
+  //     profilePicBuffer,
+  //     `${newUser?.email.split("@")[0]}/${newUser?.profilePic}`
+  //   );
+  // } catch (err) {
+  //   console.log(err);
+  // }
 
   let category;
   try {
@@ -74,10 +74,10 @@ db.once("open", async () => {
       categories: category?._id,
     });
 
-    await uploadObject(
-      profilePicBuffer,
-      `${newUser?.email.split("@")[0]}/${newProduct.image}`
-    );
+    // await uploadObject(
+    //   profilePicBuffer,
+    //   `${newUser?.email.split("@")[0]}/${newProduct.image}`
+    // );
 
     if (newUser)
       await User.findOneAndUpdate(

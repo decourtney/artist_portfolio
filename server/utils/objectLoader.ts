@@ -5,6 +5,7 @@ import {
   S3,
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
+import { UploadFile } from "./customTypes";
 import { Buffer } from "buffer";
 import fs from "fs";
 import { Readable } from "stream";
@@ -12,8 +13,7 @@ import { Stream } from "stream";
 
 const createS3Client = () => {
   const s3 = new S3({
-    endpoint:
-      process.env.ORIGIN_ENDPOINT || "",
+    endpoint: process.env.ORIGIN_ENDPOINT || "",
     forcePathStyle: false,
     region: "us-east-1",
     credentials: {
@@ -25,47 +25,38 @@ const createS3Client = () => {
   return s3;
 };
 
-export const uploadObject = async (objs: any) => {
+export const uploadObject = async (obj: UploadFile, username: string) => {
   const s3Client = createS3Client();
-  const resolvedObjects = await Promise.all(objs);
+  try {
+    const params = {
+      Bucket: "chumbucket",
+      Key: `artist_portfolio/${username}/${obj.filename}`,
+      Body: obj.createReadStream(),
+      ContentType: obj.mimetype,
+      ACL: "public-read",
+      Metadata: {
+        "x-amz-meta-my-key": "your-value",
+      },
+    };
 
-  const promises = resolvedObjects.map(async (obj) => {
-    try {
-      console.log(obj);
-      const { createReadStream, filename, mimetype } = obj;
-      const stream = createReadStream();
+    const parallelUpload = new Upload({
+      client: s3Client,
+      params: params,
+      tags: [],
+      queueSize: 4,
+      partSize: 1024 * 1024 * 5,
+      leavePartsOnError: false,
+    });
 
-      const params = {
-        Bucket: "chumbucket",
-        Key: `artist_portfolio/${filename}`,
-        Body: stream,
-        ContentType: mimetype,
-        ACL: "public-read",
-        Metadata: {
-          "x-amz-meta-my-key": "your-value",
-        },
-      };
+    parallelUpload.on("httpUploadProgress", (progress) => {
+      // console.log("progress: ", progress);
+    });
 
-      const parallelUpload = new Upload({
-        client: s3Client,
-        params: params,
-        tags: [],
-        queueSize: 4,
-        partSize: 1024 * 1024 * 5,
-        leavePartsOnError: false,
-      });
-
-      parallelUpload.on("httpUploadProgress", (progress) => {
-        console.log("progress: ", progress);
-      });
-
-      const data = await parallelUpload.done();
-
-      return true;
-    } catch (err) {
-      console.log("Error", err);
-    }
-  });
+    await parallelUpload.done();
+    return true;
+  } catch (err) {
+    console.log("Error", err);
+  }
 };
 
 export const deleteObject = async (fileName: string) => {

@@ -10,7 +10,6 @@ interface SignupProps {
 
 function Signup({ handleLoginDisplay }: SignupProps) {
   const [formState, setFormState] = useState({
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -18,7 +17,10 @@ function Signup({ handleLoginDisplay }: SignupProps) {
   const [addUser, { error }] = useMutation(ADD_USER);
   const formRef = useRef<HTMLFormElement | null>(null);
   const [errorMsg, setErrorMsg] = useState<String | null>(null);
+  const [isConfirmMatch, setIsConfirmMatch] = useState(false);
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const minChars = 8;
+  const numOfCharacters = useRef(minChars);
 
   useEffect(() => {
     if (errorMsg) {
@@ -34,16 +36,16 @@ function Signup({ handleLoginDisplay }: SignupProps) {
       if (formState.password !== formState.confirmPassword)
         setErrorMsg("Passwords don't match");
       else {
-        const mutationResponse = await addUser({
+        const userData = await addUser({
           variables: {
-            username: formState.username,
             email: formState.email,
             password: formState.password,
           },
         });
+
         Auth.login(
-          mutationResponse.data.login.token,
-          mutationResponse.data.login.user.username
+          userData.data.addUser.token,
+          userData.data.addUser.user.username
         );
       }
     } catch (err: any) {
@@ -58,9 +60,10 @@ function Signup({ handleLoginDisplay }: SignupProps) {
 
     // Reset field values and password match state
     if (formRef.current) formRef.current.reset();
-    setIsPasswordMatch(false);
+    setIsConfirmMatch(false);
   };
 
+  // Handle change to the form fields
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormState({
@@ -68,14 +71,16 @@ function Signup({ handleLoginDisplay }: SignupProps) {
       [name]: value,
     });
 
-    // Check if password/confirm is 8+ characters and match
-    if (value.length < 8) {
-      setIsPasswordMatch(false);
-    } else {
-      if (name === "confirmPassword")
-        setIsPasswordMatch(formState.password === value);
-      if (name === "password")
-        setIsPasswordMatch(formState.confirmPassword === value);
+    // monitor confirm and password for changes to update visual indicators
+    if (name === "confirmPassword") {
+      setIsConfirmMatch(value.length >= 8 && formState.password === value);
+    }
+
+    if (name === "password") {
+      if (value.length >= 8) setIsPasswordMatch(true);
+      else setIsPasswordMatch(false);
+
+      numOfCharacters.current = minChars - value.length;
     }
   };
 
@@ -99,7 +104,7 @@ function Signup({ handleLoginDisplay }: SignupProps) {
               error
             </div>
           )}
-          <input
+          {/* <input
             className="h-8 text-base rounded-md px-2 w-full"
             placeholder="Username"
             name="username"
@@ -107,7 +112,7 @@ function Signup({ handleLoginDisplay }: SignupProps) {
             id="lastName"
             onChange={handleChange}
             required
-          />
+          /> */}
           <input
             className="h-8 rounded-md px-2 w-full"
             placeholder="Email"
@@ -117,24 +122,23 @@ function Signup({ handleLoginDisplay }: SignupProps) {
             onChange={handleChange}
             required
           />
-          <span
-            className={`test relative w-full ${
-              isPasswordMatch ? "checkmark" : "xmark"
-            }`}
-          >
-            <input
-              className="h-8 rounded-md px-2 w-full"
-              placeholder="Password"
-              name="password"
-              type="password"
-              id="pwd"
-              onChange={handleChange}
-              required
-            />
+
+          <input
+            className="h-8 rounded-md px-2 w-full"
+            placeholder="Password"
+            name="password"
+            type="password"
+            id="pwd"
+            onChange={handleChange}
+            required
+          />
+          <span className={`relative w-full text-xs text-primary`}>
+            At least {isPasswordMatch ? "✔" : `${numOfCharacters.current}`}{" "}
+            characters
           </span>
           <span
-            className={`test relative w-full ${
-              isPasswordMatch ? "checkmark" : "xmark"
+            className={`relative w-full ${
+              isConfirmMatch ? "checkmark" : "xmark"
             }`}
           >
             <input
@@ -151,7 +155,7 @@ function Signup({ handleLoginDisplay }: SignupProps) {
             <button
               className="w-full font-bold text-pprimary pointer-events-auto"
               type="submit"
-              disabled={!isPasswordMatch}
+              disabled={!isConfirmMatch}
             >
               Signup
             </button>

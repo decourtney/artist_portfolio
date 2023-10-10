@@ -1,8 +1,8 @@
-import { Schema, model, Model, Types } from "mongoose";
+import { Schema, model, Model, Types, Document } from "mongoose";
 import Category, { ICategory } from "./Category";
 
 // Define an interface for the Product document
-interface IProduct {
+interface IProduct extends Document {
   name: string;
   description?: string;
   image?: string;
@@ -16,6 +16,7 @@ const productSchema = new Schema<IProduct>({
     type: String,
     required: true,
     trim: true,
+    unique: true,
   },
   description: {
     type: String,
@@ -29,9 +30,38 @@ const productSchema = new Schema<IProduct>({
     {
       type: Types.ObjectId,
       ref: "Category",
-      required: true,
+      required: false,
     },
   ],
+});
+
+// Define a pre-save middleware to handle name uniqueness
+productSchema.pre<IProduct>("save", async function (next) {
+  try {
+    if (!this.isNew || !this.isModified("name")) {
+      // If the document is not new or the name is not modified, move on
+      return next();
+    }
+
+    // Check if the name is unique
+    let existingProduct = await Product.findOne({ name: this.name });
+
+    if (existingProduct) {
+      // If a product with the same name exists, add a suffix (#) to the name
+      let newName = this.name;
+      let counter = 1;
+      while (existingProduct) {
+        newName = `${this.name}(${counter})`;
+        existingProduct = await Product.findOne({ name: newName });
+        counter++;
+      }
+      this.name = newName;
+    }
+
+    next();
+  } catch (err: any) {
+    next(err.message);
+  }
 });
 
 // Create the Product model with the IProduct interface

@@ -9,8 +9,6 @@ const DragnDrop = () => {
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     // console.log(acceptedFiles);
     try {
-
-
       const response = await upload({ variables: { files: acceptedFiles } });
       // console.log(response);
     } catch (err) {

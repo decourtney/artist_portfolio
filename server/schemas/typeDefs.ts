@@ -41,7 +41,6 @@ const typeDefs = gql`
 
   type Mutation {
     addUser(
-      username: String!
       email: String!
       password: String!
     ): Auth
@@ -53,8 +52,11 @@ const typeDefs = gql`
       password: String
       product: String
     ): User
+    deleteUser(user: String!): Boolean
     login(email: String!, password: String!): Auth
-    uploadFiles(files: [Upload]): Boolean
+    addProducts(files: [Upload!]!): Boolean
+    updateProduct(product: String!): Boolean
+    deleteProduct(product: String!): Boolean
   }
 `;
 

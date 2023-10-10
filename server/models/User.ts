@@ -1,8 +1,8 @@
-import { Model, Schema, Types, model } from "mongoose";
+import { Model, Schema, Types, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
 import Product, { IProduct } from "./Product";
 
-interface IUser {
+interface IUser extends Document{
   firstName: string;
   lastName: string;
   email: string;
@@ -40,7 +40,7 @@ const userSchema = new Schema<IUser>({
   },
   username: {
     type: String,
-    required: true,
+    // required: true,
     unique: true,
     trim: true,
   },
@@ -64,6 +64,7 @@ const userSchema = new Schema<IUser>({
     {
       type: Types.ObjectId,
       ref: "Product",
+      required: false
     },
   ],
 });
@@ -84,9 +85,9 @@ userSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
 
-  // if (this.isNew || this.isModified("email")) {
-  //   this.username = this.email.split("@")[0];
-  // }
+  if (this.isNew) {
+    this.username = this.email.split("@")[0];
+  }
   next();
 });
 

@@ -3,6 +3,7 @@ import { UserInputError } from "apollo-server-core";
 import { User, Product, Category } from "../models";
 import { signToken } from "../utils/auth";
 import { uploadObject, deleteObject } from "../utils/objectLoader";
+import { UploadFile } from "../utils/customTypes";
 
 // Need to figure out the correct type definitions
 const resolvers = {
@@ -50,19 +51,51 @@ const resolvers = {
 
       return { token, user };
     },
-    uploadFiles: async (parent: any, {files}: any) => {
-      const resolvedFiles = await Promise.all(files);
-      // console.log(resolvedFiles);
+    updateUser: async()=>{},
+    deleteUser: async()=>{},
+    addProducts: async (
+      parent: any,
+      { files }: { files: UploadFile[] },
+      context: any
+    ) => {
 
       try {
-        const bucketResponse = await uploadObject(resolvedFiles);
-   // might change logic here. iterate through the files here so each entry can be linked to the db.
-        // Finish logic for uploading files
+        const resolvedFiles = await Promise.all(files);
+
+        // Wait until all files have resolved
+        await Promise.all(
+          resolvedFiles.map(async (file) => {
+            try {
+              const bucketResponse = await uploadObject(file, context.user.data.username);
+
+              if (!bucketResponse) return false;
+
+              // If the file uploaded then create new Product and update User
+              try {
+                const newProduct = await Product.create({
+                  name: file.filename.replace(/\.[^.]+$/, ""),
+                  image: file.filename,
+                });
+              
+                await User.findOneAndUpdate(
+                  { _id: context.user.data._id },
+                  { $addToSet: { products: newProduct._id } }
+                );
+              } catch (err: any) {
+                console.error("Create Product error: ", err.message);
+              }
+            } catch (err: any) {
+              console.error(`Error uploading: ${err.message}`);
+            }
+          })
+        );
         return true;
-      } catch (err) {
-        throw err;
+      } catch (err: any) {
+        console.error("Error overall: ", err.message);
       }
     },
+    updateProduct:async()=>{},
+    deleteProduct:async()=>{},
     login: async (
       parent: any,
       { email, password }: { email: any; password: any }
@@ -84,7 +117,7 @@ const resolvers = {
         email: user.email,
         _id: user._id.toString(),
       });
-      return { token, user };
+      return {token, user};
     },
   },
 };
