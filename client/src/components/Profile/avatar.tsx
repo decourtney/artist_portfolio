@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import tempPic from "../../images/profile_pic.png";
 
 interface UserInfo {
-  username: string;
+  firstName: string;
   profilePic: string;
 }
 
@@ -10,8 +10,8 @@ interface UserInfo {
     process.env.BASE_CDN ||
     "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
-const ProfileCard = ({
-  username,
+const Avatar = ({
+  firstName,
   profilePic,
 }: UserInfo) => {
   const [picUrl, setPicUrl] = useState<string | undefined>(undefined);
@@ -20,7 +20,7 @@ const ProfileCard = ({
     if (profilePic === "default_avatar.png")
       setPicUrl(`${baseCDN}/${profilePic}`);
     else
-      setPicUrl(`${baseCDN}/${username}/${profilePic}`);
+      setPicUrl(`${baseCDN}/${firstName}/${profilePic}`);
   }, []);
 
   return (
@@ -36,7 +36,7 @@ const ProfileCard = ({
             />
           </div>
           {/* <div> */}
-            <span className="font-bold text-2xl text-plight">{username}</span>
+          <span className="font-bold text-2xl text-plight">{firstName}</span>
           {/* </div> */}
         </div>
       </div>
@@ -49,4 +49,4 @@ const ProfileCard = ({
   );
 };
 
-export default ProfileCard;
+export default Avatar;

@@ -55,7 +55,7 @@ const Header = () => {
               onClick={() => handleOnNavClick()}
             >
               <span className="material-symbols-rounded align-middle">
-                more_vert
+                more_horiz
               </span>
             </motion.button>
           </div>

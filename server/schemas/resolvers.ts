@@ -3,7 +3,7 @@ import { UserInputError } from "apollo-server-core";
 import { User, Product, Category } from "../models";
 import { signToken } from "../utils/auth";
 import { uploadObject, deleteObject } from "../utils/objectLoader";
-import { UploadFile } from "../utils/customTypes";
+import { UploadFile } from "../utils/customServerTypes";
 
 // Need to figure out the correct type definitions
 const resolvers = {
@@ -51,14 +51,13 @@ const resolvers = {
 
       return { token, user };
     },
-    updateUser: async()=>{},
-    deleteUser: async()=>{},
+    updateUser: async () => {},
+    deleteUser: async () => {},
     addProducts: async (
       parent: any,
       { files }: { files: UploadFile[] },
       context: any
     ) => {
-
       try {
         const resolvedFiles = await Promise.all(files);
 
@@ -66,7 +65,10 @@ const resolvers = {
         await Promise.all(
           resolvedFiles.map(async (file) => {
             try {
-              const bucketResponse = await uploadObject(file, context.user.data.username);
+              const bucketResponse = await uploadObject(
+                file,
+                context.user.data.username
+              );
 
               if (!bucketResponse) return false;
 
@@ -76,7 +78,7 @@ const resolvers = {
                   name: file.filename.replace(/\.[^.]+$/, ""),
                   image: file.filename,
                 });
-              
+
                 await User.findOneAndUpdate(
                   { _id: context.user.data._id },
                   { $addToSet: { products: newProduct._id } }
@@ -94,8 +96,8 @@ const resolvers = {
         console.error("Error overall: ", err.message);
       }
     },
-    updateProduct:async()=>{},
-    deleteProduct:async()=>{},
+    updateProduct: async () => {},
+    deleteProduct: async () => {},
     login: async (
       parent: any,
       { email, password }: { email: any; password: any }
@@ -117,7 +119,7 @@ const resolvers = {
         email: user.email,
         _id: user._id.toString(),
       });
-      return {token, user};
+      return { token, user };
     },
   },
 };

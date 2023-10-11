@@ -6,9 +6,10 @@ import profilePic from "../images/profile_pic.png";
 import galleryPic from "../images/gallery_pic.png";
 import { QUERY_ME, QUERY_USER } from "../utils/queries";
 import Auth from "../utils/auth";
-import ProfileCard from "../components/profile/profile_card";
+import ProfileAvatar from "../components/profile/avatar";
 import DragnDrop from "../components/profile/dragndrop";
-import Signup from "../components/login/signupBox";
+import ProfileCard from "../components/profile/profileCard";
+import Signup from "../components/login/signupForm";
 
 const Profile = () => {
   const { username: userParam } = useParams();
@@ -36,19 +37,18 @@ const Profile = () => {
         <section className="flex flex-col flex-grow bg-pdark">
           <div
             id="profile_card"
-            className="profile_hero_image flex flex-col flex-grow justify-center items-center"
+            className="profile_hero_image flex flex-col flex-grow justify-center items-center m-5 space-y-4"
           >
             {loading ? (
               <></>
             ) : (
               <>
-                <ProfileCard
-                  username={user.username}
+                <ProfileAvatar
+                  firstName={user.firstName}
                   profilePic={user.profilePic}
                 />
-                <div className="flex flex-grow justify-center items-center m-5 p-12 rounded-2xl font-medium text-center text-pdark bg-plight z-10">
-                  <DragnDrop />
-                </div>
+                <ProfileCard userData={user} />
+                <DragnDrop />
               </>
             )}
           </div>

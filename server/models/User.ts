@@ -1,8 +1,9 @@
 import { Model, Schema, Types, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
 import Product, { IProduct } from "./Product";
+import { ICategory } from "./Category";
 
-interface IUser extends Document{
+interface IUser extends Document {
   firstName: string;
   lastName: string;
   email: string;
@@ -11,7 +12,8 @@ interface IUser extends Document{
   role: string;
   profilePic: string;
   products: IProduct[];
-  confirmPassword: string; // Dont think i need this but nothing is broken for now
+  categories: ICategory[];
+  // confirmPassword: string; // Dont think i need this but nothing is broken for now
 
   // Include custom methods like isCorrectPassword
   isCorrectPassword(password: string): Promise<boolean>;
@@ -57,14 +59,20 @@ const userSchema = new Schema<IUser>({
   profilePic: {
     type: String,
     required: false,
-    default:
-      "default_avatar.png",
+    default: "default_avatar.png",
   },
   products: [
     {
       type: Types.ObjectId,
       ref: "Product",
-      required: false
+      required: false,
+    },
+  ],
+  categories: [
+    {
+      type: Types.ObjectId,
+      ref: "Category",
+      required: false,
     },
   ],
 });

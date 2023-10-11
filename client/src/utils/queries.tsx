@@ -4,6 +4,9 @@ export const QUERY_USER = gql`
   query user($username: String!) {
     user(username: $username) {
       _id
+      firstName
+      lastName
+      fullname
       username
       email
       profilePic
@@ -17,6 +20,10 @@ export const QUERY_USER = gql`
           name
         }
       }
+      categories {
+        _id
+        name
+      }
     }
   }
 `;
@@ -25,6 +32,9 @@ export const QUERY_ME = gql`
   query me {
     me {
       _id
+      firstName
+      lastName
+      fullname
       username
       email
       profilePic
@@ -37,6 +47,10 @@ export const QUERY_ME = gql`
           _id
           name
         }
+      }
+      categories {
+        _id
+        name
       }
     }
   }
