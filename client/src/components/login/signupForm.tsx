@@ -89,10 +89,10 @@ function Signup({ handleLoginDisplay }: SignupProps) {
       <h2 className="text-2xl font-semibold">Signup</h2>
       <div className="mx-10">
         <form
-          id="signup_form"
+          id="signup-form"
           ref={formRef}
-          onSubmit={handleFormSubmit}
           className={`flex flex-col justify-center items-center w-full space-y-3`}
+          onSubmit={handleFormSubmit}
         >
           {errorMsg ? (
             <div className="mt-1">

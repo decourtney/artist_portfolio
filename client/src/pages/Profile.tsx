@@ -37,7 +37,7 @@ const Profile = () => {
         <section className="flex flex-col flex-grow bg-pdark">
           <div
             id="profile_card"
-            className="profile_hero_image flex flex-col flex-grow justify-center items-center m-5 space-y-4"
+            className="profile_hero_image flex flex-col flex-grow justify-center items-center mx-5 mb-5"
           >
             {loading ? (
               <></>

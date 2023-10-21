@@ -51,8 +51,7 @@ const typeDefs = gql`
       username: String
       email: String
       password: String
-      products: String
-      categories: String
+      profilePic: String
     ): User
     deleteUser(user: String!): Boolean
     login(email: String!, password: String!): Auth

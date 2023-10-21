@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Auth from "../../utils/auth";
 import { Link } from "react-router-dom";
 import {
@@ -7,6 +8,7 @@ import {
   AnimatePresence,
   usePresence,
 } from "framer-motion";
+import { LoggedInUser } from "../../utils/customClientTypes";
 
 interface NavProps {
   handleOnNavClick: () => void;
@@ -15,6 +17,7 @@ interface NavProps {
 const Nav = ({ handleOnNavClick }: NavProps) => {
   const [isPresent, safeToRemove] = usePresence();
   const [navCardRef, animateNavCardRef] = useAnimate();
+  const loggedInUser = Auth.getProfile() as LoggedInUser;
 
   useEffect(() => {
     if (isPresent) {
@@ -48,26 +51,78 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
   return (
     <motion.div
       ref={navCardRef}
-      className="absolute flex flex-col justify-center items-center w-full h-[100vh] font-black text-[5vh] text-dark bg-light pointer-events-auto z-20"
+      className="absolute flex flex-col justify-center items-center w-full h-[100vh] space-y-2 font-black text-[5vh] text-dark bg-light pointer-events-auto z-20"
       onClick={handleOnNavClick}
     >
       <Link to={"/"}>
-        <p>Home</p>
+        <motion.p
+          className="drop-shadow-[3px_3px_2px_#183D3D]"
+          whileHover={{
+            scale: 1.1,
+            filter: "drop-shadow(5px 8px 6px #183D3D)",
+          }}
+        >
+          Home
+        </motion.p>
       </Link>
       <Link to={"/gallery"}>
-        <p>Gallery</p>
+        <motion.p
+          className="drop-shadow-[3px_3px_2px_#183D3D]"
+          whileHover={{
+            scale: 1.1,
+            filter: "drop-shadow(5px 8px 6px #183D3D)",
+          }}
+        >
+          Gallery
+        </motion.p>
       </Link>
       <Link to={"/about"}>
-        <p>About</p>
+        <motion.p
+          className="drop-shadow-[3px_3px_2px_#183D3D]"
+          whileHover={{
+            scale: 1.1,
+            filter: "drop-shadow(5px 8px 6px #183D3D)",
+          }}
+        >
+          About
+        </motion.p>
       </Link>
       <Link to={"/contact"}>
-        <p>Contact</p>
+        <motion.p
+          className="drop-shadow-[3px_3px_2px_#183D3D]"
+          whileHover={{
+            scale: 1.1,
+            filter: "drop-shadow(5px 8px 6px #183D3D)",
+          }}
+        >
+          Contact
+        </motion.p>
       </Link>
-      {Auth.loggedIn() && (
-        <Link to={"/profile"}>
-          <p>Profile</p>
-        </Link>
-      )}
+      <Link
+        to={loggedInUser ? `/profile/${loggedInUser.data.username}` : "/login"}
+      >
+        {loggedInUser ? (
+          <motion.p
+            className="drop-shadow-[3px_3px_2px_#183D3D]"
+            whileHover={{
+              scale: 1.1,
+              filter: "drop-shadow(5px 8px 6px #183D3D)",
+            }}
+          >
+            Profile
+          </motion.p>
+        ) : (
+          <motion.p
+            className="drop-shadow-[3px_3px_2px_#183D3D]"
+            whileHover={{
+              scale: 1.1,
+              filter: "drop-shadow(5px 8px 6px #183D3D)",
+            }}
+          >
+            Login
+          </motion.p>
+        )}
+      </Link>
     </motion.div>
   );
 };

@@ -9,3 +9,9 @@ export interface UserData{
   products: string[];
   categories: string[];
 }
+
+export interface LoggedInUser {
+  data: { email: string; username: string; _id: string };
+  exp: number;
+  iat: number;
+}

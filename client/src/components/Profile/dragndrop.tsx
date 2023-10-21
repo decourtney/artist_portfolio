@@ -25,14 +25,14 @@ const DragnDrop = () => {
   });
 
   return (
-    <div className="flex flex-grow justify-center items-center p-12 rounded-2xl font-medium text-center text-pdark bg-plight z-10">
-      <div {...getRootProps()}>
+    <div className="flex flex-grow w-full rounded-2xl font-medium text-pdark bg-plight">
+      <div {...getRootProps()} className="flex justify-center items-center w-full">
         <input {...getInputProps()} />
-        {isDragActive ? (
-          <p>Drop the files here ...</p>
-        ) : (
-          <p>Drag 'n' drop files here, or click to select files</p>
-        )}
+          {isDragActive ? (
+            <p>Drop the files here ...</p>
+          ) : (
+            <p className="">Drag 'n' drop files here, or click to select files</p>
+          )}
       </div>
     </div>
   );

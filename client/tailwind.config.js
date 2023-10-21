@@ -164,8 +164,8 @@ module.exports = {
       pink: colors.pink,
       rose: colors.rose,
 
-      secondary: "#183D3D",
       primary: "#5C8374",
+      secondary: "#183D3D",
       dark: "#040D12",
       light: "#93B1A6",
       contrast: "#64CCC5",
@@ -1012,5 +1012,4 @@ module.exports = {
       50: "50",
     },
   },
-  plugins: [],
 };
