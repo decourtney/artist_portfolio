@@ -51,19 +51,27 @@ const resolvers = {
       return { token, user };
     },
     updateUser: async (parent: any, args: any, context: any) => {
-      if(context.user){
-        const update = {}
+      if (context.user) {
         // Remove empty fields
-        for(const field in args){
-          if(args[field] === null || args[field] === undefined || args[field] === "")
+        for (const field in args) {
+          if (
+            args[field] === null ||
+            args[field] === undefined ||
+            args[field] === ""
+          )
             delete args[field];
         }
 
-        if(Object.keys(args).length===0){console.log('no args');throw new UserInputError('Nothing Updated');}
+        if (Object.keys(args).length === 0) {
+          console.log("no args");
+          throw new UserInputError("Nothing Updated");
+        }
 
-        const user = await User.findByIdAndUpdate(context.user.data._id, args, {new: true})
+        const user = await User.findByIdAndUpdate(context.user.data._id, args, {
+          new: true,
+        });
 
-        return user
+        return user;
       }
     },
     deleteUser: async () => {},

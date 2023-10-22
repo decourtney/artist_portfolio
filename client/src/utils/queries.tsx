@@ -10,20 +10,8 @@ export const QUERY_USER = gql`
       username
       email
       profilePic
-      products {
-        _id
-        name
-        description
-        image
-        categories {
-          _id
-          name
-        }
-      }
-      categories {
-        _id
-        name
-      }
+      productCount
+      categoryCount
     }
   }
 `;

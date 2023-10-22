@@ -1,24 +1,25 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navigate, useParams, redirect } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { motion, useAnimate } from "framer-motion";
-import profilePic from "../images/profile_pic.png";
-import galleryPic from "../images/gallery_pic.png";
 import { QUERY_ME, QUERY_USER } from "../utils/queries";
 import Auth from "../utils/auth";
-import ProfileAvatar from "../components/profile/avatar";
-import DragnDrop from "../components/profile/dragndrop";
-import ProfileCard from "../components/profile/profileCard";
-import Signup from "../components/login/signupForm";
+import UserInfo from "../components/profile/userInfo";
+import EditProfile from "../components/profile/editProfile";
 
 const Profile = () => {
   const { username: userParam } = useParams();
+  const [isEditForm, setIsEditForm] = useState(false);
 
   const { loading, data } = useQuery(userParam ? QUERY_USER : QUERY_ME, {
     variables: { username: userParam },
   });
 
+  if(loading)
+    return(<></>)
+
   const user = data?.me || data?.user || {};
+
   // This snippet isnt necessary for this build but keeping here for future reference
   // if (Auth.loggedIn() && Auth.getProfile()?.username === userParam) {
   //   return <Navigate to={`/profile/${userParam}`} />;
@@ -37,20 +38,19 @@ const Profile = () => {
         <section className="flex flex-col flex-grow bg-pdark">
           <div
             id="profile_card"
-            className="profile_hero_image flex flex-col flex-grow justify-center items-center mx-5 mb-5"
+            className="profile_hero_image flex flex-col flex-grow items-center mx-5 mb-5"
           >
-            {loading ? (
+            {/* {loading ? (
               <></>
             ) : (
-              <>
-                <ProfileAvatar
-                  firstName={user.firstName}
-                  profilePic={user.profilePic}
-                />
-                <ProfileCard userData={user} />
-                <DragnDrop />
-              </>
-            )}
+              <> */}
+                {isEditForm ? (
+                  <EditProfile userData={user} setIsEditForm={setIsEditForm} />
+                ) : (
+                  <UserInfo userData={user} setIsEditForm={setIsEditForm} />
+                )}
+              {/* </>
+            )} */}
           </div>
         </section>
       ) : (

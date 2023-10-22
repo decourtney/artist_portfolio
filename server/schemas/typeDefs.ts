@@ -26,7 +26,9 @@ const typeDefs = gql`
     password: String
     profilePic: String
     products: [Product]
+    productCount: String
     categories: [Category]
+    categoryCount: String
   }
 
   type Auth {

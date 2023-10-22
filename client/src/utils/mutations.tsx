@@ -7,6 +7,7 @@ export const LOGIN_USER = gql`
       user {
         _id
         email
+        username
       }
     }
   }
@@ -24,16 +25,35 @@ export const ADD_USER = gql`
 `;
 
 export const UPDATE_USER = gql`
-  mutation updateUser($firstName: String, $lastName: String, $email: String, $password: String, $profilePic: String){
-    updateUser(firstName: $firstName, lastName: $lastName, email: $email, password: $password, profilePic: $profilePic){
+  mutation updateUser(
+    $firstName: String
+    $lastName: String
+    $email: String
+    $password: String
+    $profilePic: String
+  ) {
+    updateUser(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+      profilePic: $profilePic
+    ) {
       _id
+      firstName
+      lastName
+      fullname
+      username
       email
+      profilePic
+      productCount
+      categoryCount
     }
   }
-`
+`;
 
 export const UPLOAD_FILES = gql`
-  mutation uploadFiles($files: [Upload!]) {
+  mutation uploadFiles($files: [Upload!]!) {
     addProducts(files: $files)
   }
 `;

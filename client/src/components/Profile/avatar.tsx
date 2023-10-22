@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import tempPic from "../../images/profile_pic.png";
 
 interface UserInfo {
-  firstName: string;
-  profilePic: string;
+  firstName: string | undefined;
+  profilePic: string | undefined;
 }
 
   const baseCDN =

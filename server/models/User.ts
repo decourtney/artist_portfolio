@@ -86,6 +86,14 @@ userSchema.virtual("fullname").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
+userSchema.virtual("productCount").get(function () {
+  return `${this.products.length}`;
+})
+
+userSchema.virtual("categoryCount").get(function () {
+  return `${this.categories.length}`
+});
+
 // set up pre-save middleware to create password
 userSchema.pre("save", async function (next) {
   if (this.isNew || this.isModified("password")) {

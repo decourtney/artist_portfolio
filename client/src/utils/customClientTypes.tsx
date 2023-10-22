@@ -7,7 +7,9 @@ export interface UserData{
   role: string;
   profilePic: string;
   products: string[];
+  productCount: string;
   categories: string[];
+  categoryCount: string;
 }
 
 export interface LoggedInUser {
