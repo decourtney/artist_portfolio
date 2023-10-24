@@ -6,19 +6,46 @@ import { QUERY_ME, QUERY_USER } from "../utils/queries";
 import Auth from "../utils/auth";
 import UserInfo from "../components/profile/userInfo";
 import EditProfile from "../components/profile/editProfile";
+import Avatar from "../components/profile/avatar";
+import ProfileMenu from "../components/profile/profileMenu";
 
 const Profile = () => {
   const { username: userParam } = useParams();
+  const [displayInfo, setDisplayInfo] = useState("menu");
   const [isEditForm, setIsEditForm] = useState(false);
 
   const { loading, data } = useQuery(userParam ? QUERY_USER : QUERY_ME, {
     variables: { username: userParam },
   });
 
-  if(loading)
-    return(<></>)
+  if (loading) return <></>;
 
   const user = data?.me || data?.user || {};
+
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setDisplayInfo(event.currentTarget.id);
+  };
+
+  const displaySwitch = (p: string) => {
+    switch (p) {
+      case "account":
+        return isEditForm ? (
+          <EditProfile userData={user} setIsEditForm={setIsEditForm} />
+        ) : (
+          <UserInfo
+            userData={user}
+            setIsEditForm={setIsEditForm}
+            handleBackButton={handleButtonClick}
+          />
+        );
+      case "personal":
+        return <></>;
+      case "contact":
+        return <></>;
+      default:
+        return <ProfileMenu handleButtonClick={handleButtonClick} />;
+    }
+  };
 
   // This snippet isnt necessary for this build but keeping here for future reference
   // if (Auth.loggedIn() && Auth.getProfile()?.username === userParam) {
@@ -40,16 +67,18 @@ const Profile = () => {
             id="profile_card"
             className="profile_hero_image flex flex-col flex-grow items-center mx-5 mb-5"
           >
-            {/* {loading ? (
-              <></>
+            <Avatar
+              fullname={user?.fullname}
+              email={user?.email}
+              profilePic={user?.profilePic}
+            />
+            {displaySwitch(displayInfo)}
+            
+            {/* <ProfileMenu handleButtonClick={handleButtonClick} /> */}
+            {/* {isEditForm ? (
+              <EditProfile userData={user} setIsEditForm={setIsEditForm} />
             ) : (
-              <> */}
-                {isEditForm ? (
-                  <EditProfile userData={user} setIsEditForm={setIsEditForm} />
-                ) : (
-                  <UserInfo userData={user} setIsEditForm={setIsEditForm} />
-                )}
-              {/* </>
+              <UserInfo userData={user} setIsEditForm={setIsEditForm} />
             )} */}
           </div>
         </section>
