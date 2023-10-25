@@ -1,10 +1,15 @@
-export interface UserData{
+export interface UserData {
   firstName: string;
   lastName: string;
   email: string;
   username: string;
   password: string;
-  role: string;
+  phone: string;
+  street1: string;
+  street2: string;
+  city: string;
+  state: string;
+  postalCode: string;
   profilePic: string;
   products: string[];
   productCount: string;

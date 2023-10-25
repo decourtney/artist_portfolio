@@ -24,6 +24,12 @@ const typeDefs = gql`
     username: String
     email: String
     password: String
+    phone: String
+    street1: String
+    street2: String
+    city: String
+    state: String
+    postalCode: String
     profilePic: String
     products: [Product]
     productCount: String
@@ -43,16 +49,19 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addUser(
-      email: String!
-      password: String!
-    ): Auth
+    addUser(email: String!, password: String!): Auth
     updateUser(
       firstName: String
       lastName: String
       username: String
       email: String
       password: String
+      phone: String
+      street1: String
+      street2: String
+      city: String
+      state: String
+      postalCode: String
       profilePic: String
     ): User
     deleteUser(user: String!): Boolean

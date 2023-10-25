@@ -14,6 +14,11 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
+    street1: "",
+    city: "",
+    state: "",
+    postalCode: "",
   });
   const formRef = useRef<HTMLFormElement | null>(null);
   const [updateUser, { error }] = useMutation(UPDATE_USER);
@@ -36,7 +41,16 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
     }
 
     // Clear state, form, and switch from edit mode
-    setFormState({ firstName: "", lastName: "", email: "" });
+    setFormState({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      street1: "",
+      city: "",
+      state: "",
+      postalCode: "",
+    });
     if (formRef.current) formRef.current.reset();
     setIsEditForm(false);
   };
@@ -51,65 +65,139 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
   };
 
   return (
-    <section className="flex flex-col w-full rounded-2xl font-medium text-plight">
-      <form
-        id="edit-profile-form"
-        ref={formRef}
-        className="relative flex flex-col items-center px-2 py-4"
-        onSubmit={handleFormSubmit}
-      >
-        <div className="w-full space-y-4 my-4 px-4 text-lg">
-          <div className="flex flex-col w-full">
-            <span className="material-symbols-rounded text-sm">person</span>
-            <div className="flex flex-row">
+    <>
+      <section className="flex flex-col flex-grow w-full rounded-2xl font-medium text-plight">
+        <form
+          id="edit-profile-form"
+          ref={formRef}
+          className="relative flex flex-col flex-grow justify-between items-center px-2 py-4"
+          onSubmit={handleFormSubmit}
+        >
+          <div className="w-full space-y-4 my-4 px-4 text-lg">
+            {/* First and Last Name Input*/}
+            <div className="flex flex-col w-full">
+              <span className="material-symbols-rounded text-sm">person</span>
+              <div className="flex flex-row">
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="name"
+                  className="w-1/2 p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
+                  placeholder={userData?.firstName || "First"}
+                  onChange={handleChange}
+                  autoComplete="given-name"
+                />
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="name"
+                  className="w-1/2 p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
+                  placeholder={userData?.lastName || "Last"}
+                  onChange={handleChange}
+                  autoComplete="family-name"
+                />
+              </div>
+            </div>
+
+            {/* Email Input */}
+            <div className="flex flex-col w-full">
+              <span className="material-symbols-rounded text-sm">email</span>
               <input
-                id="firstName"
-                name="firstName"
-                type="name"
-                className="p-1 text-lg bg-pdark border-b-2 border-psecondary w-1/2"
-                placeholder={userData?.firstName || "First"}
+                id="email"
+                name="email"
+                type="email"
+                className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
+                placeholder={userData?.email || "Email"}
                 onChange={handleChange}
-                autoComplete="given-name"
+                autoComplete="email"
+              />
+            </div>
+
+            {/* Phone Input */}
+            <div className="flex flex-col w-full">
+              <span className="material-symbols-rounded text-sm">call</span>
+              <input
+                id="phone"
+                name="phone"
+                type="phone"
+                className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
+                placeholder={userData?.phone || "Phone Number"}
+                onChange={handleChange}
+                autoComplete="tel"
+              />
+            </div>
+
+            {/* TODO Create autocompletion using Google maps */}
+            {/* FIXME Browser autofill changes font initially */}
+            {/* Address Input */}
+            <div className="flex flex-col w-full h-full">
+              <span className="material-symbols-rounded text-sm">home</span>
+              <input
+                id="street1"
+                name="street1"
+                type="street-address"
+                className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-dashed border-psecondary"
+                placeholder={userData?.street1 || "Street"}
+                onChange={handleChange}
+                autoComplete="address-level3"
               />
               <input
-                id="lastName"
-                name="lastName"
-                type="name"
-                className="p-1 text-lg bg-pdark border-b-2 border-psecondary w-1/2"
-                placeholder={userData?.lastName || "Last"}
+                id="city"
+                name="city"
+                type="address-level2"
+                className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-dashed border-psecondary"
+                placeholder={userData?.city || "City"}
                 onChange={handleChange}
-                autoComplete="family-name"
+                autoComplete="address-level2"
+              />
+              <input
+                id="state"
+                name="state"
+                type="address-level1"
+                className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-dashed border-psecondary"
+                placeholder={userData?.state || "State"}
+                onChange={handleChange}
+                autoComplete="address-level1"
+              />
+              <input
+                id="postalCode"
+                name="postalCode"
+                type="postal-code"
+                className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
+                placeholder={userData?.postalCode || "Postal Code"}
+                onChange={handleChange}
+                autoComplete="address-level1"
               />
             </div>
           </div>
-          <div className="flex flex-col w-full">
-            <span className="material-symbols-rounded text-sm">email</span>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              className="p-1 text-lg bg-pdark border-b-2 border-psecondary w-full"
-              placeholder={userData?.email || "Email"}
-              onChange={handleChange}
-              autoComplete="email"
-            />
+          <div className="flex justify-center w-full">
+            <motion.button
+              className=" py-1 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
+              type="submit"
+              whileHover={{
+                // scale: 1.1,
+                boxShadow: "0px 0px 10px #5B8FB9",
+              }}
+              whileTap={{ scale: 0.95, boxShadow: "0px -2px 1px #5B8FB9" }}
+            >
+              SAVE
+            </motion.button>
           </div>
-        </div>
-        <div className="absolute bottom-[95%]">
-          <motion.button
-            className="w-fit py-1 px-2 rounded-l-full rounded-r-full text-xs font-black text-plight bg-pdark shadow-[0px_0px_2px_#5B8FB9]"
-            type="submit"
-            whileHover={{
-              // scale: 1.1,
-              boxShadow: "0px 0px 10px #5B8FB9",
-            }}
-            whileTap={{ scale: 0.95, boxShadow: "0px -2px 1px #5B8FB9" }}
-          >
-            SAVE
-          </motion.button>
-        </div>
-      </form>
-    </section>
+        </form>
+      </section>
+      <div className="w-full">
+        <motion.button
+          id="back"
+          type="button"
+          className="rounded-full"
+          onClick={() => setIsEditForm(false)}
+        >
+          <span className="material-symbols-rounded mx-2 text-light text-4xl text-center align-middle">
+            chevron_left
+          </span>
+        </motion.button>
+      </div>
+    </>
   );
 };
 

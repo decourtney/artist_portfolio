@@ -1,6 +1,5 @@
 import { UserData } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
-import Avatar from "./avatar";
 
 interface PersonalProps {
   userData: UserData | null;
@@ -13,31 +12,64 @@ const PersonalInfo = ({
   setIsEditForm,
   handleBackButton,
 }: PersonalProps) => {
-  console.log(userData)
 
   return (
     <>
-      {/* <Avatar firstName={userData?.firstName} profilePic={userData?.profilePic}/> */}
-      <section className="flex flex-col w-full rounded-2xl font-medium text-plight">
-        
-        <div className="relative flex flex-col items-center px-2 py-4">
+      <section className="flex flex-col flex-grow w-full font-medium text-plight">
+        <div className="relative flex flex-col flex-grow justify-between items-center px-2 py-4">
           <div className="w-full space-y-4 my-4 px-4 text-lg ">
-            <div className="relative flex flex-col w-full bg-pdark border-b-2 border-psecondary">
+            {/* User Name */}
+            <div className="flex flex-col w-full bg-pdark border-b-2 border-psecondary">
               <span className="material-symbols-rounded text-sm">person</span>
-              <p className="p-1 rounded-md">
+              <p className="p-1 pl-4 rounded-md">
                 {userData?.firstName || "Hello. "}{" "}
                 {userData?.lastName || "My name is Kevin"}
               </p>
             </div>
 
-            <div className="relative flex flex-col w-full bg-pdark border-b-2 border-psecondary">
+            {/* User Email */}
+            <div className="flex flex-col w-full bg-pdark border-b-2 border-psecondary">
               <span className="material-symbols-rounded text-sm">email</span>
-              <p className="p-1 rounded-md">{userData?.email}</p>
+              <p className="p-1 pl-4 rounded-md">{userData?.email}</p>
+            </div>
+
+            {/* User Phone */}
+            <div className="flex flex-col w-full bg-pdark border-b-2 border-psecondary">
+              <span className="material-symbols-rounded text-sm">call</span>
+              {userData?.phone ? (
+                <p className="p-1 pl-4 rounded-md">{userData.phone}</p>
+              ) : (
+                <p className="p-1 pl-4 rounded-md opacity-75">Phone Number</p>
+              )}
+            </div>
+
+            {/* User Address */}
+            <div className="flex flex-col w-full bg-pdark border-b-2 border-psecondary">
+              <span className="material-symbols-rounded text-sm">home</span>
+              {userData?.street1 || userData?.city || userData?.state ? (
+                <>
+                  <p className="p-1 pl-4 rounded-md">{userData?.street1}</p>
+                  {userData?.street2 && (
+                    <p className="p-1 pl-4 rounded-md">{userData?.street2}</p>
+                  )}
+                  <p className="p-1 pl-4 rounded-md">
+                    {userData?.city}
+                    {", "}
+                    {userData?.state} {userData?.postalCode}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="p-1 pl-4 rounded-md opacity-75">
+                    Physical Address
+                  </p>
+                </>
+              )}
             </div>
           </div>
-          <div className="absolute bottom-[95%]">
+          <div className="flex justify-center w-full">
             <motion.button
-              className="w-fit py-1 px-2 rounded-l-full rounded-r-full text-xs font-black text-plight bg-pdark shadow-[0px_0px_2px_#5B8FB9]"
+              className=" py-1 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
               type="submit"
               whileHover={{
                 // scale: 1.1,
@@ -51,16 +83,18 @@ const PersonalInfo = ({
           </div>
         </div>
       </section>
-      <motion.button
-        id="back"
-        type="button"
-        className="rounded-full bg-plight bg-opacity-30"
-        onClick={handleBackButton}
-      >
-        <span className="material-symbols-rounded mx-2 text-light text-4xl text-center align-middle">
-          chevron_left
-        </span>
-      </motion.button>
+      <div className="w-full">
+        <motion.button
+          id="back"
+          type="button"
+          className="rounded-full"
+          onClick={handleBackButton}
+        >
+          <span className="material-symbols-rounded mx-2 text-light text-4xl text-center align-middle">
+            chevron_left
+          </span>
+        </motion.button>
+      </div>
     </>
   );
 };

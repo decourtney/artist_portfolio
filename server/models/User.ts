@@ -9,7 +9,12 @@ interface IUser extends Document {
   email: string;
   username: string;
   password: string;
-  role: string;
+  phone: string;
+  street1: string;
+  street2: string;
+  city: string;
+  state: string;
+  postalCode: string;
   profilePic: string;
   products: IProduct[];
   categories: ICategory[];
@@ -35,27 +40,39 @@ const userSchema = new Schema<IUser>({
     required: true,
     unique: true,
     trim: true,
-    validate: {
-      validator: async function (value: string) {},
-      message: "blah",
-    },
+    lowercase: true,
+    match: [/\S+@\S+\.\S+/, "Invalid email address"],
   },
   username: {
     type: String,
     // required: true,
     unique: true,
     trim: true,
+    lowercase: true,
   },
   password: {
     type: String,
     required: true,
     minlength: [8, "Password must be at least 8 characters long"],
   },
-  role: {
+  phone: {
     type: String,
     required: false,
-    enum: ["admin", "owner", "user"],
+    trim: true,
+    validate: {
+      validator: function (value: string) {
+        return /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(
+          value
+        );
+      },
+      message: "Invalid phone number",
+    },
   },
+  street1: { type: String, required: false, trim: true },
+  street2: { type: String, required: false, trim: true },
+  city: { type: String, required: false, trim: true },
+  state: { type: String, required: false, trim: true },
+  postalCode: { type: String, required: false, trim: true },
   profilePic: {
     type: String,
     required: false,
@@ -88,10 +105,10 @@ userSchema.virtual("fullname").get(function () {
 
 userSchema.virtual("productCount").get(function () {
   return `${this.products.length}`;
-})
+});
 
 userSchema.virtual("categoryCount").get(function () {
-  return `${this.categories.length}`
+  return `${this.categories.length}`;
 });
 
 // set up pre-save middleware to create password

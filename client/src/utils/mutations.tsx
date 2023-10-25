@@ -30,6 +30,12 @@ export const UPDATE_USER = gql`
     $lastName: String
     $email: String
     $password: String
+    $phone: String
+    $street1: String
+    $street2: String
+    $city: String
+    $state: String
+    $postalCode: String
     $profilePic: String
   ) {
     updateUser(
@@ -37,6 +43,12 @@ export const UPDATE_USER = gql`
       lastName: $lastName
       email: $email
       password: $password
+      phone: $phone
+      street1: $street1
+      street2: $street2
+      city: $city
+      state: $state
+      postalCode: $postalCode
       profilePic: $profilePic
     ) {
       _id
@@ -45,6 +57,12 @@ export const UPDATE_USER = gql`
       fullname
       username
       email
+      phone
+      street1
+      street2
+      city
+      state
+      postalCode
       profilePic
       productCount
       categoryCount

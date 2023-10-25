@@ -9,6 +9,12 @@ export const QUERY_USER = gql`
       fullname
       username
       email
+      phone
+      street1
+      street2
+      city
+      state
+      postalCode
       profilePic
       productCount
       categoryCount

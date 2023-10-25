@@ -31,6 +31,15 @@ body {
   opacity: 30%;
 }
 
+#edit-profile-form input:-webkit-autofill,
+#edit-profile-form input:-webkit-autofill:hover, 
+#edit-profile-form input:-webkit-autofill:focus, 
+#edit-profile-form input:-webkit-autofill:active{
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 /* Checkmark */
 .checkmark::before {
   position: absolute;
