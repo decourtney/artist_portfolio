@@ -4,10 +4,13 @@ import { useQuery } from "@apollo/client";
 import { motion, useAnimate } from "framer-motion";
 import { QUERY_ME, QUERY_USER } from "../utils/queries";
 import Auth from "../utils/auth";
-import UserInfo from "../components/profile/userInfo";
-import EditProfile from "../components/profile/editProfile";
-import Avatar from "../components/profile/avatar";
 import ProfileMenu from "../components/profile/profileMenu";
+import Avatar from "../components/profile/avatar";
+import AccountInfo from "../components/profile/accountInfo";
+import PersonalInfo from "../components/profile/personalInfo";
+import EditProfile from "../components/profile/editPersonalInfo";
+import BiographyInfo from "../components/profile/biographyInfo";
+import SocialInfo from "../components/profile/socialInfo";
 
 const Profile = () => {
   const { username: userParam } = useParams();
@@ -28,20 +31,42 @@ const Profile = () => {
 
   const displaySwitch = (p: string) => {
     switch (p) {
-      case "account":
-        return isEditForm ? (
-          <EditProfile userData={user} setIsEditForm={setIsEditForm} />
-        ) : (
-          <UserInfo
+      case "Account":
+        return (
+          <AccountInfo
             userData={user}
             setIsEditForm={setIsEditForm}
             handleBackButton={handleButtonClick}
           />
         );
-      case "personal":
-        return <></>;
-      case "contact":
-        return <></>;
+      case "Personal":
+        return isEditForm ? (
+          <EditProfile userData={user} setIsEditForm={setIsEditForm} />
+        ) : (
+          <PersonalInfo
+            userData={user}
+            setIsEditForm={setIsEditForm}
+            handleBackButton={handleButtonClick}
+          />
+        );
+      case "Biography":
+        return (
+          <BiographyInfo
+            userData={user}
+            setIsEditForm={setIsEditForm}
+            handleBackButton={handleButtonClick}
+          />
+        );
+      case "Social":
+        return (
+          <>
+            <SocialInfo
+              userData={user}
+              setIsEditForm={setIsEditForm}
+              handleBackButton={handleButtonClick}
+            />
+          </>
+        );
       default:
         return <ProfileMenu handleButtonClick={handleButtonClick} />;
     }
@@ -73,12 +98,12 @@ const Profile = () => {
               profilePic={user?.profilePic}
             />
             {displaySwitch(displayInfo)}
-            
+
             {/* <ProfileMenu handleButtonClick={handleButtonClick} /> */}
             {/* {isEditForm ? (
               <EditProfile userData={user} setIsEditForm={setIsEditForm} />
             ) : (
-              <UserInfo userData={user} setIsEditForm={setIsEditForm} />
+              <PersonalInfo userData={user} setIsEditForm={setIsEditForm} />
             )} */}
           </div>
         </section>

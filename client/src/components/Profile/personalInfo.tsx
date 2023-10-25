@@ -2,31 +2,24 @@ import { UserData } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
 import Avatar from "./avatar";
 
-interface UserInfoProps {
+interface PersonalProps {
   userData: UserData | null;
   setIsEditForm: (setIsEditForm: boolean) => void;
   handleBackButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const UserInfo = ({
+const PersonalInfo = ({
   userData,
   setIsEditForm,
   handleBackButton,
-}: UserInfoProps) => {
+}: PersonalProps) => {
+  console.log(userData)
+
   return (
     <>
       {/* <Avatar firstName={userData?.firstName} profilePic={userData?.profilePic}/> */}
       <section className="flex flex-col w-full rounded-2xl font-medium text-plight">
-        <div className="relative grid grid-cols-2 grid-rows-1 gap-0 mt-4 text-center after:content-[''] after:bg-psecondary after:absolute after:top-0 after:left-1/2 after:h-3/4 after:w-[1px]">
-          <div className="relative pb-3 after:content-[''] after:bg-psecondary after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[1px] after:w-3/4">
-            <span>{userData?.productCount}</span>
-            <p>Collections</p>
-          </div>
-          <div className="relative pb-3 after:content-[''] after:bg-psecondary after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[1px] after:w-3/4">
-            <span>{userData?.categoryCount}</span>
-            <p>Categories</p>
-          </div>
-        </div>
+        
         <div className="relative flex flex-col items-center px-2 py-4">
           <div className="w-full space-y-4 my-4 px-4 text-lg ">
             <div className="relative flex flex-col w-full bg-pdark border-b-2 border-psecondary">
@@ -72,4 +65,4 @@ const UserInfo = ({
   );
 };
 
-export default UserInfo;
+export default PersonalInfo;
