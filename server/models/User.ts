@@ -18,9 +18,7 @@ interface IUser extends Document {
   profilePic: string;
   products: IProduct[];
   categories: ICategory[];
-  // confirmPassword: string; // Dont think i need this but nothing is broken for now
 
-  // Include custom methods like isCorrectPassword
   isCorrectPassword(password: string): Promise<boolean>;
 }
 
@@ -45,7 +43,7 @@ const userSchema = new Schema<IUser>({
   },
   username: {
     type: String,
-    // required: true,
+    required: false,
     unique: true,
     trim: true,
     lowercase: true,
@@ -120,6 +118,10 @@ userSchema.pre("save", async function (next) {
 
   if (this.isNew) {
     this.username = this.email.split("@")[0];
+  }
+
+  if(this.isModified('phone')){
+    
   }
   next();
 });

@@ -81,7 +81,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
                 <input
                   id="firstName"
                   name="firstName"
-                  type="name"
                   className="w-1/2 p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
                   placeholder={userData?.firstName || "First"}
                   onChange={handleChange}
@@ -90,7 +89,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
                 <input
                   id="lastName"
                   name="lastName"
-                  type="name"
                   className="w-1/2 p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
                   placeholder={userData?.lastName || "Last"}
                   onChange={handleChange}
@@ -105,7 +103,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
               <input
                 id="email"
                 name="email"
-                type="email"
                 className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
                 placeholder={userData?.email || "Email"}
                 onChange={handleChange}
@@ -119,7 +116,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
               <input
                 id="phone"
                 name="phone"
-                type="phone"
                 className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
                 placeholder={userData?.phone || "Phone Number"}
                 onChange={handleChange}
@@ -135,7 +131,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
               <input
                 id="street1"
                 name="street1"
-                type="street-address"
                 className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-dashed border-psecondary"
                 placeholder={userData?.street1 || "Street"}
                 onChange={handleChange}
@@ -144,7 +139,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
               <input
                 id="city"
                 name="city"
-                type="address-level2"
                 className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-dashed border-psecondary"
                 placeholder={userData?.city || "City"}
                 onChange={handleChange}
@@ -153,7 +147,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
               <input
                 id="state"
                 name="state"
-                type="address-level1"
                 className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-dashed border-psecondary"
                 placeholder={userData?.state || "State"}
                 onChange={handleChange}
@@ -162,7 +155,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
               <input
                 id="postalCode"
                 name="postalCode"
-                type="postal-code"
                 className="w-full p-1 pl-4 text-lg bg-transparent border-b-2 border-psecondary"
                 placeholder={userData?.postalCode || "Postal Code"}
                 onChange={handleChange}

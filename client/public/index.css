@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.3.3 | MIT License | https://tailwindcss.com
+! tailwindcss v3.3.5 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -1180,6 +1180,10 @@ input:checked + .toggle-bg {
   top: -0.25rem;
 }
 
+.bottom-0 {
+  bottom: 0px;
+}
+
 .bottom-5 {
   bottom: 1.25rem;
 }
@@ -1543,6 +1547,10 @@ input:checked + .toggle-bg {
 
 .h-4 {
   height: 1rem;
+}
+
+.h-40 {
+  height: 10rem;
 }
 
 .h-5 {
@@ -2405,6 +2413,11 @@ input:checked + .toggle-bg {
 .bg-blue-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(164 202 254 / var(--tw-bg-opacity));
+}
+
+.bg-blue-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(118 169 250 / var(--tw-bg-opacity));
 }
 
 .bg-blue-700 {
@@ -3803,20 +3816,19 @@ body {
 }
 
 #edit-profile-form input:-webkit-autofill,
-#edit-profile-form input:-webkit-autofill:hover, 
-#edit-profile-form input:-webkit-autofill:focus, 
-#edit-profile-form input:-webkit-autofill:active{
+#edit-profile-form input:-webkit-autofill:hover,
+#edit-profile-form input:-webkit-autofill:focus,
+#edit-profile-form input:-webkit-autofill:active {
   -webkit-background-clip: text;
-  -webkit-text-fill-color: #ffffff;
+  -webkit-text-fill-color: #b6eada;
   -webkit-transition: background-color 5000s ease-in-out 0s;
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Checkmark */
-
+Checkmark
 .checkmark::before {
   position: absolute;
-  top:50%;
+  top: 50%;
   translate: 0 -50% 0;
   right: 101%;
   content: "\2713";
@@ -3827,7 +3839,7 @@ body {
 
 .xmark::before {
   position: absolute;
-  top:50%;
+  top: 50%;
   translate: 0 -50% 0;
   right: 101%;
   content: "\2717";

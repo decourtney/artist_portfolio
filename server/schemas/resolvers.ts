@@ -68,6 +68,7 @@ const resolvers = {
         }
 
         const user = await User.findByIdAndUpdate(context.user.data._id, args, {
+          runValidators: true,
           new: true,
         });
 

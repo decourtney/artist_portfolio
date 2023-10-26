@@ -68,6 +68,13 @@ const Profile = () => {
           </>
         );
       default:
+        return (
+          <AccountInfo
+            userData={user}
+            setIsEditForm={setIsEditForm}
+            handleBackButton={handleButtonClick}
+          />
+        ); // FIXME Temporary insert accountInfo
         return <ProfileMenu handleButtonClick={handleButtonClick} />;
     }
   };
