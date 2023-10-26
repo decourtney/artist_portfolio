@@ -22,6 +22,29 @@ export const QUERY_USER = gql`
   }
 `;
 
+export const QUERY_USER_PRODUCTS = gql`
+  query user($username: String!) {
+    user(username: $username) {
+      _id
+      username
+      products {
+        _id
+        name
+        description
+        image
+        categories {
+          _id
+          name
+        }
+      }
+      categories {
+        _id
+        name
+      }
+    }
+  }
+`;
+
 export const QUERY_ME = gql`
   query me {
     me {

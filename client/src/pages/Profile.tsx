@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Navigate, useParams, redirect } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { motion, useAnimate } from "framer-motion";
-import { QUERY_ME, QUERY_USER } from "../utils/queries";
+import { QUERY_USER } from "../utils/queries";
 import Auth from "../utils/auth";
 import ProfileMenu from "../components/profile/profileMenu";
 import Avatar from "../components/profile/avatar";
@@ -13,25 +13,41 @@ import BiographyInfo from "../components/profile/biographyInfo";
 import SocialInfo from "../components/profile/socialInfo";
 
 const Profile = () => {
-  const { username: userParam } = useParams();
-  const [displayInfo, setDisplayInfo] = useState("menu");
+  const { username: userParam, content: contentParam } = useParams();
+  const [displayInfo, setDisplayInfo] = useState("default");
   const [isEditForm, setIsEditForm] = useState(false);
+  const navigate = useNavigate();
 
-  const { loading, data } = useQuery(userParam ? QUERY_USER : QUERY_ME, {
+  // If no contentParam then reset to defaults
+  useEffect(() => {
+    if (contentParam) {
+      setDisplayInfo(contentParam);
+    } else {
+      setIsEditForm(false)
+      setDisplayInfo("default");
+    }
+  }, [contentParam]);
+
+  const { loading, data } = useQuery(QUERY_USER, {
     variables: { username: userParam },
   });
 
+  // TODO Need skeleton loading images
   if (loading) return <></>;
 
   const user = data?.me || data?.user || {};
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setDisplayInfo(event.currentTarget.id);
+    const id = event.currentTarget.id;
+
+    // If back button hit then
+    if (id === "back") navigate(`/profile/${userParam}`);
+    else navigate(`/profile/${userParam}/${id}`);
   };
 
   const displaySwitch = (p: string) => {
     switch (p) {
-      case "Account":
+      case "account":
         return (
           <AccountInfo
             userData={user}
@@ -39,7 +55,7 @@ const Profile = () => {
             handleBackButton={handleButtonClick}
           />
         );
-      case "Personal":
+      case "personal":
         return isEditForm ? (
           <EditProfile userData={user} setIsEditForm={setIsEditForm} />
         ) : (
@@ -49,7 +65,7 @@ const Profile = () => {
             handleBackButton={handleButtonClick}
           />
         );
-      case "Biography":
+      case "biography":
         return (
           <BiographyInfo
             userData={user}
@@ -57,7 +73,7 @@ const Profile = () => {
             handleBackButton={handleButtonClick}
           />
         );
-      case "Social":
+      case "social":
         return (
           <>
             <SocialInfo
@@ -68,14 +84,18 @@ const Profile = () => {
           </>
         );
       default:
+        // return (
+        //   <AccountInfo
+        //     userData={user}
+        //     setIsEditForm={setIsEditForm}
+        //     handleBackButton={handleButtonClick}
+        //   />
+        // ); // FIXME Temporary insert accountInfo
         return (
-          <AccountInfo
-            userData={user}
-            setIsEditForm={setIsEditForm}
-            handleBackButton={handleButtonClick}
-          />
-        ); // FIXME Temporary insert accountInfo
-        return <ProfileMenu handleButtonClick={handleButtonClick} />;
+          <>
+            <ProfileMenu handleButtonClick={handleButtonClick} />
+          </>
+        );
     }
   };
 

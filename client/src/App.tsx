@@ -58,6 +58,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route path="/profile/:username" element={<Profile />} />
+              <Route path="/profile/:username/:content" element={<Profile />} />
             </Routes>
           </div>
           <Footer />

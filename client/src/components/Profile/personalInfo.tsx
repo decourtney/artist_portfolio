@@ -1,5 +1,7 @@
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { UserData } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
+import BackButton from "./backButton";
 
 interface PersonalProps {
   userData: UserData | null;
@@ -12,6 +14,7 @@ const PersonalInfo = ({
   setIsEditForm,
   handleBackButton,
 }: PersonalProps) => {
+  const navigate = useNavigate();
 
   return (
     <>
@@ -84,16 +87,7 @@ const PersonalInfo = ({
         </div>
       </section>
       <div className="w-full">
-        <motion.button
-          id="back"
-          type="button"
-          className="rounded-full"
-          onClick={handleBackButton}
-        >
-          <span className="material-symbols-rounded mx-2 text-light text-4xl text-center align-middle">
-            chevron_left
-          </span>
-        </motion.button>
+        <BackButton />
       </div>
     </>
   );

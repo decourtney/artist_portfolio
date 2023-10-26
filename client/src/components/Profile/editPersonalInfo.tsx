@@ -1,8 +1,10 @@
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import { useMutation } from "@apollo/client";
 import { UPDATE_USER } from "../../utils/mutations";
 import { UserData } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
+import BackButton from "./backButton";
 
 interface EditProfileProps {
   userData: UserData | null;
@@ -22,6 +24,7 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
   });
   const formRef = useRef<HTMLFormElement | null>(null);
   const [updateUser, { error }] = useMutation(UPDATE_USER);
+  const navigate = useNavigate();
 
   // Form Submit
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -178,16 +181,7 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
         </form>
       </section>
       <div className="w-full">
-        <motion.button
-          id="back"
-          type="button"
-          className="rounded-full"
-          onClick={() => setIsEditForm(false)}
-        >
-          <span className="material-symbols-rounded mx-2 text-light text-4xl text-center align-middle">
-            chevron_left
-          </span>
-        </motion.button>
+        <BackButton />
       </div>
     </>
   );

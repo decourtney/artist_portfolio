@@ -13,7 +13,7 @@ interface ButtonProps {
 const MenuButton = ({ icon, label, handleButtonClick }: ButtonProps) => {
   return (
     <motion.button
-      id={label.split(" ",1)[0]}
+      id={label.split(" ",1)[0].toLowerCase().trim()}
       type="button"
       className="flex justify-around items-center w-full h-24 px-4 text-pdark font-semibold bg-plight rounded-xl shadow-[3px_3px_5px_#301E67]"
       whileHover={{ scale: 1.01, boxShadow: "5px 8px 10px #301E67" }}

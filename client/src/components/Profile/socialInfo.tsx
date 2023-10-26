@@ -1,5 +1,6 @@
 import { UserData } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
+import BackButton from "./backButton";
 
 interface SocialProps {
   userData: UserData | null;
@@ -14,16 +15,7 @@ const SocialInfo = ({
 }: SocialProps) => {
   return (
     <>
-      <motion.button
-        id="back"
-        type="button"
-        className="rounded-full bg-plight bg-opacity-30"
-        onClick={handleBackButton}
-      >
-        <span className="material-symbols-rounded mx-2 text-light text-4xl text-center align-middle">
-          chevron_left
-        </span>
-      </motion.button>
+      <BackButton />
     </>
   );
 };

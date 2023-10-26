@@ -1,6 +1,4 @@
 import React, { Component, useState } from "react";
-import ReactDOM from "react-dom";
-import { Carousel } from "flowbite-react";
 import image1 from "../../images/artroom.jpg";
 import image2 from "../../images/gallery_hall.jpg";
 import image3 from "../../images/profile_pic.png";
