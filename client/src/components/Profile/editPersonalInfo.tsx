@@ -11,6 +11,7 @@ interface EditProfileProps {
   setIsEditForm: (setIsEditForm: boolean) => void;
 }
 
+// TODO Add method to change profile pic
 const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
   const [formState, setFormState] = useState({
     firstName: "",

@@ -10,7 +10,7 @@ const DragnDrop = () => {
     // console.log(acceptedFiles);
     try {
       const response = await upload({ variables: { files: acceptedFiles } });
-      // console.log(response);
+      console.log(response);
     } catch (err) {
       console.log(err);
     }
@@ -19,7 +19,7 @@ const DragnDrop = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".jpeg", ".png"],
+      "image/*": [".jpg", ".png"],
     },
     maxFiles: 300,
   });

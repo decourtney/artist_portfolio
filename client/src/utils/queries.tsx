@@ -23,8 +23,8 @@ export const QUERY_USER = gql`
 `;
 
 export const QUERY_USER_PRODUCTS = gql`
-  query user($username: String!) {
-    user(username: $username) {
+  query products($username: String!) {
+    products(username: $username) {
       _id
       username
       products {

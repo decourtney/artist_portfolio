@@ -35,6 +35,19 @@ const resolvers = {
 
       return user;
     },
+    products: async (
+      parent: any,
+      { username }: { username: string },
+      context: any
+    ) => {
+      const products = await User.findOne({ username }).populate({
+        path: "products",
+        model: "Product",
+        populate: [{ path: "categories", model: "Category" }],
+      });
+
+      return products;
+    },
     categories: async (parent: any, args: any, context: any) => {
       return Category.find();
     },
@@ -83,9 +96,13 @@ const resolvers = {
     ) => {
       if (context.user) {
         try {
-          const resolvedFiles = await Promise.all(files);
+          // Resolve promises
+          const resolvedFiles: UploadFile[] = [];
+          files.forEach(async (file) => {
+            const newFile = await Promise.resolve(file);
+            resolvedFiles.push(newFile);
+          });
 
-          // Wait until all files have resolved
           await Promise.all(
             resolvedFiles.map(async (file) => {
               try {
@@ -117,7 +134,7 @@ const resolvers = {
           );
           return true;
         } catch (err: any) {
-          console.error("Error overall: ", err.message);
+          console.error("Error: ", err.message);
         }
       }
       throw new AuthenticationError("You need to be logged in!");

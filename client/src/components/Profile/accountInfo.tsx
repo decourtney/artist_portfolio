@@ -3,8 +3,10 @@ import { useQuery } from "@apollo/client";
 import { QUERY_USER_PRODUCTS } from "../../utils/queries";
 import { UserData } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
-import ProfileCarousel from "./profileCarousel";
+import Carousel from "./carousel";
 import BackButton from "./backButton";
+import DragnDrop from "./dragndrop";
+import { useState } from "react";
 
 interface AccountProps {
   userData: UserData | null;
@@ -18,6 +20,7 @@ const AccountInfo = ({
   handleBackButton,
 }: AccountProps) => {
   const { username: userParam } = useParams();
+  const [categoryInput, setCategoryInput] = useState(false);
   const navigate = useNavigate();
 
   // console.log(userParam)
@@ -25,9 +28,11 @@ const AccountInfo = ({
     variables: { username: userParam },
   });
 
+  const handleAddCategory = () => {
+    setCategoryInput(!categoryInput);
+  };
+
   // TODO Style text colors
-  // TODO Create functionality for 'ADD' category button
-  // TODO Figure out what to display for Collections. Maybe slide scroll and lazy load images from gallery
   return (
     <>
       <section className="flex flex-col flex-grow w-full h-full font-medium text-plight">
@@ -44,17 +49,51 @@ const AccountInfo = ({
         </div>
 
         {/* Category/Collection Display */}
-        <div className="flex flex-col flex-grow items-center px-2 py-4">
-          {/* Category Carousel */}
-          <div className="relative flex h-40">
-            {loading ? <></> : <ProfileCarousel />}
-            <button className="absolute flex items-center bottom-0 right-0 text-xs">
-              <span className="material-symbols-rounded text-xl align-middle">
-                add
-              </span>
-              ADD
-            </button>
-          </div>
+        <div className="flex flex-col flex-grow mt-2">
+          {/* TODO Add skeleton loading image */}
+          {loading ? (
+            <></>
+          ) : (
+            <>
+              {/* Category Carousel */}
+              <div className="flex flex-col">
+                <div className="flex justify-end items-center mb-1 text-xs">
+                  {categoryInput ? (
+                    <>
+                      <button
+                        type="submit"
+                        className="flex flex-row items-center"
+                        onClick={handleAddCategory}
+                      >
+                        {/* TODO Create functionality for 'ADD' category button */}
+                        <span className="material-symbols-rounded text-xl mx-1">
+                          add
+                        </span>
+                      </button>
+                      <input className="h-7 rounded-md text-center text-pdark bg-plight" />
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      className="flex flex-row items-center"
+                      onClick={handleAddCategory}
+                    >
+                      {/* TODO Create functionality for 'ADD' category button */}
+                      <span className="material-symbols-rounded text-xl">
+                        add
+                      </span>
+                      ADD
+                    </button>
+                  )}
+                </div>
+                <Carousel objs={data.products.categories} />
+              </div>
+
+              {/* Collections Display */}
+              {/* TODO Figure out what to display for Collections. Maybe slide scroll and lazy load images from gallery */}
+              <div className="  bg-red-400"></div>
+            </>
+          )}
         </div>
       </section>
       <div className="w-full">

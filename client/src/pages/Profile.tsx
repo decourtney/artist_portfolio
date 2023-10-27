@@ -23,7 +23,7 @@ const Profile = () => {
     if (contentParam) {
       setDisplayInfo(contentParam);
     } else {
-      setIsEditForm(false)
+      setIsEditForm(false);
       setDisplayInfo("default");
     }
   }, [contentParam]);
@@ -120,6 +120,7 @@ const Profile = () => {
             className="profile_hero_image flex flex-col flex-grow items-center mx-5 mb-5"
           >
             <Avatar
+              username={user?.username}
               fullname={user?.fullname}
               email={user?.email}
               profilePic={user?.profilePic}
