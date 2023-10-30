@@ -1,4 +1,4 @@
-// Not currently in use but I don't want to lose this component yet.
+// Not currently in use but I don't want to remove this component yet.
 
 import React, { useEffect } from "react";
 import {

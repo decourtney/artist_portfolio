@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/server.ts",
   "scripts": {
-    "start": "ts-node server/server.ts",
+    "start": "ts-node server/server.ts --swc",
     "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm start\"",
     "watch:css": "cd client && npm run watch:css",
     "install": "cd server && npm i && cd ../client && npm i",

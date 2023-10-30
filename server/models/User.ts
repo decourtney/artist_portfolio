@@ -1,19 +1,24 @@
-import { Model, Schema, Types, model } from "mongoose";
+import { Model, Schema, Types, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
 import Product, { IProduct } from "./Product";
+import { ICategory } from "./Category";
 
-interface IUser {
+interface IUser extends Document {
   firstName: string;
   lastName: string;
   email: string;
   username: string;
   password: string;
-  role: string;
+  phone: string;
+  street1: string;
+  street2: string;
+  city: string;
+  state: string;
+  postalCode: string;
   profilePic: string;
   products: IProduct[];
-  confirmPassword: string; // Dont think i need this but nothing is broken for now
+  categories: ICategory[];
 
-  // Include custom methods like isCorrectPassword
   isCorrectPassword(password: string): Promise<boolean>;
 }
 
@@ -33,37 +38,56 @@ const userSchema = new Schema<IUser>({
     required: true,
     unique: true,
     trim: true,
-    validate: {
-      validator: async function (value: string) {},
-      message: "blah",
-    },
+    lowercase: true,
+    match: [/\S+@\S+\.\S+/, "Invalid email address"],
   },
   username: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
     trim: true,
+    lowercase: true,
   },
   password: {
     type: String,
     required: true,
     minlength: [8, "Password must be at least 8 characters long"],
   },
-  role: {
+  phone: {
     type: String,
     required: false,
-    enum: ["admin", "owner", "user"],
+    trim: true,
+    validate: {
+      validator: function (value: string) {
+        return /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(
+          value
+        );
+      },
+      message: "Invalid phone number",
+    },
   },
+  street1: { type: String, required: false, trim: true },
+  street2: { type: String, required: false, trim: true },
+  city: { type: String, required: false, trim: true },
+  state: { type: String, required: false, trim: true },
+  postalCode: { type: String, required: false, trim: true },
   profilePic: {
     type: String,
     required: false,
-    default:
-      "default_avatar.png",
+    default: "default_avatar.png",
   },
   products: [
     {
       type: Types.ObjectId,
       ref: "Product",
+      required: false,
+    },
+  ],
+  categories: [
+    {
+      type: Types.ObjectId,
+      ref: "Category",
+      required: false,
     },
   ],
 });
@@ -77,6 +101,14 @@ userSchema.virtual("fullname").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
+userSchema.virtual("productCount").get(function () {
+  return `${this.products.length}`;
+});
+
+userSchema.virtual("categoryCount").get(function () {
+  return `${this.categories.length}`;
+});
+
 // set up pre-save middleware to create password
 userSchema.pre("save", async function (next) {
   if (this.isNew || this.isModified("password")) {
@@ -84,9 +116,13 @@ userSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
 
-  // if (this.isNew || this.isModified("email")) {
-  //   this.username = this.email.split("@")[0];
-  // }
+  if (this.isNew) {
+    this.username = this.email.split("@")[0];
+  }
+
+  if(this.isModified('phone')){
+    
+  }
   next();
 });
 

@@ -1,7 +1,7 @@
-import { Schema, model, Model } from "mongoose";
+import { Schema, model, Model, Document } from "mongoose";
 
 // Define an interface for the Category document
-interface ICategory {
+interface ICategory extends Document{
   name: string;
 }
 

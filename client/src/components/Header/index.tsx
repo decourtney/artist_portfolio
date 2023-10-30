@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import menu_icon from "../../images/menu_FILL0_wght200_GRAD-25_opsz20.svg";
 import {
   motion,
   AnimatePresence,
-  useAnimate,
-  usePresence,
 } from "framer-motion";
-import Nav from "./Navbar";
-import UserMenu from "./UserMenu";
-import tempPic from "../../images/profile_pic.png";
+import Nav from "./nav";
 import Auth from "../../utils/auth";
 
 const Header = () => {
   const [isDisplayNavMenu, setIsDisplayNavMenu] = useState(false);
-  const [isDisplayUserMenu, setIsDisplayUserMenu] = useState(true);
 
   const handleOnNavClick = () => {
     setIsDisplayNavMenu(!isDisplayNavMenu);
@@ -26,7 +20,7 @@ const Header = () => {
         {isDisplayNavMenu && <Nav handleOnNavClick={handleOnNavClick} />}
       </AnimatePresence>
 
-      <section className="absolute top-0 left-0 flex justify-center w-full">
+      <section className="absolute top-0 left-0 flex justify-center w-full text-plight">
         <div className="flex justify-between items-center w-full mx-[2%] p-[1%]">
           {/* Artist brand/name/icon */}
           <div className="flex justify-start w-full">
@@ -44,9 +38,9 @@ const Header = () => {
           <div className="flex justify-end items-center w-full">
             {/* Display logout icon */}
             {Auth.loggedIn() && (
-              <div className="flex justify-center items-center">
+              <div className="flex justify-end w-full">
                 <span
-                  className="material-symbols-rounded text-2xl text-light text-center cursor-pointer"
+                  className="material-symbols-rounded text-xl cursor-pointer"
                   onClick={() => Auth.logout()}
                 >
                   logout
@@ -55,13 +49,13 @@ const Header = () => {
             )}
             {/* Display nav menu icon */}
             <motion.button
-              className="ml-3"
+              className="ml-1"
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 1 }}
               onClick={() => handleOnNavClick()}
             >
-              <span className="material-symbols-rounded align-middle text-plight">
-                more_vert
+              <span className="material-symbols-rounded align-middle">
+                more_horiz
               </span>
             </motion.button>
           </div>

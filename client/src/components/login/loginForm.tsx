@@ -9,7 +9,7 @@ interface LoginProps {
 
 function Login({ handleLoginDisplay }: LoginProps) {
   const [formState, setFormState] = useState({ email: "", password: "" });
-  const [loginUserMutation] = useMutation(LOGIN_USER);
+  const [loginUser] = useMutation(LOGIN_USER);
   const formRef = useRef<HTMLFormElement | null>(null);
   const [errorMsg, setErrorMsg] = useState<String | null>(null);
 
@@ -24,16 +24,22 @@ function Login({ handleLoginDisplay }: LoginProps) {
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const mutationResponse = await loginUserMutation({
-        variables: { email: formState.email, password: formState.password },
+      const userData = await loginUser({
+        variables: { ...formState },
       });
 
       Auth.login(
-        mutationResponse.data.login.token,
-        mutationResponse.data.login.user.username
+        userData.data.login.token,
+        userData.data.login.user.username
       );
     } catch (err: any) {
-      setErrorMsg(err.message);
+      console.log(err)
+      if (err.name === "ApolloError") {
+        const errorMsg = err.message.split(":").pop().trim();
+        setErrorMsg(errorMsg);
+      } else {
+        setErrorMsg(err.message);
+      }
     }
 
     if (formRef.current) formRef.current.reset();

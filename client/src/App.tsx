@@ -15,8 +15,8 @@ import Gallery from "./pages/Gallery";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
+import Header from "./components/header";
+import Footer from "./components/footer";
 
 // Construct main GraphQL API endpoint
 const httpLink = createHttpLink({
@@ -57,8 +57,8 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
-              {/* <Route path="/profile" element={<Profile />} /> */}
               <Route path="/profile/:username" element={<Profile />} />
+              <Route path="/profile/:username/:content" element={<Profile />} />
             </Routes>
           </div>
           <Footer />

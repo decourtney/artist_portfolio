@@ -31,10 +31,19 @@ body {
   opacity: 30%;
 }
 
-/* Checkmark */
+#edit-profile-form input:-webkit-autofill,
+#edit-profile-form input:-webkit-autofill:hover,
+#edit-profile-form input:-webkit-autofill:focus,
+#edit-profile-form input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: #b6eada;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+Checkmark
 .checkmark::before {
   position: absolute;
-  top:50%;
+  top: 50%;
   translate: 0 -50% 0;
   right: 101%;
   content: "\2713";
@@ -44,7 +53,7 @@ body {
 /* X-mark */
 .xmark::before {
   position: absolute;
-  top:50%;
+  top: 50%;
   translate: 0 -50% 0;
   right: 101%;
   content: "\2717";

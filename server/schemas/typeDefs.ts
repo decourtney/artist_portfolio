@@ -24,8 +24,17 @@ const typeDefs = gql`
     username: String
     email: String
     password: String
+    phone: String
+    street1: String
+    street2: String
+    city: String
+    state: String
+    postalCode: String
     profilePic: String
     products: [Product]
+    productCount: String
+    categories: [Category]
+    categoryCount: String
   }
 
   type Auth {
@@ -36,25 +45,31 @@ const typeDefs = gql`
   type Query {
     user(username: String!): User
     me: User
+    products(username: String!): User
     categories: [Category]
   }
 
   type Mutation {
-    addUser(
-      username: String!
-      email: String!
-      password: String!
-    ): Auth
+    addUser(email: String!, password: String!): Auth
     updateUser(
       firstName: String
       lastName: String
       username: String
       email: String
       password: String
-      product: String
+      phone: String
+      street1: String
+      street2: String
+      city: String
+      state: String
+      postalCode: String
+      profilePic: String
     ): User
+    deleteUser(user: String!): Boolean
     login(email: String!, password: String!): Auth
-    uploadFiles(files: [Upload]): Boolean
+    addProducts(files: [Upload!]!): Boolean
+    updateProduct(product: String!): Boolean
+    deleteProduct(product: String!): Boolean
   }
 `;
 
