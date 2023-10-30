@@ -24,8 +24,9 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
     postalCode: "",
   });
   const formRef = useRef<HTMLFormElement | null>(null);
-  const [updateUser, { error }] = useMutation(UPDATE_USER);
   const navigate = useNavigate();
+  
+  const [updateUser] = useMutation(UPDATE_USER);
 
   // Form Submit
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

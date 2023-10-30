@@ -1,13 +1,16 @@
+import { useState, useRef, useEffect } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@apollo/client";
-import { QUERY_USER_PRODUCTS } from "../../utils/queries";
+import { useQuery, useMutation } from "@apollo/client";
+import { QUERY_ACCOUNT } from "../../utils/queries";
+import { ADD_CATEGORY } from "../../utils/mutations";
 import { UserData } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
+import CreateCategory from "./createCategory";
 import Carousel from "./carousel";
 import BackButton from "./backButton";
 import DragnDrop from "./dragndrop";
-import { useState } from "react";
 
+// TODO Not currently in use
 interface AccountProps {
   userData: UserData | null;
   setIsEditForm: (setIsEditForm: boolean) => void;
@@ -20,17 +23,13 @@ const AccountInfo = ({
   handleBackButton,
 }: AccountProps) => {
   const { username: userParam } = useParams();
-  const [categoryInput, setCategoryInput] = useState(false);
-  const navigate = useNavigate();
+  const [displayInput, setdisplayInput] = useState(false);
 
-  // console.log(userParam)
-  const { loading, data } = useQuery(QUERY_USER_PRODUCTS, {
+  const { loading, data } = useQuery(QUERY_ACCOUNT, {
     variables: { username: userParam },
   });
 
-  const handleAddCategory = () => {
-    setCategoryInput(!categoryInput);
-  };
+  if (!loading) console.log(data);
 
   // TODO Style text colors
   return (
@@ -39,11 +38,11 @@ const AccountInfo = ({
         {/* Category/Collection Count */}
         <div className="relative grid grid-cols-2 grid-rows-1 gap-0 mt-4 text-center after:content-[''] after:bg-psecondary after:absolute after:top-0 after:left-1/2 after:h-3/4 after:w-[1px]">
           <div className="relative pb-3 after:content-[''] after:bg-psecondary after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[1px] after:w-3/4">
-            <span>{userData?.categoryCount}</span>
+            <span>{data?.account.categoryCount}</span>
             <p>Categories</p>
           </div>
           <div className="relative pb-3 after:content-[''] after:bg-psecondary after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[1px] after:w-3/4">
-            <span>{userData?.productCount}</span>
+            <span>{data?.account.productCount}</span>
             <p>Collections</p>
           </div>
         </div>
@@ -58,35 +57,22 @@ const AccountInfo = ({
               {/* Category Carousel */}
               <div className="flex flex-col">
                 <div className="flex justify-end items-center mb-1 text-xs">
-                  {categoryInput ? (
-                    <>
-                      <button
-                        type="submit"
-                        className="flex flex-row items-center"
-                        onClick={handleAddCategory}
-                      >
-                        {/* TODO Create functionality for 'ADD' category button */}
-                        <span className="material-symbols-rounded text-xl mx-1">
-                          add
-                        </span>
-                      </button>
-                      <input className="h-7 rounded-md text-center text-pdark bg-plight" />
-                    </>
+                  {displayInput ? (
+                    <CreateCategory setdisplayInput={setdisplayInput} />
                   ) : (
                     <button
                       type="button"
                       className="flex flex-row items-center"
-                      onClick={handleAddCategory}
+                      onClick={() => setdisplayInput(true)}
                     >
-                      {/* TODO Create functionality for 'ADD' category button */}
-                      <span className="material-symbols-rounded text-xl">
+                      ADD
+                      <span className="material-symbols-rounded px-1 text-xl pointer-events-none">
                         add
                       </span>
-                      ADD
                     </button>
                   )}
                 </div>
-                <Carousel objs={data.products.categories} />
+                <Carousel objs={data.account.categories} />
               </div>
 
               {/* Collections Display */}

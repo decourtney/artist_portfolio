@@ -33,7 +33,8 @@ function Login({ handleLoginDisplay }: LoginProps) {
         userData.data.login.user.username
       );
     } catch (err: any) {
-      console.log(err)
+      // TODO Work on proper error display
+      console.log(err);
       if (err.name === "ApolloError") {
         const errorMsg = err.message.split(":").pop().trim();
         setErrorMsg(errorMsg);

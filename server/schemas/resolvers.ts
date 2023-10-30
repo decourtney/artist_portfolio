@@ -9,6 +9,7 @@ import { UploadFile } from "../utils/customServerTypes";
 const resolvers = {
   Upload: require("graphql-upload-ts").GraphQLUpload,
   Query: {
+    // NOTE Query ME not currently in use
     me: async (parent: any, args: any, context: any) => {
       if (context.user) {
         const stuff = await User.findOne({ _id: context.user._id });
@@ -35,7 +36,7 @@ const resolvers = {
 
       return user;
     },
-    products: async (
+    account: async (
       parent: any,
       { username }: { username: string },
       context: any
@@ -54,6 +55,7 @@ const resolvers = {
   },
 
   Mutation: {
+    // COMMENT User Mutations
     addUser: async (parent: any, args: any) => {
       const user = await User.create(args);
       // signToken is expecting _id to be a string
@@ -89,6 +91,8 @@ const resolvers = {
       }
     },
     deleteUser: async () => {},
+
+    // COMMENT Product Mutations
     addProducts: async (
       parent: any,
       { files }: { files: UploadFile[] },
@@ -141,6 +145,33 @@ const resolvers = {
     },
     updateProduct: async () => {},
     deleteProduct: async () => {},
+
+    // COMMENT Category Mutations
+    addCategory: async (
+      parent: any,
+      { username, category }: { username: string; category: string },
+      context: any
+    ) => {
+      if (context.user) {
+        try {
+          const newCategory = await Category.create({ name: category });
+
+          const user = await User.findOneAndUpdate(
+            { _id: context.user.data._id },
+            { $addToSet: { categories: newCategory._id } },
+            { new: true }
+          );
+
+          return user;
+        } catch (err: any) {
+          console.error("Create Category error: ", err.message);
+        }
+      }
+    },
+    updateCategory: async () => {},
+    deleteCategory: async () => {},
+
+    // COMMENT AUTH Mutation
     login: async (
       parent: any,
       { email, password }: { email: any; password: any }

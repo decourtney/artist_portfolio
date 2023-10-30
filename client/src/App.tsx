@@ -7,7 +7,7 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import {createUploadLink} from 'apollo-upload-client'
+import { createUploadLink } from "apollo-upload-client";
 
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -33,7 +33,7 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : "",
-      'Apollo-Require-Preflight': 'true'
+      "Apollo-Require-Preflight": "true",
     },
   };
 });
@@ -47,21 +47,21 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-          <div className="flex flex-col min-h-screen scrollbar-hide">
-            <Header />
-            <Routes>
-              {/* <Route path="/" element={<Profile />} />{" "} */}
-              {/* This is just for initial development stages. delete when necessary */}
-              <Route path="/" element={<Home />} />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/profile/:username" element={<Profile />} />
-              <Route path="/profile/:username/:content" element={<Profile />} />
-            </Routes>
-          </div>
-          <Footer />
+        <div className="flex flex-col min-h-screen scrollbar-hide">
+          <Header />
+          <Routes>
+            {/* <Route path="/" element={<Profile />} />{" "} */}
+            {/* This is just for initial development stages. delete when necessary */}
+            <Route path="/" element={<Home />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/profile/:username" element={<Profile />} />
+            <Route path="/profile/:username/:content" element={<Profile />} />
+          </Routes>
+        </div>
+        <Footer />
       </Router>
     </ApolloProvider>
   );

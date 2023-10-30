@@ -22,11 +22,12 @@ export const QUERY_USER = gql`
   }
 `;
 
-export const QUERY_USER_PRODUCTS = gql`
-  query products($username: String!) {
-    products(username: $username) {
+export const QUERY_ACCOUNT = gql`
+  query account($username: String!) {
+    account(username: $username) {
       _id
       username
+      productCount
       products {
         _id
         name
@@ -37,6 +38,7 @@ export const QUERY_USER_PRODUCTS = gql`
           name
         }
       }
+      categoryCount
       categories {
         _id
         name
