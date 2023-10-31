@@ -70,6 +70,14 @@ export const UPDATE_USER = gql`
   }
 `;
 
+export const ADD_CATEGORY = gql`
+mutation addCategory($username: String!, $category: String!){
+  addCategory(username: $username, category: $category){
+    _id
+  }
+}
+`
+
 export const UPLOAD_FILES = gql`
   mutation uploadFiles($files: [Upload!]!) {
     addProducts(files: $files)

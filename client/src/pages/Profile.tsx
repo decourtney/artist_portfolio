@@ -56,6 +56,7 @@ const Profile = () => {
           />
         );
       case "personal":
+        // TODO Change edit mode controlled within PersonalInfo. Reference AccountInfo's createCategory
         return isEditForm ? (
           <EditProfile userData={user} setIsEditForm={setIsEditForm} />
         ) : (

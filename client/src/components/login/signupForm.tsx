@@ -49,6 +49,7 @@ function Signup({ handleLoginDisplay }: SignupProps) {
         );
       }
     } catch (err: any) {
+      // TODO Work on proper error display
       console.log(err);
       if (err.name === "ApolloError") {
         const errorMsg = err.message.split(":").pop().trim();

@@ -45,7 +45,7 @@ const typeDefs = gql`
   type Query {
     user(username: String!): User
     me: User
-    products(username: String!): User
+    account(username: String!): User
     categories: [Category]
   }
 
@@ -67,9 +67,14 @@ const typeDefs = gql`
     ): User
     deleteUser(user: String!): Boolean
     login(email: String!, password: String!): Auth
+
     addProducts(files: [Upload!]!): Boolean
     updateProduct(product: String!): Boolean
     deleteProduct(product: String!): Boolean
+
+    addCategory(username: String!, category: String!): User
+    updateCategory(username: String!, category: String!): User
+    deleteCategory(username: String!, category: String!): User
   }
 `;
 

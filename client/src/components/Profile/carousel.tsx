@@ -29,7 +29,7 @@ const Carousel = ({ objs }: CarouselProps) => {
     setCurrentIndex(nextIndex);
   };
 
-  console.log(objs)
+  // console.log(objs)
   return (
     <section className="relative flex flex-nowrap overflow-auto">
       <div className="flex w-full justify-center items-center">
