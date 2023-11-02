@@ -16,29 +16,42 @@ const baseCDN =
 
 interface CarouselProps {
   accountItems: AccountItem[];
-  numberOfImages: number;
+  numberToDisplay: number;
 }
 
-const Carousel = ({ accountItems, numberOfImages }: CarouselProps) => {
+const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
   const { username: userParam } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const prevIndex = (currentIndex - 1 + images.length) % images.length;
-  const nextIndex = (currentIndex + 1) % images.length;
-
   const handlePrevious = () => {
-    setCurrentIndex(prevIndex);
+    setCurrentIndex(
+      (currentIndex - 1 + accountItems.length) % accountItems.length
+    );
   };
 
   const handleNext = () => {
-    setCurrentIndex(nextIndex);
+    setCurrentIndex((currentIndex + 1) % accountItems.length);
   };
 
-  const visibleItems = accountItems.slice(
-    currentIndex,
-    currentIndex + numberOfImages
-  );
+  // Adjust for odd number of images
+  let startOffset = Math.floor(numberToDisplay / 2);
 
+  // Adjust for even number of images
+  if (numberToDisplay % 2 === 0) {
+    startOffset--;
+  }
+
+  // Current index displayed center for odd numberToDisplay and even centers between current & next index
+  const visibleItems = [];
+  for (let i = 0; i < numberToDisplay; i++) {
+    const itemIndex =
+      (currentIndex - startOffset + i + accountItems.length) %
+      accountItems.length;
+
+    visibleItems.push(accountItems[itemIndex]);
+  }
+
+  // TODO Styles and anims
   return (
     <section className="relative flex flex-nowrap overflow-hidden">
       {visibleItems.map((item, index) => (

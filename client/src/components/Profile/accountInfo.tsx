@@ -75,7 +75,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                 </div>
                 <Carousel
                   accountItems={data.account.categories}
-                  numberOfImages={1}
+                  numberToDisplay={3}
                 />
               </div>
 
@@ -84,7 +84,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
               <div className="flex flex-grow  bg-red-400">
                 <Carousel
                   accountItems={data.account.products}
-                  numberOfImages={1}
+                  numberToDisplay={5}
                 />
               </div>
             </>
