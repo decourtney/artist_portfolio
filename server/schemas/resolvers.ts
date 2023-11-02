@@ -23,15 +23,19 @@ const resolvers = {
       { username }: { username: string },
       context: any
     ) => {
-      const user = await User.findOne({ username }).populate({
-        path: "products",
-        model: "Product",
-        populate: [
-          {
-            path: "categories",
-            model: "Category",
-          },
-        ],
+      const user = await User.findOne({ username }).select({
+        firstName: 1,
+        lastName: 1,
+        fullname: 1,
+        username: 1,
+        email: 1,
+        phone: 1,
+        street1: 1,
+        street2: 1,
+        city: 1,
+        state: 1,
+        postalCode: 1,
+        profilePic: 1,
       });
 
       return user;
@@ -41,13 +45,22 @@ const resolvers = {
       { username }: { username: string },
       context: any
     ) => {
-      const products = await User.findOne({ username }).populate({
-        path: "products",
-        model: "Product",
-        populate: [{ path: "categories", model: "Category" }],
-      });
+      const user = await User.findOne({ username })
+        .select({
+          username: 1,
+          productCount: 1,
+          categoryCount: 1,
+        })
+        .populate({
+          path: "products",
+          model: "Product",
+        })
+        .populate({
+          path: "categories",
+          model: "Category",
+        });
 
-      return products;
+      return user;
     },
     categories: async (parent: any, args: any, context: any) => {
       return Category.find();
@@ -101,6 +114,7 @@ const resolvers = {
       if (context.user) {
         try {
           // Resolve promises
+          // TODO Verify this loop of resolutions is necessary
           const resolvedFiles: UploadFile[] = [];
           files.forEach(async (file) => {
             const newFile = await Promise.resolve(file);

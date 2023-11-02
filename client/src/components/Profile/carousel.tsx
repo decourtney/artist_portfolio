@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { AccountItem } from "../../utils/customClientTypes";
 import image1 from "../../images/artroom.jpg";
 import image2 from "../../images/gallery_hall.jpg";
 import image3 from "../../images/profile_pic.png";
@@ -7,52 +9,64 @@ import { motion } from "framer-motion";
 
 const images = [image1, image2, image3];
 
+// TODO Remove and just use .env
 const baseCDN =
   process.env.BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface CarouselProps {
-  objs: string[];
+  accountItems: AccountItem[];
+  numberToDisplay: number;
 }
 
-const Carousel = ({ objs }: CarouselProps) => {
+const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
+  const { username: userParam } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const prevIndex = (currentIndex - 1 + images.length) % images.length;
-  const nextIndex = (currentIndex + 1) % images.length;
-
   const handlePrevious = () => {
-    setCurrentIndex(prevIndex);
+    setCurrentIndex(
+      (currentIndex - 1 + accountItems.length) % accountItems.length
+    );
   };
 
   const handleNext = () => {
-    setCurrentIndex(nextIndex);
+    setCurrentIndex((currentIndex + 1) % accountItems.length);
   };
 
-  // console.log(objs)
+  // Adjust for odd number of images
+  let startOffset = Math.floor(numberToDisplay / 2);
+
+  // Adjust for even number of images
+  if (numberToDisplay % 2 === 0) {
+    startOffset--;
+  }
+
+  // Current index displayed center for odd numberToDisplay and even centers between current & next index
+  const visibleItems = [];
+  for (let i = 0; i < numberToDisplay; i++) {
+    const itemIndex =
+      (currentIndex - startOffset + i + accountItems.length) %
+      accountItems.length;
+
+    visibleItems.push(accountItems[itemIndex]);
+  }
+
+  // TODO Styles and anims
   return (
-    <section className="relative flex flex-nowrap overflow-auto">
-      <div className="flex w-full justify-center items-center">
-        <LazyLoadImage
-          src={images[prevIndex]}
-          className="w-full"
-          alt="Previous Slide"
-        />
-      </div>
-      <div className="flex w-full justify-center items-center">
-        <LazyLoadImage
-          src={images[currentIndex]}
-          className="w-full"
-          alt="Current Slide"
-        />
-      </div>
-      <div className="flex w-full justify-center items-center">
-        <LazyLoadImage
-          src={images[nextIndex]}
-          className="w-full"
-          alt="Next Slide"
-        />
-      </div>
+    <section className="relative flex flex-nowrap overflow-hidden">
+      {visibleItems.map((item, index) => (
+        <div key={index} className="flex w-full justify-center items-center">
+          {item.image ? (
+            <LazyLoadImage
+              src={`${baseCDN}/${userParam}/${item.image}`}
+              className="w-full"
+              alt={`Slide ${index}`}
+            />
+          ) : (
+            <div className="flex justify-center items-center">{item.name}</div>
+          )}
+        </div>
+      ))}
 
       <motion.button
         className="prev absolute top-1/2 left-0 -translate-y-1/2 p-2 rounded-full bg-blue-400 cursor-pointer"

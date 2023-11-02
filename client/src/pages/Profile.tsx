@@ -50,7 +50,6 @@ const Profile = () => {
       case "account":
         return (
           <AccountInfo
-            userData={user}
             setIsEditForm={setIsEditForm}
             handleBackButton={handleButtonClick}
           />
@@ -118,7 +117,7 @@ const Profile = () => {
         <section className="flex flex-col flex-grow bg-pdark">
           <div
             id="profile_card"
-            className="profile_hero_image flex flex-col flex-grow items-center mx-5 mb-5"
+            className="profile_hero_image flex flex-col flex-grow items-center mx-5"
           >
             <Avatar
               username={user?.username}
