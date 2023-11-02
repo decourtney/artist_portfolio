@@ -11,10 +11,42 @@ export interface UserData {
   state: string;
   postalCode: string;
   profilePic: string;
-  products: string[];
   productCount: string;
-  categories: string[];
   categoryCount: string;
+}
+
+export interface AccountData {
+  username: String;
+  productCount: String;
+  products: [
+    {
+      name: string;
+      description: String;
+      image: String;
+      categories: [
+        {
+          name: String;
+        }
+      ];
+    }
+  ];
+  categoryCount: String;
+  categories: [
+    {
+      name: String;
+    }
+  ];
+}
+
+export interface AccountItem {
+  name: String;
+  description: String;
+  image: String;
+  categories: [
+    {
+      name: String;
+    }
+  ];
 }
 
 export interface LoggedInUser {

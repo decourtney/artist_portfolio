@@ -1,27 +1,28 @@
 import { useState, useRef, useEffect } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import { QUERY_ACCOUNT } from "../../utils/queries";
 import { ADD_CATEGORY } from "../../utils/mutations";
-import { UserData } from "../../utils/customClientTypes";
+import { AccountItem } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
 import CreateCategory from "./createCategory";
 import Carousel from "./carousel";
 import BackButton from "./backButton";
 import DragnDrop from "./dragndrop";
 
+// TODO Remove and just use .env
+const baseCDN =
+  process.env.BASE_CDN ||
+  "https://chumbucket.donovancourtney.dev/artist_portfolio";
+
 // TODO Not currently in use
 interface AccountProps {
-  userData: UserData | null;
   setIsEditForm: (setIsEditForm: boolean) => void;
   handleBackButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const AccountInfo = ({
-  userData,
-  setIsEditForm,
-  handleBackButton,
-}: AccountProps) => {
+const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   const { username: userParam } = useParams();
   const [displayInput, setdisplayInput] = useState(false);
 
@@ -29,7 +30,7 @@ const AccountInfo = ({
     variables: { username: userParam },
   });
 
-  if (!loading) console.log(data);
+  if (!loading) console.log("query account:", data);
 
   // TODO Style text colors
   return (
@@ -48,7 +49,7 @@ const AccountInfo = ({
         </div>
 
         {/* Category/Collection Display */}
-        <div className="flex flex-col flex-grow mt-2">
+        <div className="flex flex-col flex-grow mt-2 space-y-5">
           {/* TODO Add skeleton loading image */}
           {loading ? (
             <></>
@@ -72,19 +73,25 @@ const AccountInfo = ({
                     </button>
                   )}
                 </div>
-                <Carousel objs={data.account.categories} />
+                <Carousel
+                  accountItems={data.account.categories}
+                  numberOfImages={1}
+                />
               </div>
 
               {/* Collections Display */}
               {/* TODO Figure out what to display for Collections. Maybe slide scroll and lazy load images from gallery */}
-              <div className="  bg-red-400"></div>
+              <div className="flex flex-grow  bg-red-400">
+                <Carousel
+                  accountItems={data.account.products}
+                  numberOfImages={1}
+                />
+              </div>
             </>
           )}
         </div>
       </section>
-      <div className="w-full">
-        <BackButton />
-      </div>
+      <BackButton />
     </>
   );
 };

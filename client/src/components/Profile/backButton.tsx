@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const BackButton = () => {
   const navigate = useNavigate();
   return (
-    <>
+    <section id="back-button" className="w-full my-2">
       <motion.button
         id="back"
         type="button"
@@ -15,7 +15,7 @@ const BackButton = () => {
           chevron_left
         </span>
       </motion.button>
-    </>
+    </section>
   );
 };
 

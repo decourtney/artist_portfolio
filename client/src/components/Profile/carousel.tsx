@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { AccountItem } from "../../utils/customClientTypes";
 import image1 from "../../images/artroom.jpg";
 import image2 from "../../images/gallery_hall.jpg";
 import image3 from "../../images/profile_pic.png";
@@ -7,15 +9,18 @@ import { motion } from "framer-motion";
 
 const images = [image1, image2, image3];
 
+// TODO Remove and just use .env
 const baseCDN =
   process.env.BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface CarouselProps {
-  objs: string[];
+  accountItems: AccountItem[];
+  numberOfImages: number;
 }
 
-const Carousel = ({ objs }: CarouselProps) => {
+const Carousel = ({ accountItems, numberOfImages }: CarouselProps) => {
+  const { username: userParam } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevIndex = (currentIndex - 1 + images.length) % images.length;
@@ -29,30 +34,26 @@ const Carousel = ({ objs }: CarouselProps) => {
     setCurrentIndex(nextIndex);
   };
 
-  // console.log(objs)
+  const visibleItems = accountItems.slice(
+    currentIndex,
+    currentIndex + numberOfImages
+  );
+
   return (
-    <section className="relative flex flex-nowrap overflow-auto">
-      <div className="flex w-full justify-center items-center">
-        <LazyLoadImage
-          src={images[prevIndex]}
-          className="w-full"
-          alt="Previous Slide"
-        />
-      </div>
-      <div className="flex w-full justify-center items-center">
-        <LazyLoadImage
-          src={images[currentIndex]}
-          className="w-full"
-          alt="Current Slide"
-        />
-      </div>
-      <div className="flex w-full justify-center items-center">
-        <LazyLoadImage
-          src={images[nextIndex]}
-          className="w-full"
-          alt="Next Slide"
-        />
-      </div>
+    <section className="relative flex flex-nowrap overflow-hidden">
+      {visibleItems.map((item, index) => (
+        <div key={index} className="flex w-full justify-center items-center">
+          {item.image ? (
+            <LazyLoadImage
+              src={`${baseCDN}/${userParam}/${item.image}`}
+              className="w-full"
+              alt={`Slide ${index}`}
+            />
+          ) : (
+            <div className="flex justify-center items-center">{item.name}</div>
+          )}
+        </div>
+      ))}
 
       <motion.button
         className="prev absolute top-1/2 left-0 -translate-y-1/2 p-2 rounded-full bg-blue-400 cursor-pointer"
