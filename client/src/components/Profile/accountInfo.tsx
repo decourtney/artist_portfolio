@@ -8,6 +8,7 @@ import { AccountItem } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
 import CreateCategory from "./createCategory";
 import Carousel from "./carousel";
+import Carousel2 from "./carousel2";
 import BackButton from "./backButton";
 import DragnDrop from "./dragndrop";
 
@@ -30,7 +31,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
     variables: { username: userParam },
   });
 
-  if (!loading) console.log("query account:", data);
+  // if (!loading) console.log("query account:", data);
 
   // TODO Style text colors
   return (
@@ -73,7 +74,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                     </button>
                   )}
                 </div>
-                <Carousel
+                <Carousel2
                   accountItems={data.account.categories}
                   numberToDisplay={3}
                 />
@@ -82,7 +83,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
               {/* Collections Display */}
               {/* TODO Figure out what to display for Collections. Maybe slide scroll and lazy load images from gallery */}
               <div className="flex flex-grow  bg-red-400">
-                <Carousel
+                <Carousel2
                   accountItems={data.account.products}
                   numberToDisplay={5}
                 />

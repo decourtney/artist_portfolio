@@ -114,12 +114,17 @@ const resolvers = {
       if (context.user) {
         try {
           // Resolve promises
-          // TODO Verify this loop of resolutions is necessary
-          const resolvedFiles: UploadFile[] = [];
-          files.forEach(async (file) => {
-            const newFile = await Promise.resolve(file);
-            resolvedFiles.push(newFile);
-          });
+          // const resolvedFiles: UploadFile[] = [];
+          // files.forEach(async (file) => {
+          //   const newFile = await Promise.resolve(file);
+          //   resolvedFiles.push(newFile);
+          // });
+
+          const resolvedFiles = await Promise.all(
+            files.map(async (file) => {
+              return await Promise.resolve(file);
+            })
+          );
 
           await Promise.all(
             resolvedFiles.map(async (file) => {
@@ -129,7 +134,7 @@ const resolvers = {
                   context.user.data.username
                 );
 
-                if (!bucketResponse) return false;
+                if (!bucketResponse) throw new AuthenticationError("No bucket response");;
 
                 // If the file uploaded then create new Product and update User
                 try {
