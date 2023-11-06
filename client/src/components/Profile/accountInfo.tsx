@@ -5,7 +5,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { QUERY_ACCOUNT } from "../../utils/queries";
 import { ADD_CATEGORY } from "../../utils/mutations";
 import { AccountItem } from "../../utils/customClientTypes";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import CreateCategory from "./createCategory";
 import Carousel from "./carousel";
 import Carousel2 from "./carousel2";
@@ -74,20 +74,18 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                     </button>
                   )}
                 </div>
-                <Carousel2
+                {/* <Carousel2
                   accountItems={data.account.categories}
                   numberToDisplay={3}
-                />
+                /> */}
               </div>
 
               {/* Collections Display */}
               {/* TODO Figure out what to display for Collections. Maybe slide scroll and lazy load images from gallery */}
-              <div className="flex flex-grow  bg-red-400">
-                <Carousel2
-                  accountItems={data.account.products}
-                  numberToDisplay={5}
-                />
-              </div>
+              <Carousel
+                accountItems={data.account.products}
+                numberToDisplay={3}
+              />
             </>
           )}
         </div>

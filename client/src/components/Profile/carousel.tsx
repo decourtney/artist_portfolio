@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { AccountItem } from "../../utils/customClientTypes";
-import { motion, useScroll } from "framer-motion";
+import { AnimatePresence, motion, useScroll } from "framer-motion";
 import DragnDrop from "./dragndrop";
+import ImageCard from "./imageCard";
 
 // TODO Remove and just use .env
 const baseCDN =
@@ -49,38 +50,35 @@ const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
 
   // TODO Styles and anims
   return (
-    <section className="relative flex flex-nowrap overflow-hidden">
-      {visibleItems.map((item, index) => {
-        // Scale cards down from center
-        const position = index - Math.floor(visibleItems.length / 2);
-        const scale = 1 - Math.abs(position) * 0.1; // Adjust the scale factor as needed
-
-        return (
-          <motion.div
-            key={index}
-            className="flex w-full justify-center items-center"
-            initial={{ scale: 1}} // Initial scale
-            animate={{ scale: scale }} // Animate the scale
-            transition={{ duration: 1}} // Animation duration
-          >
-            <div className="rounded-lg p-4 bg-white shadow-md">
-              {item.image ? (
-                <LazyLoadImage
-                  src={`${baseCDN}/${userParam}/${item.image}`}
-                  className="w-full"
-                  alt={`Slide ${index}`}
-                />
-              ) : (
-                <div className="flex w-full h-12 justify-center items-center bg-blue-400">
-                  <div className="rounded-lg p-4 bg-white shadow-md">
-                    {item.name}
-                  </div>
+    <section className="relative flex flex-grow justify-center items-center overflow-hidden">
+      <div className="inline-block whitespace-nowrap max-w-full">
+        <ImageCard item={accountItems[currentIndex]} index={currentIndex} />
+      </div>
+      {/* <AnimatePresence mode="wait">
+        <motion.div
+          className="flex w-full justify-center items-center"
+          initial={{ x: "100%" }} // Initial scale
+          animate={{ x: "0%" }} // Animate the scale
+          exit={{ x: "-100%" }}
+          transition={{ duration: 1 }} // Animation duration
+        >
+          <div className="rounded-lg p-4 bg-white shadow-md">
+            {accountItems[currentIndex].image ? (
+              <LazyLoadImage
+                src={`${baseCDN}/${userParam}/${accountItems[currentIndex].image}`}
+                className="w-full"
+                alt={`Slide ${currentIndex}`}
+              />
+            ) : (
+              <div className="flex w-full h-12 justify-center items-center bg-blue-400">
+                <div className="rounded-lg p-4 bg-white shadow-md">
+                  {accountItems[currentIndex].name}
                 </div>
-              )}
-            </div>
-          </motion.div>
-        );
-      })}
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </AnimatePresence> */}
       <motion.button
         className="prev absolute top-1/2 left-0 -translate-y-1/2 p-2 rounded-full bg-blue-400 cursor-pointer"
         onClick={handlePrevious}

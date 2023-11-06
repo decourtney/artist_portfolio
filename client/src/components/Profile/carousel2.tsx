@@ -15,34 +15,53 @@ interface CarouselProps {
   numberToDisplay: number;
 }
 
-const Carousel2 = ({ accountItems, numberToDisplay }: CarouselProps) => {
+const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
   const { username: userParam } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrevious = () => {
-    setCurrentIndex(Math.max(currentIndex - 1, 0));
+    setCurrentIndex(
+      (currentIndex - 1 + accountItems.length) % accountItems.length
+    );
   };
 
   const handleNext = () => {
-    setCurrentIndex(Math.min(currentIndex + 1, accountItems.length - 5));
+    setCurrentIndex((currentIndex + 1) % accountItems.length);
   };
+
+  // Adjust for odd number of images
+  let startOffset = Math.floor(numberToDisplay / 2);
+
+  // Adjust for even number of images
+  if (numberToDisplay % 2 === 0) {
+    startOffset--;
+  }
+
+  // Current index displayed center for odd numberToDisplay and even centers between current & next index
+  const visibleItems = [];
+  for (let i = 0; i < numberToDisplay; i++) {
+    const itemIndex =
+      (currentIndex - startOffset + i + accountItems.length) %
+      accountItems.length;
+
+    visibleItems.push(accountItems[itemIndex]);
+  }
 
   // TODO Styles and anims
   return (
     <section className="relative flex flex-nowrap overflow-hidden">
-      {accountItems.map((item, index) => {
+      {visibleItems.map((item, index) => {
         // Scale cards down from center
-        const position = index - Math.floor(accountItems.length / 2);
+        const position = index - Math.floor(visibleItems.length / 2);
         const scale = 1 - Math.abs(position) * 0.1; // Adjust the scale factor as needed
 
         return (
           <motion.div
             key={index}
             className="flex w-full justify-center items-center"
-            initial={{ opacity: 0, x: -100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 100 }}
-            transition={{ duration: 0.5 }}
+            initial={{ scale: 1 }} // Initial scale
+            animate={{ scale: scale }} // Animate the scale
+            transition={{ duration: 1 }} // Animation duration
           >
             <div className="rounded-lg p-4 bg-white shadow-md">
               {item.image ? (
@@ -78,4 +97,4 @@ const Carousel2 = ({ accountItems, numberToDisplay }: CarouselProps) => {
   );
 };
 
-export default Carousel2;
+export default Carousel;
