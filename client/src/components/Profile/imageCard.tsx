@@ -3,7 +3,6 @@ import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { AccountItem } from "../../utils/customClientTypes";
 import { AnimatePresence, motion, useScroll, LayoutGroup } from "framer-motion";
-import DragnDrop from "./dragndrop";
 
 const baseCDN =
   process.env.BASE_CDN ||
@@ -14,25 +13,26 @@ interface Props {
   index: number;
 }
 
-const ImageCard = ({item, index}:Props)=>{
+const ImageCard = ({ item, index }: Props) => {
   const { username: userParam } = useParams();
 
   return (
     <>
-      <AnimatePresence initial={false} mode="sync">
+      <AnimatePresence mode="sync">
         <motion.div
           key={index}
-          className="inline-block align-middle w-fit rounded-lg p-4 bg-white shadow-md"
-          initial={{ x: "100%" }} // Initial scale
-          animate={{ x: "0%" }} // Animate the scale
-          exit={{ x: "-100%" }}
-          transition={{  }} // Animation duration
+          // style={{ top: `${index * 10}rem`, left: `${index * 10}rem` }}
+          className={`absolute top-1/2 left-1/2 w-full rounded-lg p-4 bg-white shadow-md`}
+          initial={{ x: "50%", y: "-50%" }} // Initial scale
+          animate={{ x: "-50%" }} // Animate the scale
+          exit={{ x: "-150%" }}
+          transition={{ duration: 1 }} // Animation duration
         >
           <div className="rounded-lg bg-white shadow-md">
             {item.image ? (
               <LazyLoadImage
                 src={`${baseCDN}/${userParam}/${item.image}`}
-                className="max-w-full min-w-full h-auto"
+                className="w-full"
                 alt={`Slide ${index}`}
               />
             ) : (
@@ -47,6 +47,6 @@ const ImageCard = ({item, index}:Props)=>{
       </AnimatePresence>
     </>
   );
-}
+};
 
 export default ImageCard;

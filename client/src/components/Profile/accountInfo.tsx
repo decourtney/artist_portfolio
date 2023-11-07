@@ -8,7 +8,6 @@ import { AccountItem } from "../../utils/customClientTypes";
 import { AnimatePresence, motion } from "framer-motion";
 import CreateCategory from "./createCategory";
 import Carousel from "./carousel";
-import Carousel2 from "./carousel2";
 import BackButton from "./backButton";
 import DragnDrop from "./dragndrop";
 
@@ -74,7 +73,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                     </button>
                   )}
                 </div>
-                {/* <Carousel2
+                {/* <Carousel
                   accountItems={data.account.categories}
                   numberToDisplay={3}
                 /> */}
