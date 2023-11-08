@@ -3,7 +3,19 @@ import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Scrollbar, A11y, EffectFade, EffectFlip, EffectCards, EffectCoverflow, EffectCube, EffectCreative } from "swiper/modules";
+import {
+  Grid,
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  EffectFade,
+  EffectFlip,
+  EffectCards,
+  EffectCoverflow,
+  EffectCube,
+  EffectCreative,
+} from "swiper/modules";
 import ImageCard from "./imageCard";
 import { AccountItem } from "../../utils/customClientTypes";
 import "swiper/css";
@@ -24,28 +36,48 @@ const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
   console.log();
   // TODO Styles and anims
   return (
-    <section className="flex flex-grow justify-center items-center overflow-hidden">
-      <div className="w-full">
+    <section className="flex flex-grow justify-center items-center w-full overflow-hidden">
+      <div className="flex w-full">
         <Swiper
-          modules={[Navigation, Pagination, Scrollbar, A11y]}
-          spaceBetween={0}
-          slidesPerView={3}
+          modules={[Grid, Navigation, Scrollbar, A11y]}
+          spaceBetween={10}
+          slidesPerView={numberToDisplay}
+          grid={{ rows: 1 }}
           loop={true}
+          loopAddBlankSlides={true}
           navigation
-          // pagination={{ clickable: true }}
           // scrollbar={{ draggable: true }}
           onSlideChange={() => console.log("slide change")}
           onSwiper={(swiper: any) => console.log(swiper)}
         >
-          {accountItems.map((item, index) => (
-            <SwiperSlide key={index}>
-              <LazyLoadImage
-                src={`${baseCDN}/${userParam}/${item.image}`}
-                className="w-full"
-                alt={`Slide ${index}`}
-              />
-            </SwiperSlide>
-          ))}
+          {accountItems.map((item, index) => {
+            {
+              return item.image ? (
+                <SwiperSlide key={index}>
+                  <div className="flex justify-center items-center p-2 rounded-lg bg-plight shadow-md">
+                    <div className="flex justify-center items-center rounded-lg p-1 bg-white shadow-md">
+                      <img
+                        src={`${baseCDN}/${userParam}/${item.image}`}
+                        className="w-full"
+                        alt={`Slide ${index}`}
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ) : (
+                <SwiperSlide key={index}>
+                  <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-plight shadow-md">
+                    <div className="flex justify-center items-center w-full h-full rounded-lg bg-white shadow-md" onClick={()=>{}}>
+                      <div className="px-1 text-pdark font-bold text-[3vw]">
+                        <span>{item.name}</span>
+                      </div>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              );
+            }
+          })}
         </Swiper>
       </div>
     </section>

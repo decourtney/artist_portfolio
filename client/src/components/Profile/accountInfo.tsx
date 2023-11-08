@@ -24,7 +24,8 @@ interface AccountProps {
 
 const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   const { username: userParam } = useParams();
-  const [displayInput, setdisplayInput] = useState(false);
+  const [addCategory, setaddCategory] = useState(false);
+  const [addCollection, setAddCollection] = useState(false);
 
   const { loading, data } = useQuery(QUERY_ACCOUNT, {
     variables: { username: userParam },
@@ -35,7 +36,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   // TODO Style text colors
   return (
     <>
-      <section className="flex flex-col flex-grow w-full h-full font-medium text-plight">
+      <section className="flex flex-col w-full font-medium text-plight">
         {/* Category/Collection Count */}
         <div className="relative grid grid-cols-2 grid-rows-1 gap-0 mt-4 text-center after:content-[''] after:bg-psecondary after:absolute after:top-0 after:left-1/2 after:h-3/4 after:w-[1px]">
           <div className="relative pb-3 after:content-[''] after:bg-psecondary after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[1px] after:w-3/4">
@@ -49,42 +50,59 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
         </div>
 
         {/* Category/Collection Display */}
-        <div className="flex flex-col flex-grow mt-2 space-y-5">
+        <div className="flex flex-col mt-2 space-y-5">
           {/* TODO Add skeleton loading image */}
           {loading ? (
             <></>
           ) : (
             <>
+              {/* TODO Create popup for visiting/editing category info, display icon */}
               {/* Category Carousel */}
               <div className="flex flex-col">
                 <div className="flex justify-end items-center mb-1 text-xs">
-                  {displayInput ? (
-                    <CreateCategory setdisplayInput={setdisplayInput} />
+                  {addCategory ? (
+                    <CreateCategory setdisplayInput={setaddCategory} />
                   ) : (
                     <button
                       type="button"
                       className="flex flex-row items-center"
-                      onClick={() => setdisplayInput(true)}
+                      onClick={() => setaddCategory(true)}
                     >
-                      ADD
-                      <span className="material-symbols-rounded px-1 text-xl pointer-events-none">
+                      Add a Category
+                      <span className="material-symbols-rounded px-1 text-lg pointer-events-none">
                         add
                       </span>
                     </button>
                   )}
                 </div>
-                {/* <Carousel
+                <Carousel
                   accountItems={data.account.categories}
-                  numberToDisplay={3}
-                /> */}
+                  numberToDisplay={5}
+                />
               </div>
 
+              {/* TODO copy ADD button and create state */}
+              {/* Drag n Drop Uploader */}
+              <div className="flex flex-col flex-grow min-h-[150px]">
+                <div className="flex justify-end w-full pr-5">
+                  <span className="text-xs">Add a Collection</span>
+                </div>
+
+                <div className="flex flex-grow ">
+                  <DragnDrop />
+                </div>
+              </div>
+
+              {/* TODO create popup for editing collection info or for deleting */}
               {/* Collections Display */}
-              {/* TODO Figure out what to display for Collections. Maybe slide scroll and lazy load images from gallery */}
-              <Carousel
-                accountItems={data.account.products}
-                numberToDisplay={3}
-              />
+              <div className="flex flex-col">
+                <div className="flex justify-center items-center mb-1 text-xs">
+                  <Carousel
+                    accountItems={data.account.products}
+                    numberToDisplay={1}
+                  />
+                </div>
+              </div>
             </>
           )}
         </div>

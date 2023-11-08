@@ -25,7 +25,7 @@ const DragnDrop = () => {
   });
 
   return (
-    <div className="flex flex-grow w-full rounded-2xl font-medium text-pdark bg-plight">
+    <div className="flex w-full rounded-2xl font-medium text-pdark bg-plight">
       <div {...getRootProps()} className="flex justify-center items-center w-full">
         <input {...getInputProps()} />
           {isDragActive ? (
