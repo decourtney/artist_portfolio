@@ -30,14 +30,14 @@ interface CarouselProps {
   numberToDisplay: number;
 }
 
-const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
+const Slider = ({ accountItems, numberToDisplay }: CarouselProps) => {
   const { username: userParam } = useParams();
 
   console.log();
   // TODO Styles and anims
   return (
-    <section className="flex flex-grow justify-center items-center w-full overflow-hidden">
-      <div className="flex w-full">
+    <section className="flex w-full">
+      {/* <div className="flex w-full"> */}
         <Swiper
           modules={[Grid, Navigation, Scrollbar, A11y]}
           spaceBetween={10}
@@ -54,11 +54,11 @@ const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
             {
               return item.image ? (
                 <SwiperSlide key={index}>
-                  <div className="flex justify-center items-center p-2 rounded-lg bg-plight shadow-md">
-                    <div className="flex justify-center items-center rounded-lg p-1 bg-white shadow-md">
+                  <div className="w-fit p-2 rounded-lg bg-plight shadow-md">
+                    <div className="flex justify-center items-center w-fit p-1 rounded-lg bg-slate-50 shadow-md">
                       <img
                         src={`${baseCDN}/${userParam}/${item.image}`}
-                        className="w-full"
+                        className=""
                         alt={`Slide ${index}`}
                         loading="lazy"
                       />
@@ -67,8 +67,11 @@ const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
                 </SwiperSlide>
               ) : (
                 <SwiperSlide key={index}>
-                  <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-plight shadow-md">
-                    <div className="flex justify-center items-center w-full h-full rounded-lg bg-white shadow-md" onClick={()=>{}}>
+                  <div className=" w-full h-full p-1 rounded-lg bg-plight shadow-md">
+                    <div
+                      className="flex justify-center items-center w-full h-full rounded-lg bg-white shadow-md"
+                      onClick={() => {}}
+                    >
                       <div className="px-1 text-pdark font-bold text-[3vw]">
                         <span>{item.name}</span>
                       </div>
@@ -79,9 +82,9 @@ const Carousel = ({ accountItems, numberToDisplay }: CarouselProps) => {
             }
           })}
         </Swiper>
-      </div>
+      {/* </div> */}
     </section>
   );
 };
 
-export default Carousel;
+export default Slider;

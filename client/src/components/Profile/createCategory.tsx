@@ -5,7 +5,7 @@ import { QUERY_ACCOUNT } from "../../utils/queries";
 import { ADD_CATEGORY } from "../../utils/mutations";
 import { UserData } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
-import Carousel from "./carousel";
+import Slider from "./slider";
 import BackButton from "./backButton";
 import DragnDrop from "./dragndrop";
 
@@ -23,7 +23,7 @@ const CreateCategory = ({ setdisplayInput }: CreateCatProps) => {
       { query: QUERY_ACCOUNT, variables: { username: userParam } },
     ],
   });
-  
+
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
