@@ -5,10 +5,17 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { QUERY_ACCOUNT } from "../../utils/queries";
 import { ADD_CATEGORY } from "../../utils/mutations";
 import { AccountItem } from "../../utils/customClientTypes";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useAnimation,
+  useAnimationControls,
+} from "framer-motion";
 import CreateCategory from "./createCategory";
 import Slider from "./slider";
 import BackButton from "./backButton";
+import CollapsibleButton from "./collapsibleButton"
 import DragnDrop from "./dragndrop";
 
 // TODO Remove and just use .env
@@ -24,12 +31,20 @@ interface AccountProps {
 
 const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   const { username: userParam } = useParams();
-  const [addCategory, setaddCategory] = useState(false);
+  const [addCategory, setAddCategory] = useState(false);
   const [addCollection, setAddCollection] = useState(false);
+  const controls = useAnimationControls();
+
+  const categoryNumToDisplay = 4;
+  const collectionNumToDisplay = 1;
 
   const { loading, data } = useQuery(QUERY_ACCOUNT, {
     variables: { username: userParam },
   });
+
+  const handleToggle = async () => {
+    controls.start("open");
+  };
 
   // if (!loading) console.log("query account:", data);
 
@@ -61,10 +76,10 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
               <div className="flex flex-col">
                 <div className="flex justify-end items-center mb-1 text-xs">
                   {addCategory ? (
-                    <CreateCategory setdisplayInput={setaddCategory} />
+                    <CreateCategory setdisplayInput={setAddCategory} />
                   ) : (
-                    <button type="button" onClick={() => setaddCategory(true)}>
-                      Add a Category
+                    <button type="button" onClick={() => setAddCategory(true)}>
+                      Add Category
                       <span className="material-symbols-rounded px-1 text-lg align-middle pointer-events-none">
                         add
                       </span>
@@ -73,7 +88,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                 </div>
                 <Slider
                   accountItems={data.account.categories}
-                  numberToDisplay={5}
+                  numberToDisplay={categoryNumToDisplay}
                 />
               </div>
 
@@ -98,21 +113,35 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                 </div>
               ) : (
                 <div className="flex flex-col flex-grow">
-                  <div className="flex justify-end items-center mb-1 text-xs">
-                    <button
+                  {/* TODO Finish make button more modular */}
+                  <CollapsibleButton setAddCollection={setAddCollection} />
+                  {/* <div className="flex justify-end items-center mb-1 text-xs">
+                    <motion.div
+                      className="overflow-hidden whitespace-nowrap"
+                      animate={controls}
+                      variants={{
+                        open: { maxWidth: 100 },
+                        close: { maxWidth: 0 },
+                      }}
+                      initial="close"
+                    >
+                      <p>Add Collection</p>
+                    </motion.div>
+                    <motion.button
                       type="button"
+                      onHoverStart={() => controls.start("open")}
+                      onHoverEnd={() => controls.start("close")}
                       onClick={() => setAddCollection(true)}
                     >
-                      Add a Collection
-                      <span className="material-symbols-rounded px-1 text-lg align-middle pointer-events-none">
+                      <span className="material-symbols-rounded px-1 text-lg pointer-events-none">
                         add
                       </span>
-                    </button>
-                  </div>
+                    </motion.button>
+                  </div> */}
                   <div className="flex justify-center items-center mb-1 text-xs">
                     <Slider
                       accountItems={data.account.products}
-                      numberToDisplay={1}
+                      numberToDisplay={collectionNumToDisplay}
                     />
                   </div>
                 </div>

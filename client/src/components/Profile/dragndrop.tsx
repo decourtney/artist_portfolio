@@ -13,7 +13,7 @@ const DragnDrop = ({ reportSuccess }: DragnProp) => {
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     // console.log(acceptedFiles);
     try {
-      // const response = await upload({ variables: { files: acceptedFiles } });
+      const response = await upload({ variables: { files: acceptedFiles } });
       // console.log(response);
 
       // Return 'false' to close DragnDrop
