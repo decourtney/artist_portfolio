@@ -632,6 +632,10 @@ video {
   z-index: 50;
 }
 
+.m-auto {
+  margin: auto;
+}
+
 .mx-10 {
   margin-left: 2.5rem;
   margin-right: 2.5rem;
@@ -677,6 +681,11 @@ video {
   margin-bottom: 1%;
 }
 
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -717,8 +726,24 @@ video {
   margin-top: 1.25rem;
 }
 
+.ml-10 {
+  margin-left: 2.5rem;
+}
+
+.mr-10 {
+  margin-right: 2.5rem;
+}
+
+.block {
+  display: block;
+}
+
 .inline-block {
   display: inline-block;
+}
+
+.inline {
+  display: inline;
 }
 
 .flex {
@@ -731,10 +756,6 @@ video {
 
 .grid {
   display: grid;
-}
-
-.hidden {
-  display: none;
 }
 
 .h-10 {
@@ -769,10 +790,6 @@ video {
   height: 100%;
 }
 
-.max-h-0 {
-  max-height: 0px;
-}
-
 .min-h-screen {
   min-height: 100vh;
 }
@@ -803,8 +820,20 @@ video {
   width: 100%;
 }
 
+.w-screen {
+  width: 100vw;
+}
+
+.w-36 {
+  width: 9rem;
+}
+
 .max-w-full {
   max-width: 100%;
+}
+
+.max-w-2xl {
+  max-width: 42rem;
 }
 
 .flex-grow {
@@ -901,6 +930,10 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-ellipsis {
+  text-overflow: ellipsis;
 }
 
 .whitespace-nowrap {
@@ -1014,9 +1047,9 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
-.bg-gray-100 {
+.bg-red-400 {
   --tw-bg-opacity: 1;
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity));
 }
 
 .p-1 {
@@ -1141,6 +1174,20 @@ video {
   line-height: 1rem;
 }
 
+.text-9xl {
+  font-size: 8rem;
+  line-height: 1;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.text-\[3vh\] {
+  font-size: 3vh;
+}
+
 .font-black {
   font-weight: 900;
 }
@@ -1250,10 +1297,6 @@ video {
   transition-duration: 150ms;
 }
 
-.duration-200 {
-  transition-duration: 200ms;
-}
-
 body::-webkit-scrollbar {
   display: none;
 }
@@ -1313,6 +1356,14 @@ Checkmark
   right: 101%;
   content: "\2717";
   color: red;
+}
+
+.placeholder\:h-full::-webkit-input-placeholder {
+  height: 100%;
+}
+
+.placeholder\:h-full::placeholder {
+  height: 100%;
 }
 
 .after\:absolute::after {

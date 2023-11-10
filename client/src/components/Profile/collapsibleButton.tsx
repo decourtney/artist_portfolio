@@ -1,57 +1,56 @@
-import { useCallback, Dispatch, SetStateAction } from "react";
-import { Navigate, useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import { QUERY_ACCOUNT } from "../../utils/queries";
-import { ADD_CATEGORY } from "../../utils/mutations";
-import { AccountItem } from "../../utils/customClientTypes";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useAnimation,
-  useAnimationControls,
-} from "framer-motion";
-import CreateCategory from "./createCategory";
-import Slider from "./slider";
-import BackButton from "./backButton";
-import DragnDrop from "./dragndrop";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { motion, useAnimationControls } from "framer-motion";
 
 interface ButtonProps {
-  setAddCollection: Dispatch<SetStateAction<boolean>>;
+  handleOnClick: Dispatch<SetStateAction<boolean>>;
+  display: boolean;
+  title: string;
+  symbol: string;
 }
 
-const CollapsibleButton = ({setAddCollection}:ButtonProps) => {
+const CollapsibleButton = ({
+  handleOnClick,
+  display,
+  title,
+  symbol,
+}: ButtonProps) => {
   const controls = useAnimationControls();
+  const [isHover, setIsHover] = useState(false);
 
-  const handleToggle = async () => {
-    controls.start("open");
-  };
+  // Use UseEffect to manipulate controls
+  useEffect(() => {
+    if(isHover)
+      controls.start("open")
+    else
+      controls.start("close")
+
+  },[isHover]);
 
   return (
-    <div className="flex justify-end items-center mb-1 text-xs">
-      <motion.div
-        className="overflow-hidden whitespace-nowrap"
-        animate={controls}
-        variants={{
-          open: { maxWidth: 100 },
-          close: { maxWidth: 0 },
-        }}
-        initial="close"
-      >
-        <p>Add Collection</p>
-      </motion.div>
+    <section className="inline-flex items-center text-xs">
       <motion.button
         type="button"
-        onHoverStart={() => controls.start("open")}
-        onHoverEnd={() => controls.start("close")}
-        onClick={() => setAddCollection(true)}
+        className="inline-flex items-center"
+        onHoverStart={() => setIsHover(true)}
+        onHoverEnd={() => setIsHover(false)}
+        onClick={() => handleOnClick(!display)}
       >
+        <motion.div
+          className="overflow-hidden whitespace-nowrap"
+          initial="close"
+          animate={controls}
+          variants={{
+            open: { maxWidth: 100 },
+            close: { maxWidth: 0 },
+          }}
+        >
+          <p>{title}</p>
+        </motion.div>
         <span className="material-symbols-rounded px-1 text-lg pointer-events-none">
-          add
+          {symbol}
         </span>
       </motion.button>
-    </div>
+    </section>
   );
 };
 

@@ -1,19 +1,14 @@
 import { useState, useRef } from "react";
-import { Navigate, useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client";
+import { useParams } from "react-router-dom";
+import { useMutation } from "@apollo/client";
 import { QUERY_ACCOUNT } from "../../utils/queries";
 import { ADD_CATEGORY } from "../../utils/mutations";
-import { UserData } from "../../utils/customClientTypes";
-import { motion } from "framer-motion";
-import Slider from "./slider";
-import BackButton from "./backButton";
-import DragnDrop from "./dragndrop";
 
 interface CreateCatProps {
-  setdisplayInput: (setdisplayInput: boolean) => void;
+  setAddCategory: (setdisplayInput: boolean) => void;
 }
 
-const CreateCategory = ({ setdisplayInput }: CreateCatProps) => {
+const CreateCategory = ({ setAddCategory }: CreateCatProps) => {
   const { username: userParam } = useParams();
   const [categoryName, setCategoryName] = useState<String | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -51,7 +46,7 @@ const CreateCategory = ({ setdisplayInput }: CreateCatProps) => {
 
     if (formRef.current) formRef.current.reset();
     setCategoryName(null);
-    setdisplayInput(false);
+    setAddCategory(false);
   };
 
   return (

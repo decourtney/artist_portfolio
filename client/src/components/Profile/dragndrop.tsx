@@ -17,7 +17,7 @@ const DragnDrop = ({ reportSuccess }: DragnProp) => {
       // console.log(response);
 
       // Return 'false' to close DragnDrop
-      reportSuccess(!true);
+      reportSuccess(false);
     } catch (err) {
       console.log(err);
     }

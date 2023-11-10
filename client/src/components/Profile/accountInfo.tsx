@@ -15,7 +15,7 @@ import {
 import CreateCategory from "./createCategory";
 import Slider from "./slider";
 import BackButton from "./backButton";
-import CollapsibleButton from "./collapsibleButton"
+import CollapsibleButton from "./collapsibleButton";
 import DragnDrop from "./dragndrop";
 
 // TODO Remove and just use .env
@@ -36,15 +36,11 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   const controls = useAnimationControls();
 
   const categoryNumToDisplay = 4;
-  const collectionNumToDisplay = 1;
+  const collectionNumToDisplay = 2;
 
   const { loading, data } = useQuery(QUERY_ACCOUNT, {
     variables: { username: userParam },
   });
-
-  const handleToggle = async () => {
-    controls.start("open");
-  };
 
   // if (!loading) console.log("query account:", data);
 
@@ -65,7 +61,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
         </div>
 
         {/* Category/Collection Display */}
-        <div className="flex flex-col flex-grow mt-2 space-y-5">
+        <div className="flex flex-col flex-grow mt-5 space-y-5">
           {/* TODO Add skeleton loading image */}
           {loading ? (
             <></>
@@ -74,78 +70,64 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
               {/* TODO Create popup for visiting/editing category info, display icon */}
               {/* Category Slider */}
               <div className="flex flex-col">
-                <div className="flex justify-end items-center mb-1 text-xs">
-                  {addCategory ? (
-                    <CreateCategory setdisplayInput={setAddCategory} />
-                  ) : (
-                    <button type="button" onClick={() => setAddCategory(true)}>
-                      Add Category
-                      <span className="material-symbols-rounded px-1 text-lg align-middle pointer-events-none">
-                        add
-                      </span>
-                    </button>
-                  )}
+                {addCategory ? (
+                  <div className="flex justify-end items-center mb-1 ">
+                    <CreateCategory setAddCategory={setAddCategory} />
+                  </div>
+                ) : (
+                  <div className="flex justify-end items-center mb-1 text-xs">
+                    <CollapsibleButton
+                      handleOnClick={setAddCategory}
+                      display={addCategory}
+                      title={"Add Category"}
+                      symbol={"add"}
+                    />
+                  </div>
+                )}
+                <div className="flex flex-grow w-full mb-1 text-xs bg-blue-400">
+                  <Slider
+                    accountItems={data.account.categories}
+                    numberToDisplay={categoryNumToDisplay}
+                  />
                 </div>
-                <Slider
-                  accountItems={data.account.categories}
-                  numberToDisplay={categoryNumToDisplay}
-                />
               </div>
 
               {/* TODO create popup for editing collection info or for deleting */}
-              {/* Collections Display */}
-              {addCollection ? (
-                <div className="flex flex-col flex-grow">
-                  <div className="flex justify-end items-center mb-1 text-xs">
-                    <button
-                      type="button"
-                      onClick={() => setAddCollection(false)}
-                    >
-                      Close
-                      <span className="material-symbols-rounded px-1 text-lg align-middle pointer-events-none">
-                        remove
-                      </span>
-                    </button>
-                  </div>
-                  <div className="flex flex-grow p-2 rounded-2xl bg-plight">
-                    <DragnDrop reportSuccess={setAddCollection} />
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col flex-grow">
-                  {/* TODO Finish make button more modular */}
-                  <CollapsibleButton setAddCollection={setAddCollection} />
-                  {/* <div className="flex justify-end items-center mb-1 text-xs">
-                    <motion.div
-                      className="overflow-hidden whitespace-nowrap"
-                      animate={controls}
-                      variants={{
-                        open: { maxWidth: 100 },
-                        close: { maxWidth: 0 },
-                      }}
-                      initial="close"
-                    >
-                      <p>Add Collection</p>
-                    </motion.div>
-                    <motion.button
-                      type="button"
-                      onHoverStart={() => controls.start("open")}
-                      onHoverEnd={() => controls.start("close")}
-                      onClick={() => setAddCollection(true)}
-                    >
-                      <span className="material-symbols-rounded px-1 text-lg pointer-events-none">
-                        add
-                      </span>
-                    </motion.button>
-                  </div> */}
-                  <div className="flex justify-center items-center mb-1 text-xs">
-                    <Slider
-                      accountItems={data.account.products}
-                      numberToDisplay={collectionNumToDisplay}
-                    />
-                  </div>
-                </div>
-              )}
+              {/* Collections Slider */}
+              <div className="flex flex-col flex-grow">
+                {addCollection ? (
+                  <>
+                    <div className="flex justify-end items-center mb-1 text-xs">
+                      <CollapsibleButton
+                        handleOnClick={setAddCollection}
+                        display={addCollection}
+                        title={"Close"}
+                        symbol={"remove"}
+                      />
+                    </div>
+                    <div className="flex flex-grow p-2 rounded-2xl bg-plight">
+                      <DragnDrop reportSuccess={setAddCollection} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-end items-center mb-1 text-xs">
+                      <CollapsibleButton
+                        handleOnClick={setAddCollection}
+                        display={addCollection}
+                        title={"Add Collection"}
+                        symbol={"add"}
+                      />
+                    </div>
+                    <div className="flex justify-center items-center w-full">
+                      <Slider
+                        accountItems={data.account.products}
+                        numberToDisplay={collectionNumToDisplay}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
             </>
           )}
         </div>
