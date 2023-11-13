@@ -50,20 +50,18 @@ const CreateCategory = ({ setAddCategory }: CreateCatProps) => {
   };
 
   return (
-    <>
-      <form ref={formRef} className="flex flex-row" onSubmit={handleFormSubmit}>
-        <input
-          className="h-7 rounded-l-md text-center text-pdark bg-plight"
-          onChange={(e) => setCategoryName(e.target.value)}
-        />
-        <button type="submit" className="flex flex-row items-center">
-          {/* TODO Create functionality for 'ADD' category button */}
-          <span className="material-symbols-rounded px-1 text-xl rounded-r-md bg-green-500">
-            add
-          </span>
-        </button>
-      </form>
-    </>
+    <form ref={formRef} className="flex flex-row" onSubmit={handleFormSubmit}>
+      <input
+        className="h-7 rounded-l-md text-center text-pdark bg-plight"
+        onChange={(e) => setCategoryName(e.target.value)}
+      />
+      <button type="submit" className="flex flex-row items-center">
+        {/* TODO Create functionality for 'ADD' category button */}
+        <span className="material-symbols-rounded px-1 text-xl rounded-r-md bg-green-500">
+          add
+        </span>
+      </button>
+    </form>
   );
 };
 

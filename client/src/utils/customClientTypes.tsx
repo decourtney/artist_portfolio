@@ -26,6 +26,7 @@ export interface AccountData {
       categories: [
         {
           name: String;
+          image: String
         }
       ];
     }
@@ -34,6 +35,7 @@ export interface AccountData {
   categories: [
     {
       name: String;
+      image: String;
     }
   ];
 }
@@ -45,6 +47,7 @@ export interface AccountItem {
   categories: [
     {
       name: String;
+      image: String;
     }
   ];
 }

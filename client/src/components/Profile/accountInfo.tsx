@@ -35,7 +35,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   const [addCollection, setAddCollection] = useState(false);
   const controls = useAnimationControls();
 
-  const categoryNumToDisplay = 4;
+  const categoryNumToDisplay = 5;
   const collectionNumToDisplay = 2;
 
   const { loading, data } = useQuery(QUERY_ACCOUNT, {
@@ -84,9 +84,9 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                     />
                   </div>
                 )}
-                <div className="flex flex-grow w-full mb-1 text-xs bg-blue-400">
+                <div className="flex flex-grow w-full mb-1 text-xs">
                   <Slider
-                    accountItems={data.account.categories}
+                    itemsToDisplay={data.account.categories}
                     numberToDisplay={categoryNumToDisplay}
                   />
                 </div>
@@ -121,7 +121,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                     </div>
                     <div className="flex justify-center items-center w-full">
                       <Slider
-                        accountItems={data.account.products}
+                        itemsToDisplay={data.account.products}
                         numberToDisplay={collectionNumToDisplay}
                       />
                     </div>

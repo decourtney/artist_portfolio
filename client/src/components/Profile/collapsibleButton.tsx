@@ -19,12 +19,9 @@ const CollapsibleButton = ({
 
   // Use UseEffect to manipulate controls
   useEffect(() => {
-    if(isHover)
-      controls.start("open")
-    else
-      controls.start("close")
-
-  },[isHover]);
+    if (isHover) controls.start("open");
+    else controls.start("close");
+  }, [isHover]);
 
   return (
     <section className="inline-flex items-center text-xs">

@@ -30,11 +30,13 @@ export const QUERY_ACCOUNT = gql`
         image
         categories {
           name
+          image
         }
       }
       categoryCount
       categories {
         name
+        image
       }
     }
   }
@@ -58,11 +60,13 @@ export const QUERY_ME = gql`
         categories {
           _id
           name
+          image
         }
       }
       categories {
         _id
         name
+        image
       }
     }
   }
