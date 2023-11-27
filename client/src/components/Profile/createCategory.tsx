@@ -53,6 +53,7 @@ const CreateCategory = ({ setAddCategory }: CreateCatProps) => {
     <form ref={formRef} className="flex flex-row" onSubmit={handleFormSubmit}>
       <input
         className="h-7 rounded-l-md text-center text-pdark bg-plight"
+        placeholder="Category Name"
         onChange={(e) => setCategoryName(e.target.value)}
       />
       <button type="submit" className="flex flex-row items-center">

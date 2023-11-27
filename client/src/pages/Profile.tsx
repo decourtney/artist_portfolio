@@ -114,6 +114,7 @@ const Profile = () => {
   return (
     <>
       {Auth.loggedIn() ? (
+        // TODO attempt to animate background with motion
         <section className="flex flex-col flex-grow bg-pdark">
           <div
             id="profile_card"

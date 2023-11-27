@@ -33,7 +33,12 @@ const Slider = ({ itemsToDisplay, numberToDisplay }: SliderProps) => {
       // onSwiper={(swiper: any) => console.log(swiper)}
     >
       {itemsToDisplay.map((item, index) => (
-        <SwiperSlide key={index} onClick={() => console.log(item)}>
+        <SwiperSlide
+          key={index}
+          onClick={() =>
+            console.log("Swiperslide onclick route to /gallery/:collection passing item as arg")
+          }
+        >
           <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-plight shadow-md">
             <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-slate-50 shadow-md">
               {item.image ? (

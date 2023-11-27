@@ -49,7 +49,7 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
   }, [isPresent]);
 
   return (
-    <motion.div
+    <motion.section
       ref={navCardRef}
       className="absolute flex flex-col justify-center items-center w-full h-[100vh] space-y-2 font-black text-[5vh] text-dark bg-light pointer-events-auto z-20"
       onClick={handleOnNavClick}
@@ -123,7 +123,7 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
           </motion.p>
         )}
       </Link>
-    </motion.div>
+    </motion.section>
   );
 };
 
