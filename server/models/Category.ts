@@ -3,6 +3,7 @@ import { Schema, model, Model, Document } from "mongoose";
 // Define an interface for the Category document
 interface ICategory extends Document{
   name: string;
+  image: string;
 }
 
 const categorySchema = new Schema<ICategory>({
@@ -11,6 +12,11 @@ const categorySchema = new Schema<ICategory>({
     required: true,
     trim: true,
   },
+  image:{
+    type: String,
+    required: false,
+    trim: true,
+  }
 });
 
 // Create the Category model with the ICategory interface

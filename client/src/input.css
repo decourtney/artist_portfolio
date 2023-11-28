@@ -12,6 +12,10 @@ body {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+
+  /* overflow-x: hidden;
+  background-color: rgb(92 131 116); */
+
 }
 
 .profile_hero_image::before {
@@ -40,7 +44,56 @@ body {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-Checkmark
+.title-underline::after {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  content: "";
+  background-color: rgb(91, 143, 185, 1);
+  width: 100%;
+  height: 2px;
+}
+
+.fade-right::before {
+  position: absolute;
+  top: 0;
+  right: -1px;
+  background: linear-gradient(
+    to right,
+    rgb(3, 0, 28, 0) 0%,
+    rgb(3, 0, 28, 1) 100%
+  );
+  width: 50%;
+  height: 100%;
+  content: "";
+  z-index: 10;
+}
+
+.edge-fade::before {
+  position: absolute;
+  top: 0;
+  left: -1px;
+  background: linear-gradient(to right, rgb(3, 0, 28, 1) 0%, transparent 25%);
+  width: 100px;
+  height: 100%;
+  content: "";
+  z-index: 10;
+}
+
+.edge-fade::after {
+  position: absolute;
+  top: 0;
+  right: -1px;
+  background: linear-gradient(to right, transparent 75%, rgb(3, 0, 28, 1) 100%);
+  width: 100px;
+  height: 100%;
+  content: "";
+  z-index: 10;
+}
+
+.testing::after {
+}
+
 .checkmark::before {
   position: absolute;
   top: 50%;

@@ -6,6 +6,7 @@ const typeDefs = gql`
   type Category {
     _id: ID
     name: String
+    image: String
   }
 
   type Product {
@@ -73,7 +74,7 @@ const typeDefs = gql`
     deleteProduct(product: String!): Boolean
 
     addCategory(username: String!, category: String!): User
-    updateCategory(username: String!, category: String!): User
+    updateCategory(username: String!, category: String!, image: String): User
     deleteCategory(username: String!, category: String!): User
   }
 `;

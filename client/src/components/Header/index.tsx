@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Nav from "./nav";
 import Auth from "../../utils/auth";
 
@@ -33,6 +30,32 @@ const Header = () => {
                 <Link to="/">G</Link>
               </p>
             </motion.button>
+          </div>
+
+          {/* TODO temp links for testing */}
+          <div className="flex flex-row space-x-5">
+            <Link to={"/"}>
+              <motion.p
+                className="drop-shadow-[3px_3px_2px_#183D3D]"
+                whileHover={{
+                  scale: 1.1,
+                  filter: "drop-shadow(5px 8px 6px #183D3D)",
+                }}
+              >
+                Home
+              </motion.p>
+            </Link>
+            <Link to={"/gallery"}>
+              <motion.p
+                className="drop-shadow-[3px_3px_2px_#183D3D]"
+                whileHover={{
+                  scale: 1.1,
+                  filter: "drop-shadow(5px 8px 6px #183D3D)",
+                }}
+              >
+                Gallery
+              </motion.p>
+            </Link>
           </div>
 
           <div className="flex justify-end items-center w-full">
