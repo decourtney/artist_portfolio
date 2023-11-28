@@ -785,6 +785,10 @@ video {
   width: 20rem;
 }
 
+.w-\[50\%\] {
+  width: 50%;
+}
+
 .w-fit {
   width: -webkit-fit-content;
   width: -moz-fit-content;
@@ -793,6 +797,14 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.max-w-\[\] {
+  max-width: ;
+}
+
+.max-w-\[50\%\] {
+  max-width: 50%;
 }
 
 .flex-grow {
@@ -989,14 +1001,14 @@ video {
   background-color: rgb(182 234 218 / var(--tw-bg-opacity));
 }
 
-.bg-primary {
-  --tw-bg-opacity: 1;
-  background-color: rgb(92 131 116 / var(--tw-bg-opacity));
-}
-
 .bg-psecondary {
   --tw-bg-opacity: 1;
   background-color: rgb(91 143 185 / var(--tw-bg-opacity));
+}
+
+.bg-secondary {
+  --tw-bg-opacity: 1;
+  background-color: rgb(24 61 61 / var(--tw-bg-opacity));
 }
 
 .bg-slate-50 {
@@ -1255,6 +1267,8 @@ body {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+  /* overflow-x: hidden;
+  background-color: rgb(92 131 116); */
 }
 
 .profile_hero_image::before {
@@ -1313,11 +1327,7 @@ body {
   position: absolute;
   top: 0;
   left: -1px;
-  background: linear-gradient(
-    to right,
-    rgb(3, 0, 28, 1) 0%,
-    transparent 25%
-  );
+  background: linear-gradient(to right, rgb(3, 0, 28, 1) 0%, transparent 25%);
   width: 100px;
   height: 100%;
   content: "";
@@ -1328,18 +1338,14 @@ body {
   position: absolute;
   top: 0;
   right: -1px;
-  background: linear-gradient(
-    to right,
-    transparent 75%,
-    rgb(3, 0, 28, 1) 100%
-  );
+  background: linear-gradient(to right, transparent 75%, rgb(3, 0, 28, 1) 100%);
   width: 100px;
   height: 100%;
   content: "";
   z-index: 10;
 }
 
-.testing::after{
+.testing::after {
 }
 
 .checkmark::before {

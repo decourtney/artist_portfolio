@@ -14,6 +14,7 @@ interface NavProps {
   handleOnNavClick: () => void;
 }
 
+// TODO Change Nav animation speed and maybe design
 const Nav = ({ handleOnNavClick }: NavProps) => {
   const [isPresent, safeToRemove] = usePresence();
   const [navCardRef, animateNavCardRef] = useAnimate();

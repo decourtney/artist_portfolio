@@ -12,6 +12,10 @@ body {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+
+  /* overflow-x: hidden;
+  background-color: rgb(92 131 116); */
+
 }
 
 .profile_hero_image::before {
@@ -69,11 +73,7 @@ body {
   position: absolute;
   top: 0;
   left: -1px;
-  background: linear-gradient(
-    to right,
-    rgb(3, 0, 28, 1) 0%,
-    transparent 25%
-  );
+  background: linear-gradient(to right, rgb(3, 0, 28, 1) 0%, transparent 25%);
   width: 100px;
   height: 100%;
   content: "";
@@ -84,19 +84,14 @@ body {
   position: absolute;
   top: 0;
   right: -1px;
-  background: linear-gradient(
-    to right,
-    transparent 75%,
-    rgb(3, 0, 28, 1) 100%
-  );
+  background: linear-gradient(to right, transparent 75%, rgb(3, 0, 28, 1) 100%);
   width: 100px;
   height: 100%;
   content: "";
   z-index: 10;
 }
 
-.testing::after{
-
+.testing::after {
 }
 
 .checkmark::before {

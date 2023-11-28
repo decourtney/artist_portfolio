@@ -12,6 +12,7 @@ import { createUploadLink } from "apollo-upload-client";
 import Header from "./components/header";
 import Footer from "./components/footer";
 import AnimatedRoutes from "./routes";
+import { AnimatePresence } from "framer-motion";
 
 // Construct main GraphQL API endpoint
 const httpLink = createHttpLink({
@@ -42,11 +43,7 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div className="flex flex-col min-h-screen scrollbar-hide">
-          <Header />
-          <AnimatedRoutes />
-        </div>
-        <Footer />
+        <AnimatedRoutes />
       </Router>
     </ApolloProvider>
   );

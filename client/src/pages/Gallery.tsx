@@ -9,19 +9,15 @@ import {
 import { LoggedInUser } from "../utils/customClientTypes";
 
 const Gallery = () => {
-  const [isPresent, safeToRemove] = usePresence();
-  const [sectionRef, animateSectionRef] = useAnimate();
-  const loggedInUser = Auth.getProfile() as LoggedInUser;
-
   return (
     <motion.section
-      initial={{ x: "100%" }}
-      animate={{ x: 0 }}
+      initial={{ x: "-100%" }}
+      animate={{ x: "0%" }}
       exit={{ x: "-100%" }}
       transition={{ duration: 1 }}
-      className="flex flex-col flex-grow bg-dark"
+      className="absolute flex justify-center items-center w-full min-h-screen bg-dark"
     >
-      <div className="flex flex-grow justify-center items-center">
+      <div className="flex justify-center items-center">
         <p className="text-lg font-black">Gallery</p>
       </div>
     </motion.section>

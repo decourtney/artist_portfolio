@@ -22,31 +22,33 @@ import Login from "../pages/Login";
 import Profile from "../pages/Profile";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, LayoutGroup } from "framer-motion";
 
-const AnimatedRoutes = ()=>{
-    const location = useLocation();
+const AnimatedRoutes = () => {
+  const location = useLocation();
 
-    return (
-      <>
-        <AnimatePresence >
-          <Routes key={location.pathname} location={location}>
-            {/* <Route path="/" element={<Profile />} />{" "} */}
-            {/* This is just for initial development stages. delete when necessary */}
-            <Route path="/" element={<Home />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/gallery/:collection" element={<></>} />
-            <Route path="/gallery/:category" element={<></>} />
-            <Route path="/gallery/:category/:collection" element={<></>} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/profile/:username" element={<Profile />} />
-            <Route path="/profile/:username/:content" element={<Profile />} />
-          </Routes>
-        </AnimatePresence>
-      </>
-    );
-}
+  return (
+    <>
+      <Header />
+      <AnimatePresence>
+        <Routes location={location} key={location.pathname}>
+          {/* <Route path="/" element={<Profile />} />{" "} */}
+          {/* This is just for initial development stages. delete when necessary */}
+          <Route path="/" element={<Home />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/gallery/:collection" element={<></>} />
+          <Route path="/gallery/:category" element={<></>} />
+          <Route path="/gallery/:category/:collection" element={<></>} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile/:username" element={<Profile />} />
+          <Route path="/profile/:username/:content" element={<Profile />} />
+        </Routes>
+      </AnimatePresence>
+      <Footer />
+    </>
+  );
+};
 
 export default AnimatedRoutes;
