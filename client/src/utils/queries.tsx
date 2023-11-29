@@ -42,29 +42,29 @@ export const QUERY_ACCOUNT = gql`
   }
 `;
 
-export const QUERY_ME = gql`
-  query me {
-    me {
-      _id
-      firstName
-      lastName
-      fullname
-      username
-      email
-      profilePic
-      products {
-        _id
+export const QUERY_CATEGORIES = gql`
+  query categories($username: String!) {
+    categories(username: $username) {
+      categories {
         name
-        description
         image
-        categories {
-          _id
+        products {
           name
+          description
           image
         }
       }
+    }
+  }
+`;
+
+export const QUERY_CATEGORY = gql`
+  query category($category: String!) {
+    category(category: $category) {
+      name
+      description
+      image
       categories {
-        _id
         name
         image
       }

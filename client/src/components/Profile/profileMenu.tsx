@@ -1,8 +1,3 @@
-import { useState, useRef } from "react";
-import { useMutation } from "@apollo/client";
-import { UPDATE_USER } from "../../utils/mutations";
-import { UserData } from "../../utils/customClientTypes";
-import { motion } from "framer-motion";
 import MenuButton from "./menuButton";
 
 interface MenuProps {
