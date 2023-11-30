@@ -42,9 +42,9 @@ export const QUERY_ACCOUNT = gql`
   }
 `;
 
-export const QUERY_CATEGORIES = gql`
-  query categories($username: String!) {
-    categories(username: $username) {
+export const QUERY_USER_CATEGORIES = gql`
+  query userCategories($username: String!) {
+    userCategories(username: $username) {
       categories {
         name
         image

@@ -47,7 +47,7 @@ const typeDefs = gql`
   type Query {
     user(username: String!): User
     account(username: String!): User
-    categories(username: String!): [User]
+    userCategories(username: String!): User
     category(category: String!): [Product]
   }
 

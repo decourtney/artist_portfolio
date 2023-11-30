@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
-import { Navigate, useParams, useNavigate } from "react-router-dom";
+import { Navigate, useParams, useNavigate, useLocation } from "react-router-dom";
 import Auth from "../utils/auth";
+import { useQuery } from "@apollo/client";
+import { QUERY_CATEGORY, QUERY_USER_CATEGORIES } from "../utils/queries";
 import {
   motion,
   useAnimate,
@@ -8,20 +10,34 @@ import {
   usePresence,
 } from "framer-motion";
 import { LoggedInUser } from "../utils/customClientTypes";
+import { Element } from "react-scroll";
+import { useInView } from "react-intersection-observer";
 
 const Gallery = () => {
   const { categoryName, collectionName } = useParams();
+  const { ref, inView, entry } = useInView({ threshold: 0 });
+  const location = useLocation();
 
+  useEffect(() => {
+    if (inView) {
+      // window.history.replaceState(null, "", "/gallery");
+      window.location.hash = "gallery"
+    }
+  }, [inView]);
 
-  console.log("cat param", categoryName);
-  console.log("col param", collectionName);
+  const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
+    variables: { username: "donovancourtney" },
+  });
+
+  if (loading) return <></>;
+  const categories = data;
+
+  console.log(categories);
+
   return (
-    <motion.section
-      initial={{ x: "-100%" }}
-      animate={{ x: "0%" }}
-      exit={{ x: "-100%" }}
-      transition={{ duration: 1 }}
-      className="absolute flex flex-col justify-center items-center w-full min-h-screen bg-dark"
+    <section
+      ref={ref}
+      className="flex flex-col justify-center items-center w-full h-screen bg-dark"
     >
       <div className="flex justify-center items-center">
         <p className="text-lg font-black">Gallery</p>
@@ -29,7 +45,7 @@ const Gallery = () => {
 
       {categoryName && <div className="w-36 h-36 bg-orange-500"></div>}
       {collectionName && <div className="w-36 h-36 bg-blue-500"></div>}
-    </motion.section>
+    </section>
   );
 };
 

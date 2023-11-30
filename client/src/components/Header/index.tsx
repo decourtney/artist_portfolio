@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link as LinkScroll } from "react-scroll";
 import Nav from "./nav";
 import Auth from "../../utils/auth";
 
@@ -12,10 +13,12 @@ const Header = () => {
   };
 
   return (
-    <nav className="relative z-20">
+    <nav className="fixed top-0 w-full z-50">
+      {/* <div className="relative"> */}
       <AnimatePresence mode="wait">
         {isDisplayNavMenu && <Nav handleOnNavClick={handleOnNavClick} />}
       </AnimatePresence>
+      {/* </div> */}
 
       <section className="absolute top-0 left-0 flex justify-center w-full text-plight">
         <div className="flex justify-between items-center w-full mx-[2%] p-[1%]">
@@ -34,7 +37,13 @@ const Header = () => {
 
           {/* TODO temp links for testing */}
           <div className="flex flex-row space-x-5">
-            <Link to={"/"}>
+            <LinkScroll
+              to="/"
+              spy={true}
+              smooth={true}
+              duration={500}
+              isDynamic={true}
+            >
               <motion.p
                 className="drop-shadow-[3px_3px_2px_#183D3D]"
                 whileHover={{
@@ -44,8 +53,14 @@ const Header = () => {
               >
                 Home
               </motion.p>
-            </Link>
-            <Link to={"/gallery"}>
+            </LinkScroll>
+            <LinkScroll
+              to="gallery"
+              spy={true}
+              smooth={true}
+              duration={500}
+              isDynamic={true}
+            >
               <motion.p
                 className="drop-shadow-[3px_3px_2px_#183D3D]"
                 whileHover={{
@@ -55,7 +70,7 @@ const Header = () => {
               >
                 Gallery
               </motion.p>
-            </Link>
+            </LinkScroll>
           </div>
 
           <div className="flex justify-end items-center w-full">

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Auth from "../../utils/auth";
 import { Link } from "react-router-dom";
+import { Link as LinkScroll } from "react-scroll";
 import {
   motion,
   useAnimate,
@@ -55,7 +56,7 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
       className="absolute flex flex-col justify-center items-center w-full h-[100vh] space-y-2 font-black text-[5vh] text-dark bg-light pointer-events-auto z-20"
       onClick={handleOnNavClick}
     >
-      <Link to={"/"}>
+      <Link to="/">
         <motion.p
           className="drop-shadow-[3px_3px_2px_#183D3D]"
           whileHover={{
@@ -66,7 +67,7 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
           Home
         </motion.p>
       </Link>
-      <Link to={"/gallery"}>
+      <LinkScroll to="gallery">
         <motion.p
           className="drop-shadow-[3px_3px_2px_#183D3D]"
           whileHover={{
@@ -76,8 +77,8 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
         >
           Gallery
         </motion.p>
-      </Link>
-      <Link to={"/about"}>
+      </LinkScroll>
+      <LinkScroll to={"about"}>
         <motion.p
           className="drop-shadow-[3px_3px_2px_#183D3D]"
           whileHover={{
@@ -87,8 +88,8 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
         >
           About
         </motion.p>
-      </Link>
-      <Link to={"/contact"}>
+      </LinkScroll>
+      <LinkScroll to={"contact"}>
         <motion.p
           className="drop-shadow-[3px_3px_2px_#183D3D]"
           whileHover={{
@@ -98,7 +99,7 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
         >
           Contact
         </motion.p>
-      </Link>
+      </LinkScroll>
       <Link
         to={loggedInUser ? `/profile/${loggedInUser.data.username}` : "/login"}
       >

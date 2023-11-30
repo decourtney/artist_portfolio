@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, lazy } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { QUERY_CATEGORY, QUERY_CATEGORIES } from "../utils/queries";
 import { CategoryItem } from "../utils/customClientTypes";
-import Slider from "../components/slider";
-
+import Gallery from "./Gallery";
+import Hero from "../components/home/Hero";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
 import Auth from "../utils/auth";
 import {
   motion,
@@ -13,46 +14,32 @@ import {
   usePresence,
 } from "framer-motion";
 import { LoggedInUser } from "../utils/customClientTypes";
+import { Element } from "react-scroll";
+import { useInView } from "react-intersection-observer";
 
 import mountains from "../images/mountains.jpg";
 
 const Home = () => {
-  const displayed = 2;
-
-  const { loading, data } = useQuery(QUERY_CATEGORIES, {
-    variables: { username: "donovancourtney" },
-  });
-
-  if (loading) return <></>;
-  const categories = data;
-
-  console.log(categories);
   return (
-    <motion.section
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 1 }}
-      className="min-h-screen bg-secondary"
-    >
-      <div className="flex flex-col justify-center">
-        <div className="w-full">
-          <img src={mountains} className="w-full" />
-        </div>
+    <>
+      <section className=" bg-secondary">
+        <Element id="/">
+          <Hero />
+        </Element>
 
-        {/* {categories.map((category) => (
-          <div>
-            <h3>{category.name}</h3>
-            <div>
-              <Slider
-                itemsToDisplay={category.products}
-                numberToDisplay={displayed}
-              />
-            </div>
-          </div>
-        ))} */}
-      </div>
-    </motion.section>
+        <Element id="gallery">
+          <Gallery />
+        </Element>
+
+        <Element id="about">
+          <About />
+        </Element>
+
+        <Element id="contact">
+          <Contact />
+        </Element>
+      </section>
+    </>
   );
 };
 

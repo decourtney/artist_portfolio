@@ -53,17 +53,19 @@ const resolvers = {
 
       return user;
     },
-    categories: async (
+    userCategories: async (
       parent: any,
       { username }: { username: String },
       context: any
     ) => {
       // return Category.find().populate({ path: "products", model: "Product" });
 
-      const categories = await User.find({ username }).populate({
-        path: "categories",
-        model: "Category",
-      });
+      const categories = await User.findOne({ username })
+        .select({ categories: 1 })
+        .populate({
+          path: "categories",
+          model: "Category",
+        });
 
       return categories;
     },
