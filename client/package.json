@@ -40,7 +40,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "watch:css": "npx tailwindcss -i src/input.css -o public/index.css --watch"
+    "watch:css": "npx tailwindcss -i src/assets/input.css -o src/assets/index.css --watch"
   },
   "eslintConfig": {
     "extends": [

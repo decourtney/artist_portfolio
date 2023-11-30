@@ -3,7 +3,7 @@
     "outDir": "./build",
     "rootDir": ".",
     "composite": true,
-    "target": "es6",
+    "target": "ES6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -12,7 +12,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "CommonJS",
     "maxNodeModuleJsDepth": 10,
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -20,7 +20,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "**/*"
-  ]
+  "include": ["**/*"],
+  "exclude": ["node_modules"] // *** The files to not type check ***
 }

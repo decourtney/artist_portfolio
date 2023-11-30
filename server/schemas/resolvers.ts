@@ -4,10 +4,11 @@ import { User, Product, Category } from "../models";
 import { signToken } from "../utils/auth";
 import { uploadObject, deleteObject } from "../utils/objectLoader";
 import { UploadFile } from "../utils/customServerTypes";
+import { GraphQLUpload } from "graphql-upload-ts";
 
 // Need to figure out the correct type definitions
 const resolvers = {
-  Upload: require("graphql-upload-ts").GraphQLUpload,
+  Upload: GraphQLUpload,
   Query: {
     user: async (
       parent: any,

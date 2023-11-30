@@ -1,6 +1,6 @@
 import { Model, Schema, Types, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
-import Product, { IProduct } from "./Product";
+import { IProduct } from "./Product";
 import { ICategory } from "./Category";
 
 interface IUser extends Document {
