@@ -4,20 +4,12 @@ import { User, Product, Category } from "../models";
 import { signToken } from "../utils/auth";
 import { uploadObject, deleteObject } from "../utils/objectLoader";
 import { UploadFile } from "../utils/customServerTypes";
+import { GraphQLUpload } from "graphql-upload-ts";
 
 // Need to figure out the correct type definitions
 const resolvers = {
-  Upload: require("graphql-upload-ts").GraphQLUpload,
+  Upload: GraphQLUpload,
   Query: {
-    // NOTE Query ME not currently in use
-    me: async (parent: any, args: any, context: any) => {
-      if (context.user) {
-        const stuff = await User.findOne({ _id: context.user._id });
-        console.log(stuff);
-        return stuff;
-      }
-      throw new AuthenticationError("You need to be logged in!");
-    },
     user: async (
       parent: any,
       { username }: { username: string },
@@ -62,8 +54,21 @@ const resolvers = {
 
       return user;
     },
-    categories: async (parent: any, args: any, context: any) => {
-      return Category.find();
+    userCategories: async (
+      parent: any,
+      { username }: { username: String },
+      context: any
+    ) => {
+      // return Category.find().populate({ path: "products", model: "Product" });
+
+      const categories = await User.findOne({ username })
+        .select({ categories: 1 })
+        .populate({
+          path: "categories",
+          model: "Category",
+        });
+
+      return categories;
     },
   },
 
@@ -134,7 +139,8 @@ const resolvers = {
                   context.user.data.username
                 );
 
-                if (!bucketResponse) throw new AuthenticationError("No bucket response");;
+                if (!bucketResponse)
+                  throw new AuthenticationError("No bucket response");
 
                 // If the file uploaded then create new Product and update User
                 try {

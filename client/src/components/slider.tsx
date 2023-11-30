@@ -1,21 +1,36 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Grid, Navigation, Scrollbar, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/bundle";
-import { AccountItem } from "../../utils/customClientTypes";
+import { AccountItem, CategoryItem } from "../utils/customClientTypes";
 
 const baseCDN =
   process.env.BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface SliderProps {
-  itemsToDisplay: AccountItem[];
+  itemsToDisplay: AccountItem[] | CategoryItem[];
   numberToDisplay: number;
+}
+
+// These assertions are used to help determine if the clicked card is a category or collection.
+// Then
+function isAccountItem(item: AccountItem | CategoryItem): item is AccountItem {
+  return "description" in item;
+}
+
+function isCategoryItem(
+  item: AccountItem | CategoryItem
+): item is CategoryItem {
+  return "products" in item;
 }
 
 const Slider = ({ itemsToDisplay, numberToDisplay }: SliderProps) => {
   const { username: userParam } = useParams();
+  const navigate = useNavigate();
+
+  const handleOnClick = () => {};
 
   return (
     <Swiper
@@ -35,9 +50,12 @@ const Slider = ({ itemsToDisplay, numberToDisplay }: SliderProps) => {
       {itemsToDisplay.map((item, index) => (
         <SwiperSlide
           key={index}
-          onClick={() =>
-            console.log("Swiperslide onclick route to /gallery/:collection passing item as arg")
-          }
+          onClick={() => {
+            if (isAccountItem(item))
+              navigate(`/gallery/collection/${item.name}`);
+            else
+              navigate(`/gallery/category/${item.name}`);
+          }}
         >
           <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-plight shadow-md">
             <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-slate-50 shadow-md">

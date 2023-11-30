@@ -1,5 +1,5 @@
 import { Schema, model, Model, Types, Document } from "mongoose";
-import Category, { ICategory } from "./Category";
+import { ICategory } from "./Category";
 
 // Define an interface for the Product document
 interface IProduct extends Document {

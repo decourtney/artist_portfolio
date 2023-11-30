@@ -4,9 +4,9 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "node server.js",
-    "watch": "nodemon",
-    "seed": "node config/seeds.js"
+    "start": "tsx server.ts",
+    "watch": "tsx server.ts",
+    "seed": "tsx config/seeds.ts"
   },
   "license": "ISC",
   "dependencies": {

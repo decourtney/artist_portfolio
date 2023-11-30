@@ -1,4 +1,4 @@
-export interface UserData {
+export type UserData ={
   firstName: string;
   lastName: string;
   email: string;
@@ -15,44 +15,62 @@ export interface UserData {
   categoryCount: string;
 }
 
-export interface AccountData {
-  username: String;
-  productCount: String;
+export type AccountData ={
+  username: string;
+  productCount: string;
   products: [
     {
       name: string;
-      description: String;
-      image: String;
+      description: string;
+      image: string;
       categories: [
         {
-          name: String;
-          image: String
+          name: string;
+          image: string;
         }
       ];
     }
   ];
-  categoryCount: String;
+  categoryCount: string;
   categories: [
     {
-      name: String;
-      image: String;
+      name: string;
+      image: string;
     }
   ];
 }
 
-export interface AccountItem {
-  name: String;
-  description: String;
-  image: String;
-  categories: [
+export type CategoryItem ={
+  name: string;
+  image: string;
+  products: [
     {
-      name: String;
-      image: String;
+      name: string;
+      description: string;
+      image: string;
+      categories: [
+        {
+          name: string;
+          image: string;
+        }
+      ];
     }
   ];
 }
 
-export interface LoggedInUser {
+export type AccountItem ={
+  name: string;
+  description: string;
+  image: string;
+  categories: [
+    {
+      name: string;
+      image: string;
+    }
+  ];
+}
+
+export type LoggedInUser ={
   data: { email: string; username: string; _id: string };
   exp: number;
   iat: number;

@@ -8,11 +8,8 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
-
-import Header from "./components/header";
-import Footer from "./components/footer";
 import AnimatedRoutes from "./routes";
-import { AnimatePresence } from "framer-motion";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Construct main GraphQL API endpoint
 const httpLink = createHttpLink({
@@ -43,6 +40,7 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
+        {/* <ScrollToTop /> */}
         <AnimatedRoutes />
       </Router>
     </ApolloProvider>

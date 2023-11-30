@@ -1,4 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, lazy } from "react";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { CategoryItem } from "../utils/customClientTypes";
+import Gallery from "./Gallery";
+import Hero from "../components/home/Hero";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
 import Auth from "../utils/auth";
 import {
   motion,
@@ -7,28 +14,32 @@ import {
   usePresence,
 } from "framer-motion";
 import { LoggedInUser } from "../utils/customClientTypes";
+import { Element } from "react-scroll";
+import { useInView } from "react-intersection-observer";
 
-import mountains from "../images/mountains.jpg"
+import mountains from "../images/mountains.jpg";
 
 const Home = () => {
- 
-
-  // TODO Make home a tall page with rows of categories
   return (
-    <motion.section
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 1 }}
-      className="min-h-screen bg-secondary"
-    >
-      <div className="flex justify-center">
-        <div className="w-full">
-          <img src={mountains} className="w-full" />
-        </div>
+    <>
+      <section className=" bg-secondary">
+        <Element id="/">
+          <Hero />
+        </Element>
 
-      </div>
-    </motion.section>
+        <Element id="gallery">
+          <Gallery />
+        </Element>
+
+        <Element id="about">
+          <About />
+        </Element>
+
+        <Element id="contact">
+          <Contact />
+        </Element>
+      </section>
+    </>
   );
 };
 
