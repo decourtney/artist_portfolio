@@ -30,16 +30,16 @@ const AnimatedRoutes = () => {
   return (
     <>
       <Header />
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           {/* <Route path="/" element={<Profile />} />{" "} */}
           {/* This is just for initial development stages. delete when necessary */}
           <Route path="/" element={<Home />} />
-          {/* <Route path="/gallery" element={<Gallery />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/gallery/collection/:collectionName" element={<Gallery />} />
-          <Route path="/gallery/category/:categoryName" element={<Gallery />} />
+          <Route path="/gallery/c/:categoryName" element={<Gallery />} />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} /> */}
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile/:username" element={<Profile />} />
           <Route path="/profile/:username/:content" element={<Profile />} />

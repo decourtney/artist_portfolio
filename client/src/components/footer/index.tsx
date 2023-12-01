@@ -10,7 +10,7 @@ const Footer = () => {
     <>
       <footer>
         {/* Flip conditional back before deploy */}
-        {location.pathname !== "/profile" ? (
+        {location.pathname == "/profile" ? (
           // Profile Footer
           null
           // <section className="flex justify-around items-center w-full h-10 z-50">

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Auth from "../../utils/auth";
 import { Link } from "react-router-dom";
-import { Link as LinkScroll } from "react-scroll";
 import {
   motion,
   useAnimate,
@@ -67,7 +66,7 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
           Home
         </motion.p>
       </Link>
-      <LinkScroll to="gallery">
+      <Link to="gallery">
         <motion.p
           className="drop-shadow-[3px_3px_2px_#183D3D]"
           whileHover={{
@@ -77,8 +76,8 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
         >
           Gallery
         </motion.p>
-      </LinkScroll>
-      <LinkScroll to={"about"}>
+      </Link>
+      <Link to={"about"}>
         <motion.p
           className="drop-shadow-[3px_3px_2px_#183D3D]"
           whileHover={{
@@ -88,8 +87,8 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
         >
           About
         </motion.p>
-      </LinkScroll>
-      <LinkScroll to={"contact"}>
+      </Link>
+      <Link to={"contact"}>
         <motion.p
           className="drop-shadow-[3px_3px_2px_#183D3D]"
           whileHover={{
@@ -99,7 +98,7 @@ const Nav = ({ handleOnNavClick }: NavProps) => {
         >
           Contact
         </motion.p>
-      </LinkScroll>
+      </Link>
       <Link
         to={loggedInUser ? `/profile/${loggedInUser.data.username}` : "/login"}
       >
