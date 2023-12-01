@@ -66,6 +66,10 @@ const resolvers = {
         .populate({
           path: "categories",
           model: "Category",
+          populate: {
+            path: "products",
+            model: "Product",
+          },
         });
 
       return categories;

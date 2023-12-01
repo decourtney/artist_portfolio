@@ -3,26 +3,26 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Grid, Navigation, Scrollbar, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/bundle";
-import { AccountItem, CategoryItem } from "../utils/customClientTypes";
+import { Product, Category } from "../utils/customClientTypes";
 
 const baseCDN =
   process.env.BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface SliderProps {
-  itemsToDisplay: AccountItem[] | CategoryItem[];
+  itemsToDisplay: Product[] | Category[];
   numberToDisplay: number;
 }
 
 // These assertions are used to help determine if the clicked card is a category or collection.
 // Then
-function isAccountItem(item: AccountItem | CategoryItem): item is AccountItem {
+function isProduct(item: Product | Category): item is Product {
   return "description" in item;
 }
 
-function isCategoryItem(
-  item: AccountItem | CategoryItem
-): item is CategoryItem {
+function isCategory(
+  item: Product | Category
+): item is Category {
   return "products" in item;
 }
 
@@ -51,7 +51,7 @@ const Slider = ({ itemsToDisplay, numberToDisplay }: SliderProps) => {
         <SwiperSlide
           key={index}
           onClick={() => {
-            if (isAccountItem(item))
+            if (isProduct(item))
               navigate(`/gallery/collection/${item.name}`);
             else
               navigate(`/gallery/category/${item.name}`);

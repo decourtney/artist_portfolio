@@ -24,26 +24,22 @@ const Header = () => {
         <div className="flex justify-between items-center w-full mx-[2%] p-[1%]">
           {/* Artist brand/name/icon */}
           <div className="flex justify-start w-full">
-            <motion.button
-              className=""
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 1 }}
-            >
-              <p className="text-plight text-lg font-black mx-[5%] my-[1%]">
-                <Link to="/">G</Link>
-              </p>
-            </motion.button>
+            <Link to="/">
+              <motion.button
+                className=""
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 1 }}
+              >
+                <p className="text-plight text-lg font-black mx-[5%] my-[1%]">
+                  G
+                </p>
+              </motion.button>
+            </Link>
           </div>
 
           {/* TODO temp links for testing */}
           <div className="flex flex-row space-x-5">
-            <LinkScroll
-              to="/"
-              spy={true}
-              smooth={true}
-              duration={500}
-              isDynamic={true}
-            >
+            <Link to="/">
               <motion.p
                 className="drop-shadow-[3px_3px_2px_#183D3D]"
                 whileHover={{
@@ -53,14 +49,8 @@ const Header = () => {
               >
                 Home
               </motion.p>
-            </LinkScroll>
-            <LinkScroll
-              to="gallery"
-              spy={true}
-              smooth={true}
-              duration={500}
-              isDynamic={true}
-            >
+            </Link>
+            <Link to="gallery">
               <motion.p
                 className="drop-shadow-[3px_3px_2px_#183D3D]"
                 whileHover={{
@@ -70,7 +60,7 @@ const Header = () => {
               >
                 Gallery
               </motion.p>
-            </LinkScroll>
+            </Link>
           </div>
 
           <div className="flex justify-end items-center w-full">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { AccountItem } from "../../utils/customClientTypes";
+import { Product } from "../../utils/customClientTypes";
 import { AnimatePresence, motion, useScroll, LayoutGroup } from "framer-motion";
 
 const baseCDN =
@@ -9,7 +9,7 @@ const baseCDN =
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface Props {
-  item: AccountItem;
+  item: Product;
   index: number;
 }
 

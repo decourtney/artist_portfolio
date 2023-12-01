@@ -624,6 +624,10 @@ video {
   top: 50%;
 }
 
+.-z-10 {
+  z-index: -10;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -681,6 +685,11 @@ video {
   margin-bottom: 1%;
 }
 
+.my-\[3vw\] {
+  margin-top: 3vw;
+  margin-bottom: 3vw;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -725,6 +734,10 @@ video {
   margin-top: 1.25rem;
 }
 
+.box-border {
+  box-sizing: border-box;
+}
+
 .flex {
   display: flex;
 }
@@ -747,10 +760,6 @@ video {
 
 .h-24 {
   height: 6rem;
-}
-
-.h-36 {
-  height: 9rem;
 }
 
 .h-7 {
@@ -787,10 +796,6 @@ video {
 
 .w-28 {
   width: 7rem;
-}
-
-.w-36 {
-  width: 9rem;
 }
 
 .w-80 {
@@ -971,11 +976,6 @@ video {
   background-color: rgb(96 165 250 / var(--tw-bg-opacity));
 }
 
-.bg-blue-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(59 130 246 / var(--tw-bg-opacity));
-}
-
 .bg-dark {
   --tw-bg-opacity: 1;
   background-color: rgb(4 13 18 / var(--tw-bg-opacity));
@@ -989,11 +989,6 @@ video {
 .bg-light {
   --tw-bg-opacity: 1;
   background-color: rgb(147 177 166 / var(--tw-bg-opacity));
-}
-
-.bg-orange-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 115 22 / var(--tw-bg-opacity));
 }
 
 .bg-pdark {
@@ -1279,6 +1274,10 @@ body {
   /* Firefox */
   /* overflow-x: hidden;
   background-color: rgb(92 131 116); */
+}
+
+html{
+  background-color: rgb(24 61 61);
 }
 
 .profile_hero_image::before {

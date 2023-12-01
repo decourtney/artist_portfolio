@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { QUERY_ACCOUNT } from "../../utils/queries";
 import { ADD_CATEGORY } from "../../utils/mutations";
-import { AccountItem } from "../../utils/customClientTypes";
+import { Product } from "../../utils/customClientTypes";
 import {
   AnimatePresence,
   motion,

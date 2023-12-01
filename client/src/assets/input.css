@@ -18,6 +18,10 @@ body {
 
 }
 
+html{
+    background-color: rgb(24 61 61);
+}
+
 .profile_hero_image::before {
   content: "";
   position: absolute;
