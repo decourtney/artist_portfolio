@@ -1,7 +1,7 @@
 import { Model, Schema, Types, model, Document } from "mongoose";
-import bcrypt from "bcrypt";
 import { IProduct } from "./Product";
 import { ICategory } from "./Category";
+const bcrypt = require("bcryptjs");
 
 interface IUser extends Document {
   firstName: string;

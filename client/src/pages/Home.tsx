@@ -6,7 +6,7 @@ import mountains from "../images/mountains.jpg";
 const Home = () => {
   return (
     <>
-      <section className="flex flex-col justify-center items-center w-full h-screen bg-secondary -z-10">
+      <section className="flex flex-col justify-center items-center w-full min-h-screen bg-secondary -z-10">
         <motion.div
           initial={{}}
           animate={{}}

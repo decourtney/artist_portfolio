@@ -119,7 +119,8 @@ const Profile = () => {
           <div
             id="profile_card"
             className="profile_hero_image flex flex-col flex-grow items-center mx-5"
-          >
+          ></div>
+          <div>
             <Avatar
               username={user?.username}
               fullname={user?.fullname}

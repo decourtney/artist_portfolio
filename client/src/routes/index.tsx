@@ -45,6 +45,7 @@ const AnimatedRoutes = () => {
           <Route path="/profile/:username/:content" element={<Profile />} />
         </Routes>
       </AnimatePresence>
+      {/* FOOTER will need to be imported components on individual pages - not wanted on home page */}
       <Footer />
     </>
   );

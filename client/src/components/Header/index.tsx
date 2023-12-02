@@ -13,7 +13,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50">
+    <nav className="fixed top-0 w-full ">
       {/* <div className="relative"> */}
       <AnimatePresence mode="wait">
         {isDisplayNavMenu && <Nav handleOnNavClick={handleOnNavClick} />}
