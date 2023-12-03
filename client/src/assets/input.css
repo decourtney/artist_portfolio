@@ -32,8 +32,8 @@ html {
   background-repeat: no-repeat;
   background-position-y: 55%;
   border-radius: 0 0 100% 100%;
-  opacity: 100%;
-  z-index: 0;
+  opacity: 50%;
+  z-index: -1;
 }
 
 #edit-profile-form input:-webkit-autofill,

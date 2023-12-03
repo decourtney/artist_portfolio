@@ -58,6 +58,18 @@ export const QUERY_USER_CATEGORIES = gql`
   }
 `;
 
+export const QUERY_CATEGORY_PRODUCTS = gql`
+  query categoryProducts($category: String!) {
+    categoryProducts(category: $category) {
+      products {
+        name
+        description
+        image
+      }
+    }
+  }
+`;
+
 export const QUERY_CATEGORY = gql`
   query category($category: String!) {
     category(category: $category) {

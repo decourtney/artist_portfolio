@@ -18,7 +18,7 @@ const Profile = () => {
   const [isEditForm, setIsEditForm] = useState(false);
   const navigate = useNavigate();
 
-  // If no contentParam then reset to defaults
+  // If no contentParam then reset Profile to default display
   useEffect(() => {
     if (contentParam) {
       setDisplayInfo(contentParam);
@@ -37,10 +37,11 @@ const Profile = () => {
 
   const user = data?.me || data?.user || {};
 
+  // Callback from menuButton
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id;
 
-    // If back button hit then
+    // If back button hit
     if (id === "back") navigate(`/profile/${userParam}`);
     else navigate(`/profile/${userParam}/${id}`);
   };
@@ -115,26 +116,27 @@ const Profile = () => {
     <>
       {Auth.loggedIn() ? (
         // TODO attempt to animate background with motion
-        <section className="flex flex-col flex-grow bg-pdark">
+        <section className="flex flex-col flex-grow">
           <div
             id="profile_card"
             className="profile_hero_image flex flex-col flex-grow items-center mx-5"
-          ></div>
-          <div>
-            <Avatar
-              username={user?.username}
-              fullname={user?.fullname}
-              email={user?.email}
-              profilePic={user?.profilePic}
-            />
-            {displaySwitch(displayInfo)}
+          >
+            {/* <div> */}
+              <Avatar
+                username={user?.username}
+                fullname={user?.fullname}
+                email={user?.email}
+                profilePic={user?.profilePic}
+              />
+              {displaySwitch(displayInfo)}
 
-            {/* <ProfileMenu handleButtonClick={handleButtonClick} /> */}
-            {/* {isEditForm ? (
+              {/* <ProfileMenu handleButtonClick={handleButtonClick} /> */}
+              {/* {isEditForm ? (
               <EditProfile userData={user} setIsEditForm={setIsEditForm} />
             ) : (
               <PersonalInfo userData={user} setIsEditForm={setIsEditForm} />
             )} */}
+            {/* </div> */}
           </div>
         </section>
       ) : (

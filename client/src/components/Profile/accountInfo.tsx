@@ -35,6 +35,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   const [addCollection, setAddCollection] = useState(false);
   const controls = useAnimationControls();
 
+  const isCenterSlides = true;
   const categoryNumToDisplay = 5;
   const collectionNumToDisplay = 2;
 
@@ -94,6 +95,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                   <Slider
                     itemsToDisplay={data.account.categories}
                     numberToDisplay={categoryNumToDisplay}
+                    isCenteredSlides={isCenterSlides}
                   />
                 </div>
               </div>
@@ -149,6 +151,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                       <Slider
                         itemsToDisplay={data.account.products}
                         numberToDisplay={collectionNumToDisplay}
+                        isCenteredSlides={isCenterSlides}
                       />
                     </div>
                   </>
