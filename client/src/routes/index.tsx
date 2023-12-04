@@ -36,7 +36,7 @@ const AnimatedRoutes = () => {
           {/* This is just for initial development stages. delete when necessary */}
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
-          <Route path="/gallery/collection/:collectionName" element={<Gallery />} />
+          <Route path="/gallery/:collectionName" element={<Gallery />} />
           <Route path="/gallery/c/:categoryName" element={<Gallery />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
@@ -45,6 +45,7 @@ const AnimatedRoutes = () => {
           <Route path="/profile/:username/:content" element={<Profile />} />
         </Routes>
       </AnimatePresence>
+      {/* FOOTER will need to be imported components on individual pages - not wanted on home page */}
       <Footer />
     </>
   );

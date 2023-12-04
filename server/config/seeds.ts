@@ -28,7 +28,7 @@ db.once("open", async () => {
 
   // Create a category
   try {
-    await Category.create({ name: "Category Name" });
+    await Category.create({ name: "All Artwork" });
   } catch (err) {
     console.log(err);
   }
@@ -37,10 +37,10 @@ db.once("open", async () => {
   let newUser;
   try {
     newUser = await User.create({
-      firstName: "Temp",
+      firstName: "Default",
       lastName: "User",
-      username: "tempuser",
-      email: "tempuser@gmail.com",
+      username: "defaultuser",
+      email: "defaultuser@fakemail.com",
       password: "password",
       role: "owner",
       profilePic: "default_avatar.png",
@@ -50,40 +50,25 @@ db.once("open", async () => {
   }
   console.log(newUser?.email.split("@")[0]);
 
-  // try {
-  //   await uploadObject(
-  //     profilePicBuffer,
-  //     `${newUser?.email.split("@")[0]}/${newUser?.profilePic}`
-  //   );
-  // } catch (err) {
-  //   console.log(err);
-  // }
-
   let category;
   try {
-    category = await Category.findOne({ name: "Category Name" });
+    category = await Category.findOne({ name: "All Artwork" });
   } catch (err) {
     console.log(err);
   }
 
   try {
     const newProduct = await Product.create({
-      name: "Image",
-      description: "description provided by user",
-      image: "image.png",
+      name: "Default Image",
+      description: "Default description of image",
+      image: "defaultimage.png",
       categories: category?._id,
     });
 
-    // await uploadObject(
-    //   profilePicBuffer,
-    //   `${newUser?.email.split("@")[0]}/${newProduct.image}`
-    // );
-
-    if (newUser)
-      await User.findOneAndUpdate(
-        { _id: newUser._id },
-        { $addToSet: { products: newProduct._id } }
-      );
+    await User.findOneAndUpdate(
+      { _id: newUser?._id },
+      { $addToSet: { products: newProduct._id } }
+    );
 
     console.log("Product creation complete");
   } catch (err) {

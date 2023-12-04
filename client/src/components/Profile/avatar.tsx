@@ -23,7 +23,7 @@ const Avatar = ({ username, fullname, email, profilePic }: UserInfo) => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full h-72 z-10">
+    <div className="flex flex-col justify-center items-center w-full h-72">
       <div className="w-28 rounded-full">
         <LazyLoadImage
           src={picUrl}

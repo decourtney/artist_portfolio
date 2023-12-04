@@ -1,11 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, Dispatch, SetStateAction } from "react";
 import { useParams } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { QUERY_ACCOUNT } from "../../utils/queries";
 import { ADD_CATEGORY } from "../../utils/mutations";
 
 interface CreateCatProps {
-  setAddCategory: (setdisplayInput: boolean) => void;
+  setAddCategory: Dispatch<SetStateAction<boolean>>;
 }
 
 const CreateCategory = ({ setAddCategory }: CreateCatProps) => {

@@ -59,8 +59,6 @@ const resolvers = {
       { username }: { username: String },
       context: any
     ) => {
-      // return Category.find().populate({ path: "products", model: "Product" });
-
       const categories = await User.findOne({ username })
         .select({ categories: 1 })
         .populate({
@@ -74,12 +72,28 @@ const resolvers = {
 
       return categories;
     },
+    // categoryProducts: async (
+    //   parent: any,
+    //   { category, username }: { category: String; username: String },
+    //   context: any
+    // ) => {
+    //   const products = await Category.find({ category }).select({
+    //     products: 1,
+    //   });
+    // },
   },
 
   Mutation: {
     // COMMENT User Mutations
     addUser: async (parent: any, args: any) => {
+      // Create user and the default category - All Artwork
       const user = await User.create(args);
+      const defaultCategory = await Category.findOne({ name: "All Artwork" });
+
+      await User.findOneAndUpdate(user._id, {
+        $addToSet: { categories: defaultCategory?._id },
+      });
+
       // signToken is expecting _id to be a string
       const userIdAsString = user._id.toString();
 

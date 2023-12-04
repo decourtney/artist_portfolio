@@ -12,6 +12,7 @@ const baseCDN =
 interface SliderProps {
   itemsToDisplay: Product[] | Category[];
   numberToDisplay: number;
+  isCenteredSlides: boolean;
 }
 
 // These assertions are used to help determine if the clicked card is a category or collection.
@@ -20,15 +21,20 @@ function isProduct(item: Product | Category): item is Product {
   return "description" in item;
 }
 
-function isCategory(
-  item: Product | Category
-): item is Category {
+function isCategory(item: Product | Category): item is Category {
   return "products" in item;
 }
 
-const Slider = ({ itemsToDisplay, numberToDisplay }: SliderProps) => {
-  const { username: userParam } = useParams();
+const Slider = ({
+  itemsToDisplay,
+  numberToDisplay,
+  isCenteredSlides,
+}: SliderProps) => {
+  let { username: userParam } = useParams();
   const navigate = useNavigate();
+
+  if(!userParam)
+    userParam = 'donovancourtney'
 
   const handleOnClick = () => {};
 
@@ -40,7 +46,7 @@ const Slider = ({ itemsToDisplay, numberToDisplay }: SliderProps) => {
       grid={{ rows: 1 }}
       // loop={true}
       loopAddBlankSlides={true}
-      centeredSlides={true}
+      centeredSlides={isCenteredSlides}
       navigation
       freeMode={false}
       // scrollbar={{ draggable: true }}
@@ -51,10 +57,8 @@ const Slider = ({ itemsToDisplay, numberToDisplay }: SliderProps) => {
         <SwiperSlide
           key={index}
           onClick={() => {
-            if (isProduct(item))
-              navigate(`/gallery/collection/${item.name}`);
-            else
-              navigate(`/gallery/category/${item.name}`);
+            if (isProduct(item)) navigate(`/gallery/${item.name}`);
+            else navigate(`/gallery/c/${item.name}`);
           }}
         >
           <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-plight shadow-md">
