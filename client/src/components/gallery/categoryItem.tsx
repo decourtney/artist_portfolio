@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Category, Product } from "../../utils/customClientTypes";
-import Slider from "../Slider";
+import Slider from "../slider";
 
 interface CategoryItemProps {
   category: Category;
