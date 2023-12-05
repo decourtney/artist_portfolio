@@ -6,7 +6,7 @@ import "swiper/css/bundle";
 import { Product, Category } from "../utils/customClientTypes";
 
 const baseCDN =
-  process.env.BASE_CDN ||
+  import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface SliderProps {

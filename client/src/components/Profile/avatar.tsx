@@ -10,7 +10,7 @@ interface UserInfo {
 }
 
 const baseCDN =
-  process.env.BASE_CDN ||
+  import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 const Avatar = ({ username, fullname, email, profilePic }: UserInfo) => {

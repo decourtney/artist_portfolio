@@ -17,7 +17,6 @@ import {
 } from "framer-motion";
 import { Category, Product } from "../utils/customClientTypes";
 import { LoggedInUser } from "../utils/customClientTypes";
-import { Element } from "react-scroll";
 import { useInView } from "react-intersection-observer";
 import Slider from "../components/Slider";
 import GalleryModal from "../components/gallery/modal";
@@ -40,7 +39,6 @@ const Gallery = () => {
 
   if (loading) return <></>;
   const { categories } = data.userCategories;
-  console.log(categories);
 
   const handleOpenModal = (category: Category) => {
     setIsDisplayModal(true);
