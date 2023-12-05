@@ -18,7 +18,7 @@ import {
 import { Category, Product } from "../utils/customClientTypes";
 import { LoggedInUser } from "../utils/customClientTypes";
 import { useInView } from "react-intersection-observer";
-import Slider from "../components/Slider";
+import Slider from "../components/slider";
 import GalleryModal from "../components/gallery/modal";
 import CategoryItem from "../components/gallery/categoryItem";
 

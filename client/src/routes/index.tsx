@@ -14,12 +14,12 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 
-import About from "../pages/About";
-import Contact from "../pages/Contact";
-import Gallery from "../pages/Gallery";
-import Home from "../pages/Home";
-import Login from "../pages/Login";
-import Profile from "../pages/Profile";
+import About from "../pages/about";
+import Contact from "../pages/contact";
+import Gallery from "../pages/gallery";
+import Home from "../pages/home";
+import Login from "../pages/login";
+import Profile from "../pages/profile";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { AnimatePresence, LayoutGroup } from "framer-motion";

@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Category, Product } from "../../utils/customClientTypes";
-import Slider from "../Slider";
+import Slider from "../slider";
 
 interface CategoryItemProps {
   category: Category;
@@ -8,7 +8,11 @@ interface CategoryItemProps {
   handleOnClick: (category: Category) => void;
 }
 
-const CategoryItem=({category, index, handleOnClick}:CategoryItemProps)=>{
+const CategoryItem = ({
+  category,
+  index,
+  handleOnClick,
+}: CategoryItemProps) => {
   const isCenterSlides = false;
 
   return (
@@ -30,6 +34,6 @@ const CategoryItem=({category, index, handleOnClick}:CategoryItemProps)=>{
       </div>
     </>
   );
-}
+};
 
 export default CategoryItem;

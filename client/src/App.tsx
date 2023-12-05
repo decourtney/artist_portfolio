@@ -9,7 +9,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 import AnimatedRoutes from "./routes";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/scrollToTop";
 
 // Construct main GraphQL API endpoint
 const httpLink = createHttpLink({
