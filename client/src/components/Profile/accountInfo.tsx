@@ -20,7 +20,7 @@ import DragnDrop from "./dragndrop";
 
 // TODO Remove and just use .env
 const baseCDN =
-  process.env.BASE_CDN ||
+  import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 // TODO Not currently in use
