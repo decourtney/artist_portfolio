@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response, Application} from "express";
 import { ApolloServer } from "apollo-server-express";
 import path from "path";
 import { authMiddleware } from "./utils/auth";
@@ -34,14 +34,18 @@ app.use("/images", express.static(path.join(__dirname, "../client/images")));
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));
+
+  app.get("/", (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, "../client/build/index.html"));
+  });
+} else {
+  app.get("/", (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, "../client/index.html"));
+  });
 }
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
-
 // Create a new instance of an Apollo server with the GraphQL schema
-const startApolloServer = async (typeDefs: any, resolvers: any) => {
+const startApolloServer = async (typeDefs: any, resolvers: any, app:any) => {
   await server.start();
   server.applyMiddleware({ app });
 
@@ -56,5 +60,5 @@ const startApolloServer = async (typeDefs: any, resolvers: any) => {
 };
 
 // Call the async function to start the server
-startApolloServer(typeDefs, resolvers);
+startApolloServer(typeDefs, resolvers, app);
 // removed passing of typedefs and resolvers ** if this becomes an issue revisist this
