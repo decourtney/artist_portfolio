@@ -5,7 +5,7 @@
   "main": "server/server.ts",
   "scripts": {
     "start": "tsx server/server.ts",
-    "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm start\"",
+    "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm run dev\"",
     "watch:css": "cd client && npx tailwindcss -i src/assets/input.css -o src/assets/index.css --watch",
     "install": "cd server && npm i && cd ../client && npm i",
     "seed": "cd server && npm run seed",

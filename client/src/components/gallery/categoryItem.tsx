@@ -8,7 +8,11 @@ interface CategoryItemProps {
   handleOnClick: (category: Category) => void;
 }
 
-const CategoryItem=({category, index, handleOnClick}:CategoryItemProps)=>{
+const CategoryItem = ({
+  category,
+  index,
+  handleOnClick,
+}: CategoryItemProps) => {
   const isCenterSlides = false;
 
   return (
@@ -30,6 +34,6 @@ const CategoryItem=({category, index, handleOnClick}:CategoryItemProps)=>{
       </div>
     </>
   );
-}
+};
 
 export default CategoryItem;

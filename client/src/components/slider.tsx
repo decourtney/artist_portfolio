@@ -34,7 +34,7 @@ const Slider = ({
   const navigate = useNavigate();
 
   if(!userParam)
-    userParam = 'donovancourtney'
+    userParam = import.meta.env.VITE_BASE_USER;
 
   const handleOnClick = () => {};
 

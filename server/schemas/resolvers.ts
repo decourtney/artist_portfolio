@@ -1,5 +1,4 @@
-import { AuthenticationError } from "apollo-server-core";
-import { UserInputError } from "apollo-server-core";
+import { GraphQLError } from "graphql";
 import { User, Product, Category } from "../models";
 import { signToken } from "../utils/auth";
 import { uploadObject, deleteObject } from "../utils/objectLoader";
@@ -115,7 +114,7 @@ const resolvers = {
 
         if (Object.keys(args).length === 0) {
           console.log("no args");
-          throw new UserInputError("Nothing Updated");
+          throw new GraphQLError("Nothing Updated");
         }
 
         const user = await User.findByIdAndUpdate(context.user.data._id, args, {
@@ -158,7 +157,7 @@ const resolvers = {
                 );
 
                 if (!bucketResponse)
-                  throw new AuthenticationError("No bucket response");
+                  throw new GraphQLError("No bucket response");
 
                 // If the file uploaded then create new Product and update User
                 try {
@@ -184,7 +183,7 @@ const resolvers = {
           console.error("Error: ", err.message);
         }
       }
-      throw new AuthenticationError("You need to be logged in!");
+      throw new GraphQLError("You need to be logged in!");
     },
     updateProduct: async () => {},
     deleteProduct: async () => {},
@@ -222,13 +221,13 @@ const resolvers = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError("Incorrect credentials");
+        throw new GraphQLError("Incorrect credentials");
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError("Incorrect credentials");
+        throw new GraphQLError("Incorrect credentials");
       }
 
       const token = signToken({

@@ -34,12 +34,11 @@ const Gallery = () => {
   useEffect(() => {}, [categoryName, collectionName]);
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
-    variables: { username: "donovancourtney" },
+    variables: { username: import.meta.env.VITE_BASE_USER },
   });
 
   if (loading) return <></>;
   const { categories } = data.userCategories;
-  console.log(categories);
 
   const handleOpenModal = (category: Category) => {
     setIsDisplayModal(true);
