@@ -25,12 +25,12 @@ interface IUser extends Document {
 const userSchema = new Schema<IUser>({
   firstName: {
     type: String,
-    required: false,
+    required: true,
     trim: true,
   },
   lastName: {
     type: String,
-    required: false,
+    required: true,
     trim: true,
   },
   email: {
