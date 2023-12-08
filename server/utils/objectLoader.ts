@@ -28,7 +28,7 @@ const createS3Client = () => {
 export const uploadObject = async (obj: UploadFile, username: string) => {
   const s3Client = createS3Client();
   try {
-    const params = {
+    const bucketParams = {
       Bucket: "chumbucket",
       Key: `artist_portfolio/${username}/${obj.filename}`,
       Body: obj.createReadStream(),
@@ -41,15 +41,11 @@ export const uploadObject = async (obj: UploadFile, username: string) => {
 
     const parallelUpload = new Upload({
       client: s3Client,
-      params: params,
+      params: bucketParams,
       tags: [],
       queueSize: 4,
       partSize: 1024 * 1024 * 5,
       leavePartsOnError: false,
-    });
-
-    parallelUpload.on("httpUploadProgress", (progress) => {
-      // console.log("progress: ", progress);
     });
 
     await parallelUpload.done();
@@ -62,14 +58,17 @@ export const uploadObject = async (obj: UploadFile, username: string) => {
 export const deleteObject = async (fileName: string) => {
   const s3Client = createS3Client();
 
-  const params = {
+  const bucketParams = {
     Bucket: "chumbucket",
     Key: `artist_portfolio/${fileName}`,
   };
   try {
-    const data = await s3Client.send(new DeleteObjectCommand(params));
+    const data = await s3Client.send(new DeleteObjectCommand(bucketParams));
     console.log(
-      "Successfully deleted object: " + params.Bucket + "/" + params.Key
+      "Successfully deleted object: " +
+        bucketParams.Bucket +
+        "/" +
+        bucketParams.Key
     );
     return data;
   } catch (err) {
@@ -81,12 +80,12 @@ export const deleteObject = async (fileName: string) => {
 export const downloadObject = async (fileName: string) => {
   const s3Client = createS3Client();
 
-  const params = {
+  const bucketParams = {
     Bucket: "chumbucket",
     Key: `artist_portfolio/${fileName}`,
   };
   try {
-    const response = await s3Client.send(new GetObjectCommand(params));
+    const response = await s3Client.send(new GetObjectCommand(bucketParams));
     const imageFile = response.Body;
     console.log("Success");
     return imageFile;

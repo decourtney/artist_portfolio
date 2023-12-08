@@ -136,17 +136,17 @@ const resolvers = {
       if (context.user) {
         try {
           // Resolve promises
-          // const resolvedFiles: UploadFile[] = [];
-          // files.forEach(async (file) => {
-          //   const newFile = await Promise.resolve(file);
-          //   resolvedFiles.push(newFile);
-          // });
+          const resolvedFiles: UploadFile[] = [];
+          files.forEach(async (file) => {
+            const newFile = await Promise.resolve(file);
+            resolvedFiles.push(newFile);
+          });
 
-          const resolvedFiles = await Promise.all(
-            files.map(async (file) => {
-              return await Promise.resolve(file);
-            })
-          );
+          // const resolvedFiles = await Promise.all(
+          //   files.map(async (file) => {
+          //     return await Promise.resolve(file);
+          //   })
+          // );
 
           await Promise.all(
             resolvedFiles.map(async (file) => {
@@ -155,6 +155,7 @@ const resolvers = {
                   file,
                   context.user.data.username
                 );
+                console.log("uploaded:", file);
 
                 if (!bucketResponse)
                   throw new GraphQLError("No bucket response");

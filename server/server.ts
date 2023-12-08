@@ -40,10 +40,10 @@ const startApolloServer = async (typeDefs: any, resolvers: any, app: any) => {
       ],
     }),
     express.json(),
-    expressMiddleware(server, { context: authMiddleware }),
     graphqlUploadExpress(),
     express.urlencoded({ extended: false }),
-    express.static(path.join(__dirname, "../client/public/"))
+    express.static(path.join(__dirname, "../client/public/")),
+    expressMiddleware(server, { context: authMiddleware })
   );
 
   db.once("open", () => {
