@@ -34,9 +34,9 @@ export const uploadObject = async (obj: UploadFile, username: string) => {
       Body: obj.createReadStream(),
       ContentType: obj.mimetype,
       ACL: "public-read",
-      Metadata: {
-        "x-amz-meta-my-key": "your-value",
-      },
+      // Metadata: {
+      //   "x-amz-meta-my-key": "your-value",
+      // },
     };
 
     const parallelUpload = new Upload({

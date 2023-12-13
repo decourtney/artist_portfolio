@@ -4,23 +4,20 @@ import { UPLOAD_FILES } from "../../utils/mutations";
 import { useMutation } from "@apollo/client";
 
 interface DragnProp {
-  reportSuccess: Dispatch<SetStateAction<boolean>>;
+  isDisplayWindow: Dispatch<SetStateAction<boolean>>;
 }
 
-const DragnDrop = ({ reportSuccess }: DragnProp) => {
+const DragnDrop = ({ isDisplayWindow }: DragnProp) => {
   const [upload] = useMutation(UPLOAD_FILES);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    // console.log(acceptedFiles);
-    try {
-      const response = await upload({ variables: { files: acceptedFiles } });
-      // console.log(response);
+    // try {
+    await upload({ variables: { files: acceptedFiles } });
 
-      // Return 'false' to close DragnDrop
-      reportSuccess(false);
-    } catch (err) {
-      console.log(err);
-    }
+    isDisplayWindow(false);
+    // } catch (err) {
+    //   console.log(err);
+    // }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

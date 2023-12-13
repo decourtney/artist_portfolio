@@ -133,52 +133,46 @@ const resolvers = {
       { files }: { files: UploadFile[] },
       context: any
     ) => {
+      console.log('Before promise resolve:',files);
       if (context.user) {
+        const resolvedFiles = await Promise.all(
+          files.map(async (file) => {
+            return await Promise.resolve(file);
+          })
+        );
+
+        console.log('After promises resolved:', files);
+
         try {
-          // Resolve promises
-          const resolvedFiles: UploadFile[] = [];
-          files.forEach(async (file) => {
-            const newFile = await Promise.resolve(file);
-            resolvedFiles.push(newFile);
-          });
+          // await Promise.all(
+          resolvedFiles.map(async (file) => {
+            try {
+              const bucketResponse = await uploadObject(
+                file,
+                context.user.data.username
+              );
 
-          // const resolvedFiles = await Promise.all(
-          //   files.map(async (file) => {
-          //     return await Promise.resolve(file);
-          //   })
-          // );
+              if (!bucketResponse) throw new GraphQLError("No bucket response");
 
-          await Promise.all(
-            resolvedFiles.map(async (file) => {
+              // If the file uploaded then create new Product and update User
               try {
-                const bucketResponse = await uploadObject(
-                  file,
-                  context.user.data.username
+                const newProduct = await Product.create({
+                  name: file.filename.replace(/\.[^.]+$/, ""),
+                  image: file.filename,
+                });
+
+                await User.findOneAndUpdate(
+                  { _id: context.user.data._id },
+                  { $addToSet: { products: newProduct._id } }
                 );
-                console.log("uploaded:", file);
-
-                if (!bucketResponse)
-                  throw new GraphQLError("No bucket response");
-
-                // If the file uploaded then create new Product and update User
-                try {
-                  const newProduct = await Product.create({
-                    name: file.filename.replace(/\.[^.]+$/, ""),
-                    image: file.filename,
-                  });
-
-                  await User.findOneAndUpdate(
-                    { _id: context.user.data._id },
-                    { $addToSet: { products: newProduct._id } }
-                  );
-                } catch (err: any) {
-                  console.error("Create Product error: ", err.message);
-                }
               } catch (err: any) {
-                console.error(`Error uploading: ${err.message}`);
+                console.error("Create Product error: ", err.message);
               }
-            })
-          );
+            } catch (err: any) {
+              console.error(`Error uploading: ${err.message}`);
+            }
+          });
+          // );
           return true;
         } catch (err: any) {
           console.error("Error: ", err.message);
