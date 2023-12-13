@@ -4,8 +4,7 @@
   "description": "",
   "main": "server/server.ts",
   "scripts": {
-    "start": "tsx server/server.ts",
-    "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm run dev\"",
+    "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm run develop\"",
     "watch:css": "cd client && npx tailwindcss -i src/assets/input.css -o src/assets/index.css --watch",
     "install": "cd server && npm i && cd ../client && npm i",
     "seed": "cd server && npm run seed",
@@ -13,7 +12,6 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.1",
-    "tsx": "^4.6.1"
+    "concurrently": "^8.2.1"
   }
 }

@@ -11,13 +11,15 @@ const DragnDrop = ({ isDisplayWindow }: DragnProp) => {
   const [upload] = useMutation(UPLOAD_FILES);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    // try {
-    await upload({ variables: { files: acceptedFiles } });
-
-    isDisplayWindow(false);
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    for (const file of acceptedFiles) {
+      try {
+        const response = await upload({ variables: { file: file } });
+        console.log(response);
+        isDisplayWindow(false);
+      } catch (err) {
+        console.error(`Error during file upload for ${file.name}:`, err);
+      }
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

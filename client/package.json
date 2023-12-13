@@ -41,7 +41,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "dev": "vite",
+    "develop": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "watch:css": "npx tailwindcss -i src/assets/input.css -o src/assets/index.css --watch"

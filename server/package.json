@@ -2,11 +2,11 @@
   "name": "artist_portfolio",
   "version": "1.0.0",
   "description": "",
-  "main": "server.ts",
+  "main": "server",
   "scripts": {
-    "start": "tsx server.ts",
-    "watch": "tsx server.ts",
-    "seed": "tsx config/seeds.ts"
+    "start": "tsx server",
+    "develop": "tsx watch server",
+    "seed": "tsx config/seeds"
   },
   "license": "ISC",
   "dependencies": {
@@ -35,6 +35,6 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "tsx": "^4.6.2"
   }
 }

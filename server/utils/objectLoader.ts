@@ -6,10 +6,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { UploadFile } from "./customServerTypes";
-import { Buffer } from "buffer";
-import fs from "fs";
-import { Readable } from "stream";
-import { Stream } from "stream";
+import { ReadStream } from "fs";
 
 const createS3Client = () => {
   const s3 = new S3({
@@ -25,14 +22,20 @@ const createS3Client = () => {
   return s3;
 };
 
-export const uploadObject = async (obj: UploadFile, username: string) => {
+export const uploadObject = async (
+  stream: ReadStream,
+  filename: string,
+  mimetype: string,
+  encoding: string,
+  username: string
+) => {
   const s3Client = createS3Client();
   try {
     const bucketParams = {
       Bucket: "chumbucket",
-      Key: `artist_portfolio/${username}/${obj.filename}`,
-      Body: obj.createReadStream(),
-      ContentType: obj.mimetype,
+      Key: `artist_portfolio/${username}/${filename}`,
+      Body: stream,
+      ContentType: mimetype,
       ACL: "public-read",
       // Metadata: {
       //   "x-amz-meta-my-key": "your-value",

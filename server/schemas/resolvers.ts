@@ -128,54 +128,41 @@ const resolvers = {
     deleteUser: async () => {},
 
     // COMMENT Product Mutations
-    addProducts: async (
+    addProduct: async (
       parent: any,
-      { files }: { files: UploadFile[] },
+      { file }: { file: UploadFile },
       context: any
     ) => {
-      console.log('Before promise resolve:',files);
       if (context.user) {
-        const resolvedFiles = await Promise.all(
-          files.map(async (file) => {
-            return await Promise.resolve(file);
-          })
-        );
-
-        console.log('After promises resolved:', files);
+        // Destructuring file avoids issue with promise wrap in objectLoader - it works so good enough for now
+        const { createReadStream, filename, mimetype, encoding } = await file;
 
         try {
-          // await Promise.all(
-          resolvedFiles.map(async (file) => {
-            try {
-              const bucketResponse = await uploadObject(
-                file,
-                context.user.data.username
-              );
+          const bucketResponse = await uploadObject(
+            createReadStream(),
+            filename,
+            mimetype,
+            encoding,
+            context.user.data.username
+          );
 
-              if (!bucketResponse) throw new GraphQLError("No bucket response");
+          if (!bucketResponse) throw new GraphQLError("No bucket response");
 
-              // If the file uploaded then create new Product and update User
-              try {
-                const newProduct = await Product.create({
-                  name: file.filename.replace(/\.[^.]+$/, ""),
-                  image: file.filename,
-                });
-
-                await User.findOneAndUpdate(
-                  { _id: context.user.data._id },
-                  { $addToSet: { products: newProduct._id } }
-                );
-              } catch (err: any) {
-                console.error("Create Product error: ", err.message);
-              }
-            } catch (err: any) {
-              console.error(`Error uploading: ${err.message}`);
-            }
+          // Create new Product entry and update User
+          const newProduct = await Product.create({
+            name: filename.replace(/\.[^.]+$/, ""),
+            image: filename,
           });
-          // );
+
+          await User.findOneAndUpdate(
+            { _id: context.user.data._id },
+            { $addToSet: { products: newProduct._id } }
+          );
+
           return true;
         } catch (err: any) {
-          console.error("Error: ", err.message);
+          console.error(`Error uploading or creating product: ${err.message}`);
+          throw new GraphQLError("Failed to upload or create product");
         }
       }
       throw new GraphQLError("You need to be logged in!");

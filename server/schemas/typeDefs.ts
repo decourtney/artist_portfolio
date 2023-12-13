@@ -71,7 +71,7 @@ const typeDefs = gql`
     deleteUser(user: String!): Boolean
     login(email: String!, password: String!): Auth
 
-    addProducts(files: [Upload!]!): Boolean
+    addProduct(file: Upload!): Boolean
     updateProduct(product: String!): Boolean
     deleteProduct(product: String!): Boolean
 

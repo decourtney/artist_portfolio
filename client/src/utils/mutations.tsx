@@ -79,7 +79,7 @@ export const ADD_CATEGORY = gql`
 `;
 
 export const UPLOAD_FILES = gql`
-  mutation uploadFiles($files: [Upload!]!) {
-    addProducts(files: $files)
+  mutation uploadFile($file: Upload!) {
+    addProduct(file: $file)
   }
 `;
