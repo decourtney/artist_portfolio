@@ -7,21 +7,17 @@ const profilePicPath = "../profile_pic.png";
 const profilePicBuffer = fs.readFileSync(profilePicPath);
 
 db.once("open", async () => {
+  // Clear DB
   try {
     await User.deleteMany();
     console.log("Users deleted");
-  } catch (err) {
-    console.log(err);
-  }
-  try {
+
     await Product.deleteMany();
     console.log("Products deleted");
-  } catch (err) {
-    console.log(err);
-  }
-  try {
+
     await Category.deleteMany();
     console.log("Categories deleted");
+    
   } catch (err) {
     console.log(err);
   }
@@ -33,14 +29,20 @@ db.once("open", async () => {
     console.log(err);
   }
 
-  // Create a user
-  let newUser;
+  let newCategory;
   try {
-    newUser = await User.create({
+    newCategory = await Category.findOne({ name: "All Artwork" });
+  } catch (err) {
+    console.log(err);
+  }
+
+  // Create a user
+  try {
+    await User.create({
       firstName: "Default",
       lastName: "User",
       username: "defaultuser",
-      email: "defaultuser@fakemail.com",
+      email: "defaultuser@default.com",
       password: "password",
       role: "owner",
       profilePic: "default_avatar.png",
@@ -48,29 +50,46 @@ db.once("open", async () => {
   } catch (err) {
     console.log(err);
   }
-  console.log(newUser?.email.split("@")[0]);
 
-  let category;
+  let newUser;
   try {
-    category = await Category.findOne({ name: "All Artwork" });
+    newUser = await User.findOne({ email: "defaultuser@default.com" });
   } catch (err) {
     console.log(err);
   }
 
+  // Create a product
   try {
-    const newProduct = await Product.create({
+    await Product.create({
       name: "Default Image",
       description: "Default description of image",
       image: "defaultimage.png",
-      categories: category?._id,
     });
+  } catch (err) {
+    console.log(err);
+  }
 
+  let newProduct;
+  try {
+    newProduct = await Product.findOne({ name: "Default Image" });
+  } catch (err) {
+    console.log(err);
+  }
+
+  // Update Docs
+  try {
     await User.findOneAndUpdate(
       { _id: newUser?._id },
-      { $addToSet: { products: newProduct._id } }
+      { $addToSet: { products: newProduct?._id, categories: newCategory?._id } }
     );
-
-    console.log("Product creation complete");
+    await Product.findOneAndUpdate(
+      { _id: newProduct?._id },
+      { $addToSet: { categories: newCategory?._id } }
+    );
+    await Category.findOneAndUpdate(
+      { _id: newCategory?._id },
+      { $addToSet: { products: newProduct?._id } }
+    );
   } catch (err) {
     console.log(err);
   }

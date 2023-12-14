@@ -29,15 +29,6 @@ const categorySchema = new Schema<ICategory>({
   ],
 });
 
-categorySchema.pre("save", function (next) {
-  if (this.name === "All Artwork") {
-    const err = new Error("Cannot modify or remove the All Artwork category.");
-    next(err);
-  } else {
-    next();
-  }
-});
-
 // Create the Category model with the ICategory interface
 const Category: Model<ICategory> = model(
   "Category",
