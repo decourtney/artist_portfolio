@@ -43,8 +43,8 @@ const userSchema = new Schema<IUser>({
   },
   username: {
     type: String,
-    required: false,
-    unique: true,
+    required: true,
+    unique: false,
     trim: true,
     lowercase: true,
   },

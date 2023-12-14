@@ -14,20 +14,24 @@ const resolvers = {
       { username }: { username: string },
       context: any
     ) => {
-      const user = await User.findOne({ username }).select({
-        firstName: 1,
-        lastName: 1,
-        fullname: 1,
-        username: 1,
-        email: 1,
-        phone: 1,
-        street1: 1,
-        street2: 1,
-        city: 1,
-        state: 1,
-        postalCode: 1,
-        profilePic: 1,
-      });
+      const user = await User.findOne(
+        { username },
+        "firstName lastName fullname username email phone street1 street2 city state postalCode profilePic"
+      );
+      // .select({
+      //   firstName: 1,
+      //   lastName: 1,
+      //   fullname: 1,
+      //   username: 1,
+      //   email: 1,
+      //   phone: 1,
+      //   street1: 1,
+      //   street2: 1,
+      //   city: 1,
+      //   state: 1,
+      //   postalCode: 1,
+      //   profilePic: 1,
+      // });
 
       return user;
     },
@@ -36,12 +40,15 @@ const resolvers = {
       { username }: { username: string },
       context: any
     ) => {
-      const user = await User.findOne({ username })
-        .select({
-          username: 1,
-          productCount: 1,
-          categoryCount: 1,
-        })
+      const user = await User.findOne(
+        { username },
+        "username productCount categoryCount"
+      )
+        // .select({
+        //   username: 1,
+        //   productCount: 1,
+        //   categoryCount: 1,
+        // })
         .populate({
           path: "products",
           model: "Product",
@@ -58,17 +65,16 @@ const resolvers = {
       { username }: { username: String },
       context: any
     ) => {
-      const categories = await User.findOne({ username })
-        .select({ categories: 1 })
-        .populate({
-          path: "categories",
-          model: "Category",
-          populate: {
-            path: "products",
-            model: "Product",
-          },
-        });
+      const categories = await User.findOne(
+        { username: username },
+        "categories"
+      ).populate({
+        path: "categories",
+        model: "Category",
+        populate: { path: "products", model: "Product" },
+      });
 
+      console.log(categories);
       return categories;
     },
     // categoryProducts: async (
@@ -148,14 +154,34 @@ const resolvers = {
 
           if (!bucketResponse) throw new GraphQLError("No bucket response");
 
-          // Create new Product entry and update User
+          // All new products should include a default Category. Attempt to find it or create it
+          let defaultCategory = null;
+          defaultCategory = await Category.findOne(
+            {
+              name: "All Artwork",
+            },
+            "_id"
+          );
+
+          if (!defaultCategory) {
+            defaultCategory = await Category.create({ name: "All Artwork" });
+          }
+
+          // Create new product
           const newProduct = await Product.create({
-            name: filename.replace(/\.[^.]+$/, ""),
+            name: filename.replace(/\.[^.]+$/, ""), // strip file extension
             image: filename,
+            categories: [defaultCategory._id],
           });
 
+          // Update User and Category
           await User.findOneAndUpdate(
             { _id: context.user.data._id },
+            { $addToSet: { products: newProduct._id } }
+          );
+
+          await Category.findOneAndUpdate(
+            { name: "All Artwork" },
             { $addToSet: { products: newProduct._id } }
           );
 

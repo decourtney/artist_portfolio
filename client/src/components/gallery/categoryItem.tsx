@@ -14,6 +14,7 @@ const CategoryItem = ({
   handleOnClick,
 }: CategoryItemProps) => {
   const isCenterSlides = false;
+  // console.log(category)
 
   return (
     <>

@@ -39,6 +39,7 @@ const Gallery = () => {
 
   if (loading) return <></>;
   const { categories } = data.userCategories;
+  console.log(categories);
 
   const handleOpenModal = (category: Category) => {
     setIsDisplayModal(true);
