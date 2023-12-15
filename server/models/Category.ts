@@ -5,6 +5,7 @@ import { IProduct } from "./Product";
 interface ICategory extends Document {
   name: string;
   image: string;
+  defaultCategory: Boolean;
   products: IProduct[];
 }
 
@@ -14,6 +15,10 @@ const categorySchema = new Schema<ICategory>({
     required: true,
     unique: true,
     trim: true,
+  },
+  defaultCategory: {
+    type: Boolean,
+    required: true,
   },
   image: {
     type: String,

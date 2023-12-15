@@ -93,6 +93,7 @@ const resolvers = {
     addUser: async (parent: any, args: any) => {
       // Create user and the default category - All Artwork
       const user = await User.create(args);
+      // TODO User can change category names so this wont work
       const defaultCategory = await Category.findOne({ name: "All Artwork" });
 
       await User.findOneAndUpdate(user._id, {

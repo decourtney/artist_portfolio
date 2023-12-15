@@ -17,14 +17,13 @@ db.once("open", async () => {
 
     await Category.deleteMany();
     console.log("Categories deleted");
-    
   } catch (err) {
     console.log(err);
   }
 
   // Create a category
   try {
-    await Category.create({ name: "All Artwork" });
+    await Category.create({ name: "All Artwork", defaultCategory: true });
   } catch (err) {
     console.log(err);
   }

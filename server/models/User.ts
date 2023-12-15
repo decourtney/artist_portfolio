@@ -43,7 +43,7 @@ const userSchema = new Schema<IUser>({
   },
   username: {
     type: String,
-    required: true,
+    required: false,
     unique: false,
     trim: true,
     lowercase: true,
@@ -120,12 +120,14 @@ userSchema.pre("save", async function (next) {
     this.username = this.email.split("@")[0];
   }
 
-  if(this.isModified('phone')){
+  // if(this.isModified('phone')){
     
-  }
+  // }
   next();
 });
 
+
+// TODO Verify this is necessary - I dont think it is
 userSchema.post("save", function (error: any, doc: any, next: any) {
   if (error.name === "MongoServerError" && error.code === 11000) {
     const match = error.message.match(/index: (\w+)_1/);
