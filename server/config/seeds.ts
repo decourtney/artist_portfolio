@@ -7,7 +7,7 @@ const profilePicPath = "../profile_pic.png";
 const profilePicBuffer = fs.readFileSync(profilePicPath);
 
 db.once("open", async () => {
-  // Clear DB
+  // Delete
   try {
     await User.deleteMany();
     console.log("Users deleted");
@@ -21,22 +21,11 @@ db.once("open", async () => {
     console.log(err);
   }
 
-  // Create a category
+  // Create
   try {
     await Category.create({ name: "All Artwork", defaultCategory: true });
-  } catch (err) {
-    console.log(err);
-  }
+    console.log("Category created");
 
-  let newCategory;
-  try {
-    newCategory = await Category.findOne({ name: "All Artwork" });
-  } catch (err) {
-    console.log(err);
-  }
-
-  // Create a user
-  try {
     await User.create({
       firstName: "Default",
       lastName: "User",
@@ -46,53 +35,79 @@ db.once("open", async () => {
       role: "owner",
       profilePic: "default_avatar.png",
     });
-  } catch (err) {
-    console.log(err);
-  }
+    console.log("User created");
 
-  let newUser;
-  try {
-    newUser = await User.findOne({ email: "defaultuser@default.com" });
-  } catch (err) {
-    console.log(err);
-  }
-
-  // Create a product
-  try {
     await Product.create({
       name: "Default Image",
       description: "Default description of image",
       image: "defaultimage.png",
     });
+    console.log("Product created");
   } catch (err) {
     console.log(err);
   }
 
+  // Read
+  let newCategory;
+  let newUser;
   let newProduct;
   try {
+    newCategory = await Category.findOne({ name: "All Artwork" });
+    console.log("Category read");
+
+    newUser = await User.findOne({ email: "defaultuser@default.com" });
+    console.log("User read");
+
     newProduct = await Product.findOne({ name: "Default Image" });
+    console.log("Product read");
   } catch (err) {
     console.log(err);
   }
 
-  // Update Docs
+  // Update
   try {
     await User.findOneAndUpdate(
       { _id: newUser?._id },
       { $addToSet: { products: newProduct?._id, categories: newCategory?._id } }
     );
+    console.log("Category updated");
+
     await Product.findOneAndUpdate(
       { _id: newProduct?._id },
       { $addToSet: { categories: newCategory?._id } }
     );
+    console.log("Product updated");
+
     await Category.findOneAndUpdate(
       { _id: newCategory?._id },
       { $addToSet: { products: newProduct?._id } }
     );
+    console.log("Product updated");
   } catch (err) {
     console.log(err);
   }
 
-  console.warn("DB is seeded");
+  try {
+    const test = await User.findOne(
+      { username: "defaultuser" },
+      {
+        categories: { $elemMatch: { $where: { name: "All Artwork" } } },
+      }
+    )
+      .select("categories")
+      .populate({ path: "categories", model: "Category" });
+
+    const test2 = await Category.findByIdAndUpdate(
+      test?.categories[0]._id,
+      { name: "new name" },
+      { new: true }
+    );
+
+    console.log(test2);
+  } catch (err) {
+    console.log(err);
+  }
+
+  console.warn("DB seeded");
   process.exit();
 });

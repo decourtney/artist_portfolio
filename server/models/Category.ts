@@ -19,6 +19,7 @@ const categorySchema = new Schema<ICategory>({
   defaultCategory: {
     type: Boolean,
     required: true,
+    default: false,
   },
   image: {
     type: String,

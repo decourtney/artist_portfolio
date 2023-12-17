@@ -113,8 +113,10 @@ const resolvers = {
         for (const field in args) {
           if (
             args[field] === null ||
-            args[field] === undefined ||
-            args[field] === ""
+            undefined ||
+            ""
+            // args[field] === undefined ||
+            // args[field] === ""
           )
             delete args[field];
         }
@@ -132,7 +134,9 @@ const resolvers = {
         return user;
       }
     },
-    deleteUser: async () => {},
+    deleteUser: async () => {
+      // Use mongoose Pre-Remove Hook to also remove user data from other documents
+    },
 
     // COMMENT Product Mutations
     addProduct: async (
@@ -218,8 +222,37 @@ const resolvers = {
           console.error("Create Category error: ", err.message);
         }
       }
+      throw new GraphQLError("You need to be logged in!");
     },
-    updateCategory: async () => {},
+    updateCategory: async (
+      parent: any,
+      { username, category }: { username: string; category: string, updateInfo: any },
+      context: any
+    ) => {
+      if (context.user) {
+        try {
+          const userCategory = await User.findOne(
+            { username: username },
+            {
+              categories: { $elemMatch: { $where: { name: category } } },
+            }
+          )
+            .select("categories")
+            .populate({ path: "categories", model: "Category" });
+
+          const updatedCategory = await Category.findByIdAndUpdate(
+            userCategory?.categories[0]._id,
+            { updateInfo },
+            { new: true }
+          );
+
+          return updatedCategory;
+        } catch (err: any) {
+          console.error("Create Category error: ", err.message);
+        }
+      }
+      throw new GraphQLError("You need to be logged in!");
+    },
     deleteCategory: async () => {},
 
     // COMMENT AUTH Mutation
