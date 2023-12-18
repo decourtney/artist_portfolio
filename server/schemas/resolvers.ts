@@ -226,7 +226,12 @@ const resolvers = {
     },
     updateCategory: async (
       parent: any,
-      { username, category }: { username: string; category: string, updateInfo: any },
+      {
+        username,
+        category,
+        name,
+        image,
+      }: { username: string; category: string; name: string; image: string },
       context: any
     ) => {
       if (context.user) {
@@ -240,9 +245,15 @@ const resolvers = {
             .select("categories")
             .populate({ path: "categories", model: "Category" });
 
+          if (!userCategory || !userCategory.categories.length) {
+            throw new GraphQLError("Category not found for the user");
+          }
+
+          const categoryId = userCategory?.categories[0]._id;
+
           const updatedCategory = await Category.findByIdAndUpdate(
-            userCategory?.categories[0]._id,
-            { updateInfo },
+            categoryId,
+            { name: name, image: image },
             { new: true }
           );
 
