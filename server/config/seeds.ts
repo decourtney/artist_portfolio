@@ -26,7 +26,7 @@ db.once("open", async () => {
     await Category.create({ name: "All Artwork", defaultCategory: true });
     console.log("Category created");
 
-    await User.create({
+    const user = await User.create({
       firstName: "Default",
       lastName: "User",
       username: "defaultuser",
@@ -41,6 +41,7 @@ db.once("open", async () => {
       name: "Default Image",
       description: "Default description of image",
       image: "defaultimage.png",
+      user: user._id,
     });
     console.log("Product created");
   } catch (err) {
@@ -87,26 +88,26 @@ db.once("open", async () => {
     console.log(err);
   }
 
-  try {
-    const test = await User.findOne(
-      { username: "defaultuser" },
-      {
-        categories: { $elemMatch: { $where: { name: "All Artwork" } } },
-      }
-    )
-      .select("categories")
-      .populate({ path: "categories", model: "Category" });
+  // try {
+  //   const test = await User.findOne(
+  //     { username: "defaultuser" },
+  //     {
+  //       categories: { $elemMatch: { $where: { name: "All Artwork" } } },
+  //     }
+  //   )
+  //     .select("categories")
+  //     .populate({ path: "categories", model: "Category" });
 
-    const test2 = await Category.findByIdAndUpdate(
-      test?.categories[0]._id,
-      { name: "new name" },
-      { new: true }
-    );
+  //   const test2 = await Category.findByIdAndUpdate(
+  //     test?.categories[0]._id,
+  //     { name: "new name" },
+  //     { new: true }
+  //   );
 
-    console.log(test2);
-  } catch (err) {
-    console.log(err);
-  }
+  //   console.log(test2);
+  // } catch (err) {
+  //   console.log(err);
+  // }
 
   console.warn("DB seeded");
   process.exit();

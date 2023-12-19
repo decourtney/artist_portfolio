@@ -128,31 +128,31 @@ userSchema.pre("save", async function (next) {
 
 
 // TODO Verify this is necessary - I dont think it is
-userSchema.post("save", function (error: any, doc: any, next: any) {
-  if (error.name === "MongoServerError" && error.code === 11000) {
-    const match = error.message.match(/index: (\w+)_1/);
-    const fieldName = match ? match[1] : "unknown";
+// userSchema.post("save", function (error: any, doc: any, next: any) {
+//   if (error.name === "MongoServerError" && error.code === 11000) {
+//     const match = error.message.match(/index: (\w+)_1/);
+//     const fieldName = match ? match[1] : "unknown";
 
-    // console.log(error.message);
-    // console.log(fieldName);
+//     // console.log(error.message);
+//     // console.log(fieldName);
 
-    let errorMessage = "";
-    switch (fieldName) {
-      case "email":
-        errorMessage = "Email address is already in use.";
-        break;
-      case "username":
-        errorMessage = "Username is already in use";
-        break;
-      default:
-        errorMessage = "Duplicate key error.";
-    }
+//     let errorMessage = "";
+//     switch (fieldName) {
+//       case "email":
+//         errorMessage = "Email address is already in use.";
+//         break;
+//       case "username":
+//         errorMessage = "Username is already in use";
+//         break;
+//       default:
+//         errorMessage = "Duplicate key error.";
+//     }
 
-    next(new Error(errorMessage));
-  } else {
-    next(error);
-  }
-});
+//     next(new Error(errorMessage));
+//   } else {
+//     next(error);
+//   }
+// });
 
 userSchema.set("toJSON", { virtuals: true });
 

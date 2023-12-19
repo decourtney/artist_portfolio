@@ -34,7 +34,7 @@ const Gallery = () => {
   useEffect(() => {}, [categoryName, collectionName]);
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
-    variables: { username: import.meta.env.VITE_BASE_USER },
+    variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user 
   });
 
   if (loading) return <></>;

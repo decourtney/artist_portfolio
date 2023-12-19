@@ -65,17 +65,26 @@ const resolvers = {
       { username }: { username: String },
       context: any
     ) => {
-      const categories = await User.findOne(
-        { username: username },
-        "categories"
-      ).populate({
-        path: "categories",
-        model: "Category",
-        populate: { path: "products", model: "Product" },
-      });
+      try {
+        const user = await User.findOne({username: username})
+        const userCategories = await User.findOne(
+          { username: username },
+          "categories",
+        ).populate({
+          path: "categories",
+          model: "Category",
+          populate: {
+            path: "products",
+            model: "Product",
+            match: {user: user?._id},
+          },
+        });
 
-      console.log(categories);
-      return categories;
+        console.log(userCategories);
+        return userCategories;
+      } catch (err) {
+        throw new GraphQLError("Failed to locate user categories");
+      }
     },
     // categoryProducts: async (
     //   parent: any,
@@ -91,47 +100,62 @@ const resolvers = {
   Mutation: {
     // COMMENT User Mutations
     addUser: async (parent: any, args: any) => {
-      // Create user and the default category - All Artwork
-      const user = await User.create(args);
-      // TODO User can change category names so this wont work
-      const defaultCategory = await Category.findOne({ name: "All Artwork" });
+      try {
+        // Create user and the default category - All Artwork
+        const user = await User.create(args);
 
-      await User.findOneAndUpdate(user._id, {
-        $addToSet: { categories: defaultCategory?._id },
-      });
+        const defaultCategory = await Category.findOne({
+          defaultCategory: true,
+        });
 
-      // signToken is expecting _id to be a string
-      const userIdAsString = user._id.toString();
+        await User.findOneAndUpdate(user._id, {
+          $addToSet: { categories: defaultCategory?._id },
+        });
 
-      const token = signToken({ ...user, _id: userIdAsString });
+        // signToken is expecting _id to be a string
+        const userIdAsString = user._id.toString();
 
-      return { token, user };
+        const token = signToken({ ...user, _id: userIdAsString });
+
+        return { token, user };
+      } catch (err: any) {
+        throw new GraphQLError("Failed to create new user");
+      }
     },
     updateUser: async (parent: any, args: any, context: any) => {
       if (context.user) {
-        // Remove empty fields
-        for (const field in args) {
-          if (
-            args[field] === null ||
-            undefined ||
-            ""
-            // args[field] === undefined ||
-            // args[field] === ""
-          )
-            delete args[field];
+        try {
+          // Remove empty fields
+          for (const field in args) {
+            if (
+              args[field] === null ||
+              undefined ||
+              ""
+              // args[field] === undefined ||
+              // args[field] === ""
+            )
+              delete args[field];
+          }
+
+          if (Object.keys(args).length === 0) {
+            console.log("no args");
+            throw new GraphQLError("Nothing Updated");
+          }
+
+          // TODO Test if null or blank values form line 113 work without removing them
+          const user = await User.findByIdAndUpdate(
+            context.user.data._id,
+            args,
+            {
+              runValidators: true,
+              new: true,
+            }
+          );
+
+          return user;
+        } catch (err: any) {
+          throw new GraphQLError("Failed to create new user");
         }
-
-        if (Object.keys(args).length === 0) {
-          console.log("no args");
-          throw new GraphQLError("Nothing Updated");
-        }
-
-        const user = await User.findByIdAndUpdate(context.user.data._id, args, {
-          runValidators: true,
-          new: true,
-        });
-
-        return user;
       }
     },
     deleteUser: async () => {
@@ -157,27 +181,37 @@ const resolvers = {
             context.user.data.username
           );
 
-          if (!bucketResponse) throw new GraphQLError("No bucket response");
+          if (!bucketResponse) throw new GraphQLError("Failed to upload");
 
           // All new products should include a default Category. Attempt to find it or create it
           let defaultCategory = null;
           defaultCategory = await Category.findOne(
             {
-              name: "All Artwork",
+              defaultCategory: true,
             },
             "_id"
           );
 
           if (!defaultCategory) {
-            defaultCategory = await Category.create({ name: "All Artwork" });
+            defaultCategory = await Category.create({
+              name: "All Artwork",
+              defaultCategory: true,
+            });
           }
+
+          const user = await User.findById(context.user.data._id);
+
+          if (!user) throw new GraphQLError("Failed to find user");
 
           // Create new product
           const newProduct = await Product.create({
             name: filename.replace(/\.[^.]+$/, ""), // strip file extension
             image: filename,
-            categories: [defaultCategory._id],
+            user: user?._id,
+            categories: [defaultCategory?._id],
           });
+
+          if (!newProduct) throw new GraphQLError("Failed to create product");
 
           // Update User and Category
           await User.findOneAndUpdate(
@@ -186,17 +220,17 @@ const resolvers = {
           );
 
           await Category.findOneAndUpdate(
-            { name: "All Artwork" },
+            { defaultCategory: true },
             { $addToSet: { products: newProduct._id } }
           );
 
           return true;
         } catch (err: any) {
-          console.error(`Error uploading or creating product: ${err.message}`);
           throw new GraphQLError("Failed to upload or create product");
+          // TODO Need perform cleanup if this fails - remove bucket and/or db entry
         }
       }
-      throw new GraphQLError("You need to be logged in!");
+      throw new GraphQLError("You need to be logged in");
     },
     updateProduct: async () => {},
     deleteProduct: async () => {},
@@ -219,10 +253,10 @@ const resolvers = {
 
           return user;
         } catch (err: any) {
-          console.error("Create Category error: ", err.message);
+          throw new GraphQLError("Failed to create category");
         }
       }
-      throw new GraphQLError("You need to be logged in!");
+      throw new GraphQLError("You need to be logged in");
     },
     updateCategory: async (
       parent: any,
@@ -238,21 +272,22 @@ const resolvers = {
         try {
           const userCategory = await User.findOne(
             { username: username },
+            "categories",
             {
               categories: { $elemMatch: { $where: { name: category } } },
             }
-          )
-            .select("categories")
-            .populate({ path: "categories", model: "Category" });
+          ).populate({ path: "categories", model: "Category" });
 
           if (!userCategory || !userCategory.categories.length) {
             throw new GraphQLError("Category not found for the user");
           }
 
-          const categoryId = userCategory?.categories[0]._id;
+          const categoryToUpdate = userCategory?.categories[0];
+          if (categoryToUpdate.defaultCategory)
+            throw new GraphQLError("The default category cannot be modified");
 
           const updatedCategory = await Category.findByIdAndUpdate(
-            categoryId,
+            categoryToUpdate._id,
             { name: name, image: image },
             { new: true }
           );
@@ -260,6 +295,7 @@ const resolvers = {
           return updatedCategory;
         } catch (err: any) {
           console.error("Create Category error: ", err.message);
+          throw new GraphQLError("Error updating category");
         }
       }
       throw new GraphQLError("You need to be logged in!");
@@ -271,24 +307,28 @@ const resolvers = {
       parent: any,
       { email, password }: { email: any; password: any }
     ) => {
-      const user = await User.findOne({ email });
+      try {
+        const user = await User.findOne({ email });
 
-      if (!user) {
-        throw new GraphQLError("Incorrect credentials");
+        if (!user) {
+          throw new GraphQLError("Incorrect credentials");
+        }
+
+        const correctPw = await user.isCorrectPassword(password);
+
+        if (!correctPw) {
+          throw new GraphQLError("Incorrect credentials");
+        }
+
+        const token = signToken({
+          username: user.username,
+          email: user.email,
+          _id: user._id.toString(),
+        });
+        return { token, user };
+      } catch (err: any) {
+        throw new GraphQLError("Incorrect credentials", err.message);
       }
-
-      const correctPw = await user.isCorrectPassword(password);
-
-      if (!correctPw) {
-        throw new GraphQLError("Incorrect credentials");
-      }
-
-      const token = signToken({
-        username: user.username,
-        email: user.email,
-        _id: user._id.toString(),
-      });
-      return { token, user };
     },
   },
 };

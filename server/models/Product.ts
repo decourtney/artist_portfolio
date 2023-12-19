@@ -1,5 +1,6 @@
 import { Schema, model, Model, Types, Document } from "mongoose";
 import { ICategory } from "./Category";
+import { IUser } from "./User";
 
 // Define an interface for the Product document
 interface IProduct extends Document {
@@ -8,6 +9,7 @@ interface IProduct extends Document {
   image?: string;
   price: number;
   quantity: number;
+  user: IUser;
   categories: ICategory[];
 }
 
@@ -24,6 +26,11 @@ const productSchema = new Schema<IProduct>({
   },
   image: {
     type: String,
+    required: true,
+  },
+  user: {
+    type: Types.ObjectId,
+    ref: "User",
     required: true,
   },
   categories: [
