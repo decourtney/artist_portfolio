@@ -19,58 +19,63 @@ import { Category, Product } from "../utils/customClientTypes";
 import { LoggedInUser } from "../utils/customClientTypes";
 import { useInView } from "react-intersection-observer";
 import Slider from "../components/slider";
-import GalleryModal from "../components/gallery/modal";
+import ProductModal from "../components/gallery/productModal";
+import GalleryModal from "../components/gallery/categoryModal";
 import CategoryItem from "../components/gallery/categoryItem";
 
 const Gallery = () => {
-  const { categoryName, collectionName } = useParams();
+  const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
   const location = useLocation();
-  const navigate = useNavigate;
-  const [isDisplayModal, setIsDisplayModal] = useState(false);
+  const navigate = useNavigate();
+  const [isCategoryModal, setIsCategoryModal] = useState(false);
+  const [isProductModal, setIsProductModal] = useState(false);
   const [modalData, setModalData] = useState(null);
   const modalContent = useRef<Category | null>(null);
 
-  useEffect(() => {}, [categoryName, collectionName]);
-
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
-    variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user 
+    variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
   });
+
+  useEffect(() => {
+    if (categoryName) {
+      setIsCategoryModal(true);
+    } else if (productName) {
+      setIsProductModal(true);
+    }
+  }, [categoryName, productName]);
 
   if (loading) return <></>;
   const { categories } = data.userCategories;
   console.log(categories);
 
-  const handleOpenModal = (category: Category) => {
-    setIsDisplayModal(true);
-  };
-
   const handleCloseModal = () => {
-    setIsDisplayModal(false);
+    navigate(-1)
   };
 
   return (
-    <motion.section
-      // initial={{ y: "100%",  }}
-      // animate={{ y: "0%", transition: { duration: .5 } }}
-      exit={{ opacity: 0 }}
+    <section
       className="flex flex-col   min-h-screen"
     >
       <div className="">
-        {categories.map((category: Category, index: number) => (
-          <CategoryItem
-            key={index}
-            category={category}
-            index={index}
-            handleOnClick={handleOpenModal}
-          />
-        ))}
+        {categories.length > 0 &&
+          categories.map((category: Category, index: number) => (
+            <CategoryItem
+              key={index}
+              category={category}
+              index={index}
+            />
+          ))}
       </div>
 
-      {isDisplayModal ? (
+      {isCategoryModal ? (
         <GalleryModal data={modalData} close={handleCloseModal} />
       ) : null}
-    </motion.section>
+
+      {isProductModal ? (
+        <ProductModal data={modalData} close={handleCloseModal} />
+      ) : null}
+    </section>
   );
 };
 

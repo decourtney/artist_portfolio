@@ -6,7 +6,7 @@ interface ModalProps {
   close: () => void;
 }
 
-const GalleryModal = ({ data, close }: ModalProps) => {
+const ProductModal = ({ data, close }: ModalProps) => {
   return (
     <>
       <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">
@@ -15,7 +15,7 @@ const GalleryModal = ({ data, close }: ModalProps) => {
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full h-full bg-secondary outline-none focus:outline-none pointer-events-auto">
             {/*header*/}
             <div className="flex justify-center items-center h-32 rounded-t text-light text-2xl">
-              <h3 className="font-semibold">Modal Title</h3>
+              <h3 className="font-semibold">Product Modal Title</h3>
             </div>
 
             {/*body*/}
@@ -48,4 +48,4 @@ const GalleryModal = ({ data, close }: ModalProps) => {
   );
 };
 
-export default GalleryModal;
+export default ProductModal;
