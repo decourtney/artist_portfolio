@@ -14,6 +14,7 @@ const CategoryItem = ({
 }: CategoryItemProps) => {
   const navigate = useNavigate();
   const isCenterSlides = false;
+  const numberToDisplay = 2;
   // console.log(category)
 
   return (
@@ -31,7 +32,7 @@ const CategoryItem = ({
         <div className="px-[4%]">
           <Slider
             itemsToDisplay={category.products}
-            numberToDisplay={4}
+            numberToDisplay={numberToDisplay}
             isCenteredSlides={isCenterSlides}
           />
         </div>

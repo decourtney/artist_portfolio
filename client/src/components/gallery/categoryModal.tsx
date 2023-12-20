@@ -6,6 +6,8 @@ interface ModalProps {
   close: () => void;
 }
 
+// need this modal to redirect to /gallery/:productName - need to test how it looks when the back button is clicked
+// can possibly import productModal here 
 const GalleryModal = ({ data, close }: ModalProps) => {
   return (
     <>
