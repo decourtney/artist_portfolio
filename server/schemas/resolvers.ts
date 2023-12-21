@@ -80,7 +80,6 @@ const resolvers = {
           },
         });
 
-        console.log(userCategories);
         return userCategories;
       } catch (err) {
         throw new GraphQLError("Failed to locate user categories");

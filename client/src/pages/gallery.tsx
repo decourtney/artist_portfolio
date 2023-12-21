@@ -30,41 +30,54 @@ const Gallery = () => {
   const navigate = useNavigate();
   const [isCategoryModal, setIsCategoryModal] = useState(false);
   const [isProductModal, setIsProductModal] = useState(false);
-  const [modalData, setModalData] = useState(null);
+  const [modalData, setModalData] = useState<undefined | Category | Product>(
+    undefined
+  );
   const modalContent = useRef<Category | null>(null);
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
     variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
   });
 
+  // let categories: any = [];
+  let categories: Category[] | null = null;
+  if (data) {
+    ({ categories } = data.userCategories);
+  }
+
   useEffect(() => {
     if (categoryName) {
+      const categoryForModal = categories?.find(
+        (cat: Category) => cat.name === categoryName
+      );
+
+      setModalData(categoryForModal);
       setIsCategoryModal(true);
     } else if (productName) {
+      const productForModal = categories?.find((category: Category) => {
+        return category.products.find((product: Product) => {
+          return product.name === productName;
+        });
+      });
+
+      setModalData(productForModal);
       setIsProductModal(true);
     }
   }, [categoryName, productName]);
 
   if (loading) return <></>;
-  const { categories } = data.userCategories;
-  console.log(categories);
 
   const handleCloseModal = () => {
-    navigate(-1)
+    navigate(-1);
   };
 
   return (
-    <section
-      className="flex flex-col   min-h-screen"
-    >
+    <section className="flex flex-col   min-h-screen">
       <div className="">
-        {categories.length > 0 &&
+        {categories &&
+          categories.length > 0 &&
           categories.map((category: Category, index: number) => (
-            <CategoryItem
-              key={index}
-              category={category}
-              index={index}
-            />
+            <CategoryItem key={index} category={category} index={index} />
           ))}
       </div>
 

@@ -2,13 +2,14 @@ import React, { Dispatch, SetStateAction } from "react";
 import { Category, Product } from "../../utils/customClientTypes";
 
 interface ModalProps {
-  data: null | Category[] | Product[];
+  data: undefined | Category | Product;
   close: () => void;
 }
 
 // need this modal to redirect to /gallery/:productName - need to test how it looks when the back button is clicked
-// can possibly import productModal here 
 const GalleryModal = ({ data, close }: ModalProps) => {
+  // console.log(data)
+
   return (
     <>
       <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">

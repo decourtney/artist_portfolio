@@ -14,7 +14,7 @@ const CategoryItem = ({
 }: CategoryItemProps) => {
   const navigate = useNavigate();
   const isCenterSlides = false;
-  const numberToDisplay = 2;
+  const numberToDisplay = 4;
   // console.log(category)
 
   return (

@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { Category, Product } from "../../utils/customClientTypes";
 
 interface ModalProps {
-  data: null | Category[] | Product[];
+  data: undefined | Category | Product;
   close: () => void;
 }
 
