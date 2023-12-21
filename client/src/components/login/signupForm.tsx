@@ -10,6 +10,8 @@ interface SignupProps {
 
 function Signup({ handleLoginDisplay }: SignupProps) {
   const [formState, setFormState] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -32,28 +34,30 @@ function Signup({ handleLoginDisplay }: SignupProps) {
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      if (formState.password !== formState.confirmPassword)
-        setErrorMsg("Passwords don't match");
-      else {
-        const userData = await addUser({
-          variables: {
-            email: formState.email,
-            password: formState.password,
-          },
-        });
+    if (formState.password !== formState.confirmPassword) {
+      setErrorMsg("Passwords don't match");
+      return;
+    }
 
-        Auth.login(
-          userData.data.addUser.token,
-          userData.data.addUser.user.username
-        );
-      }
+    try {
+      const userData = await addUser({
+        variables: {
+          firstName: formState.firstName,
+          lastName: formState.lastName,
+          email: formState.email,
+          password: formState.password,
+        },
+      });
+
+      Auth.login(
+        userData.data.addUser.token,
+        userData.data.addUser.user.username
+      );
     } catch (err: any) {
       // TODO Work on proper error display
       console.log(err);
       if (err.name === "ApolloError") {
-        const errorMsg = err.message.split(":").pop().trim();
-        setErrorMsg(errorMsg);
+        setErrorMsg(err.message.split(":").pop().trim());
       } else {
         setErrorMsg(err.message);
       }
@@ -100,20 +104,32 @@ function Signup({ handleLoginDisplay }: SignupProps) {
               <p className="font-medium text-xs text-red-500">{errorMsg}</p>
             </div>
           ) : (
-            // Space placeholder for error text
             <div className="mt-1 invisible font-medium text-xs text-red-500">
               error
             </div>
           )}
-          {/* <input
-            className="h-8 text-base rounded-md px-2 w-full"
-            placeholder="Username"
-            name="username"
-            type="username"
-            id="lastName"
-            onChange={handleChange}
-            required
-          /> */}
+
+          <div className="flex flex-row space-x-1">
+            <input
+              className="h-8 text-base rounded-md px-2 w-full"
+              placeholder="First"
+              name="firstName"
+              type="text"
+              id="firstName"
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="h-8 text-base rounded-md px-2 w-full"
+              placeholder="Last"
+              name="lastName"
+              type="text"
+              id="lastName"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
           <input
             className="h-8 rounded-md px-2 w-full"
             placeholder="Email"
@@ -156,7 +172,6 @@ function Signup({ handleLoginDisplay }: SignupProps) {
             <button
               className="w-full font-bold text-pprimary pointer-events-auto"
               type="submit"
-              disabled={!isConfirmMatch}
             >
               Signup
             </button>

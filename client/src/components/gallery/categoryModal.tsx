@@ -2,11 +2,14 @@ import React, { Dispatch, SetStateAction } from "react";
 import { Category, Product } from "../../utils/customClientTypes";
 
 interface ModalProps {
-  data: null | Category[] | Product[];
+  data: undefined | Category | Product;
   close: () => void;
 }
 
+// need this modal to redirect to /gallery/:productName - need to test how it looks when the back button is clicked
 const GalleryModal = ({ data, close }: ModalProps) => {
+  console.log(data)
+
   return (
     <>
       <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">
@@ -15,7 +18,7 @@ const GalleryModal = ({ data, close }: ModalProps) => {
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full h-full bg-secondary outline-none focus:outline-none pointer-events-auto">
             {/*header*/}
             <div className="flex justify-center items-center h-32 rounded-t text-light text-2xl">
-              <h3 className="font-semibold">Modal Title</h3>
+              <h3 className="font-semibold">Category Modal Title</h3>
             </div>
 
             {/*body*/}

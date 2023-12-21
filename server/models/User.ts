@@ -25,12 +25,12 @@ interface IUser extends Document {
 const userSchema = new Schema<IUser>({
   firstName: {
     type: String,
-    required: false,
+    required: true,
     trim: true,
   },
   lastName: {
     type: String,
-    required: false,
+    required: true,
     trim: true,
   },
   email: {
@@ -44,7 +44,7 @@ const userSchema = new Schema<IUser>({
   username: {
     type: String,
     required: false,
-    unique: true,
+    unique: false,
     trim: true,
     lowercase: true,
   },
@@ -120,37 +120,39 @@ userSchema.pre("save", async function (next) {
     this.username = this.email.split("@")[0];
   }
 
-  if(this.isModified('phone')){
+  // if(this.isModified('phone')){
     
-  }
+  // }
   next();
 });
 
-userSchema.post("save", function (error: any, doc: any, next: any) {
-  if (error.name === "MongoServerError" && error.code === 11000) {
-    const match = error.message.match(/index: (\w+)_1/);
-    const fieldName = match ? match[1] : "unknown";
 
-    // console.log(error.message);
-    // console.log(fieldName);
+// TODO Verify this is necessary - I dont think it is
+// userSchema.post("save", function (error: any, doc: any, next: any) {
+//   if (error.name === "MongoServerError" && error.code === 11000) {
+//     const match = error.message.match(/index: (\w+)_1/);
+//     const fieldName = match ? match[1] : "unknown";
 
-    let errorMessage = "";
-    switch (fieldName) {
-      case "email":
-        errorMessage = "Email address is already in use.";
-        break;
-      case "username":
-        errorMessage = "Username is already in use";
-        break;
-      default:
-        errorMessage = "Duplicate key error.";
-    }
+//     // console.log(error.message);
+//     // console.log(fieldName);
 
-    next(new Error(errorMessage));
-  } else {
-    next(error);
-  }
-});
+//     let errorMessage = "";
+//     switch (fieldName) {
+//       case "email":
+//         errorMessage = "Email address is already in use.";
+//         break;
+//       case "username":
+//         errorMessage = "Username is already in use";
+//         break;
+//       default:
+//         errorMessage = "Duplicate key error.";
+//     }
+
+//     next(new Error(errorMessage));
+//   } else {
+//     next(error);
+//   }
+// });
 
 userSchema.set("toJSON", { virtuals: true });
 

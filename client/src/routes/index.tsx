@@ -14,12 +14,12 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 
-import About from "../pages/About";
-import Contact from "../pages/Contact";
-import Gallery from "../pages/Gallery";
-import Home from "../pages/Home";
-import Login from "../pages/Login";
-import Profile from "../pages/Profile";
+import About from "../pages/about";
+import Contact from "../pages/contact";
+import Gallery from "../pages/gallery";
+import Home from "../pages/home";
+import Login from "../pages/login";
+import Profile from "../pages/profile";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { AnimatePresence, LayoutGroup } from "framer-motion";
@@ -36,7 +36,7 @@ const AnimatedRoutes = () => {
           {/* This is just for initial development stages. delete when necessary */}
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
-          <Route path="/gallery/:collectionName" element={<Gallery />} />
+          <Route path="/gallery/:productName" element={<Gallery />} />
           <Route path="/gallery/c/:categoryName" element={<Gallery />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

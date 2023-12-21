@@ -28,19 +28,20 @@ function Login({ handleLoginDisplay }: LoginProps) {
         variables: { ...formState },
       });
 
-      Auth.login(
-        userData.data.login.token,
-        userData.data.login.user.username
-      );
+      if (userData)
+        Auth.login(
+          userData.data.login.token,
+          userData.data.login.user.username
+        );
     } catch (err: any) {
       // TODO Work on proper error display
       console.log(err);
-      if (err.name === "ApolloError") {
-        const errorMsg = err.message.split(":").pop().trim();
-        setErrorMsg(errorMsg);
-      } else {
-        setErrorMsg(err.message);
-      }
+      setErrorMsg(err.message);
+      // if (err.name === "ApolloError") {
+      //   setErrorMsg(err.message.split(":").pop().trim());
+      // } else {
+      //   setErrorMsg(err.message);
+      // }
     }
 
     if (formRef.current) formRef.current.reset();

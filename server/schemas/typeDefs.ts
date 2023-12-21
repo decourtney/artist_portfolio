@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-express";
+import gql from "graphql-tag";
 
 const typeDefs = gql`
   scalar Upload
@@ -53,7 +53,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addUser(email: String!, password: String!): Auth
+    addUser(firstName: String!, lastName: String!, email: String!, password: String!): Auth
     updateUser(
       firstName: String
       lastName: String
@@ -71,12 +71,12 @@ const typeDefs = gql`
     deleteUser(user: String!): Boolean
     login(email: String!, password: String!): Auth
 
-    addProducts(files: [Upload!]!): Boolean
+    addProduct(file: Upload!): Boolean
     updateProduct(product: String!): Boolean
     deleteProduct(product: String!): Boolean
 
     addCategory(username: String!, category: String!): User
-    updateCategory(username: String!, category: String!, image: String): User
+    updateCategory(username: String!, category: String!): Category
     deleteCategory(username: String!, category: String!): User
   }
 `;

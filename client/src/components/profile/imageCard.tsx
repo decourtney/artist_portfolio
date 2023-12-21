@@ -5,7 +5,7 @@ import { Product } from "../../utils/customClientTypes";
 import { AnimatePresence, motion, useScroll, LayoutGroup } from "framer-motion";
 
 const baseCDN =
-  process.env.BASE_CDN ||
+  import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface Props {

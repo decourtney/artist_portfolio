@@ -13,14 +13,13 @@ import {
   useAnimationControls,
 } from "framer-motion";
 import CreateCategory from "./createCategory";
-import Slider from "../Slider";
+import Slider from "../slider";
 import BackButton from "./backButton";
 import CollapsibleButton from "./collapsibleButton";
 import DragnDrop from "./dragndrop";
 
 // TODO Remove and just use .env
-const baseCDN =
-  process.env.BASE_CDN ||
+const baseCDN = import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 // TODO Not currently in use
@@ -32,7 +31,7 @@ interface AccountProps {
 const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   const { username: userParam } = useParams();
   const [addCategory, setAddCategory] = useState(false);
-  const [addCollection, setAddCollection] = useState(false);
+  const [isDisplayDragnDrop, setIsDisplayDragnDrop] = useState(false);
   const controls = useAnimationControls();
 
   const isCenterSlides = true;
@@ -103,7 +102,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
               {/* TODO create popup for editing collection info or for deleting */}
               {/* Collections Slider */}
               <div className="flex flex-col flex-grow">
-                {addCollection ? (
+                {isDisplayDragnDrop ? (
                   <>
                     <div className="flex flex-col">
                       <div className="flex justify-between mb-4">
@@ -112,8 +111,8 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                         </div>
                         <div className="flex justify-end items-center w-full mb-1 text-xs">
                           <CollapsibleButton
-                            handleOnClick={setAddCollection}
-                            display={addCollection}
+                            handleOnClick={setIsDisplayDragnDrop}
+                            display={isDisplayDragnDrop}
                             title={"Close"}
                             symbol={"remove"}
                           />
@@ -122,7 +121,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                     </div>
 
                     <div className="flex flex-grow p-2 rounded-2xl bg-plight">
-                      <DragnDrop reportSuccess={setAddCollection} />
+                      <DragnDrop isDisplayWindow={setIsDisplayDragnDrop} />
                     </div>
                   </>
                 ) : (
@@ -134,8 +133,8 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                         </div>
                         <div className="flex justify-end items-center w-full mb-1 text-xs">
                           <CollapsibleButton
-                            handleOnClick={setAddCollection}
-                            display={addCollection}
+                            handleOnClick={setIsDisplayDragnDrop}
+                            display={isDisplayDragnDrop}
                             title={"Add Collection"}
                             symbol={"add"}
                           />

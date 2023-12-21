@@ -14,11 +14,11 @@ export const LOGIN_USER = gql`
 `;
 
 export const ADD_USER = gql`
-  mutation addUser($email: String!, $password: String!) {
-    addUser(email: $email, password: $password) {
+  mutation addUser($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
+    addUser(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
       token
       user {
-        _id
+        username
       }
     }
   }
@@ -71,15 +71,15 @@ export const UPDATE_USER = gql`
 `;
 
 export const ADD_CATEGORY = gql`
-mutation addCategory($username: String!, $category: String!){
-  addCategory(username: $username, category: $category){
-    _id
+  mutation addCategory($username: String!, $category: String!) {
+    addCategory(username: $username, category: $category) {
+      _id
+    }
   }
-}
-`
+`;
 
 export const UPLOAD_FILES = gql`
-  mutation uploadFiles($files: [Upload!]!) {
-    addProducts(files: $files)
+  mutation uploadFile($file: Upload!) {
+    addProduct(file: $file)
   }
 `;
