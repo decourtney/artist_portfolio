@@ -16,8 +16,6 @@ const Home = () => {
           <img src={mountains} className="w-full" />
         </motion.div>
       </section>
-
-      {/* <Gallery /> */}
     </>
   );
 };

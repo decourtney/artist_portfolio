@@ -7,10 +7,11 @@ interface ModalProps {
 }
 
 const ProductModal = ({ data, close }: ModalProps) => {
+  console.log(data)
   return (
     <>
       <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">
-        <div className="relative w-[80vw] mt-6 mx-auto h-full">
+        <div className="relative w-[95vw] mt-6 mx-auto h-full">
           {/*content*/}
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full h-full bg-secondary outline-none focus:outline-none pointer-events-auto">
             {/*header*/}
