@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/server.ts",
   "scripts": {
-    "develop": "concurrently -g \"cd server && npm run develop\" \"cd client && npm run develop\"",
+    "develop": "concurrently \"cd server && npm run develop\" \"cd client && npm run develop\"",
     "watch-css": "cd client && npx tailwindcss -i src/assets/input.css -o src/assets/index.css --watch",
     "install": "cd server && npm i && cd ../client && npm i",
     "seed": "cd server && npm run seed",
