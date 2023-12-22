@@ -1,15 +1,32 @@
 import React, { Dispatch, SetStateAction } from "react";
+import {
+  Navigate,
+  useParams,
+  useNavigate,
+  useLocation,
+  Link,
+} from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { unsetCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
 
-interface ModalProps {
-  data: undefined | Category | Product;
-  close: () => void;
-}
+// interface ModalProps {
+//   data: undefined | Category | Product;
+//   close: () => void;
+// }
 
 // need this modal to redirect to /gallery/:productName - need to test how it looks when the back button is clicked
-const GalleryModal = ({ data, close }: ModalProps) => {
-  // console.log(data)
+const GalleryModal = () => {
+  const categoryData = useAppSelector((state) => state.category.data);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
+  const handleClose = () => {
+    dispatch(unsetCategoryState());
+    navigate("/gallery/");
+  };
+
+  console.log(categoryData);
   return (
     <>
       <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">
@@ -34,7 +51,7 @@ const GalleryModal = ({ data, close }: ModalProps) => {
             {/* close button */}
             <button
               className="absolute top-5 right-5 bg-transparent border-0 outline-none focus:outline-none"
-              onClick={close}
+              onClick={handleClose}
             >
               <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none text-light">
                 close
@@ -45,7 +62,7 @@ const GalleryModal = ({ data, close }: ModalProps) => {
       </div>
       <div
         className="opacity-50 fixed inset-0 z-40 bg-black"
-        onClick={close}
+        onClick={handleClose}
       ></div>
     </>
   );

@@ -1,4 +1,6 @@
 import { Navigate, useParams, useNavigate } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { setProductState } from "../redux/productSlice";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Grid, Navigation, Scrollbar, A11y } from "swiper/modules";
 import "swiper/css";
@@ -10,30 +12,19 @@ const baseCDN =
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface SliderProps {
-  handleOnClick: (item: Product | Category) => void;
   itemsToDisplay: Product[] | Category[];
   numberToDisplay: number;
   isCenteredSlides: boolean;
 }
 
-// These assertions are used to help determine if the clicked card is a category or collection.
-// Then
-function isProduct(item: Product | Category): item is Product {
-  return "description" in item;
-}
-
-function isCategory(item: Product | Category): item is Category {
-  return "products" in item;
-}
-
 const Slider = ({
-  handleOnClick,
   itemsToDisplay,
   numberToDisplay,
   isCenteredSlides,
 }: SliderProps) => {
   let { username: userParam } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
@@ -56,9 +47,9 @@ const Slider = ({
         <SwiperSlide
           key={index}
           onClick={() => {
-            // handleOnClick(item);
-            // if (isProduct(item)) navigate(`/gallery/${item.name}`);
-            // else navigate(`/gallery/c/${item.name}`);
+            dispatch(setProductState(item));
+            if (item.__typename === "product") navigate(`/gallery/${item.name}`);
+            else navigate(`/gallery/c/${item.name}`);
           }}
         >
           <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-plight shadow-md">

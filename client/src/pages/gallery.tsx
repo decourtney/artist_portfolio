@@ -26,18 +26,14 @@ import CategoryModal from "../components/gallery/categoryModal";
 import CategoryItem from "../components/gallery/categoryItem";
 
 const Gallery = () => {
+  const categoryData = useAppSelector((state) => state.category.data);
+  const productData = useAppSelector((state) => state.product.data);
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
   const location = useLocation();
   const navigate = useNavigate();
-  const categoryState = useAppSelector((state) => state.category.category);
-
   const [isCategoryModal, setIsCategoryModal] = useState(false);
   const [isProductModal, setIsProductModal] = useState(false);
-  // const [modalData, setModalData] = useState<undefined | Category | Product>(
-  //   undefined
-  // );
-  const modalData = useRef<undefined | Category | Product>(undefined);
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
     variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
@@ -84,39 +80,32 @@ const Gallery = () => {
   //   }
   // }, [categoryName, productName]);
 
-  const handleOnClickItem = (item: Product | Category) => {
-    // if (item.__typename === "Product") navigate(`/gallery/${item.name}`);
-    // else navigate(`/gallery/c/${item.name}`);
-  };
+  useEffect(() => {
+    if (productData) {
+      console.log("Product:", productData);
+      setIsProductModal(true);
+    }
+    if (categoryData) {
+      console.log("Category:", categoryData);
+    }
+  }, []);
 
   if (loading) return <></>;
 
-  const handleCloseModal = () => {
-    navigate("/gallery/");
-  };
-
+  console.log(productData)
   return (
     <section className="flex flex-col   min-h-screen">
       <div className="">
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => (
-            <CategoryItem
-              key={index}
-              category={category}
-              index={index}
-              handleOnClick={handleOnClickItem}
-            />
+            <CategoryItem key={index} category={category} index={index} />
           ))}
       </div>
 
-      {isCategoryModal ? (
-        <CategoryModal data={modalData.current} close={handleCloseModal} />
-      ) : null}
+      {categoryData ? <CategoryModal /> : null}
 
-      {isProductModal ? (
-        <ProductModal data={modalData.current} close={handleCloseModal} />
-      ) : null}
+      {isProductModal ? <ProductModal /> : null}
     </section>
   );
 };

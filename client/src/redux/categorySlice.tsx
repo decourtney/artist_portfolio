@@ -2,13 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const categorySlice = createSlice({
   name: "category",
-  initialState: { category: undefined },
+  initialState: { data: undefined },
   reducers: {
     setCategoryState: (state, action) => {
-      state.category = action.payload;
+      state.data = action.payload;
     },
     unsetCategoryState: (state) => {
-      state.category = undefined;
+      state.data = undefined;
     },
   },
 });
