@@ -18,12 +18,14 @@ export type UserData = {
 };
 
 export type Category = {
+  __typename: string;
   image: string;
   name: string;
   products: [Product];
 };
 
 export type Product = {
+  __typename: string;
   name: string;
   description: string;
   image: string;

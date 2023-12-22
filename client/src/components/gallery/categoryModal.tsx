@@ -8,7 +8,7 @@ interface ModalProps {
 
 // need this modal to redirect to /gallery/:productName - need to test how it looks when the back button is clicked
 const GalleryModal = ({ data, close }: ModalProps) => {
-  console.log(data)
+  // console.log(data)
 
   return (
     <>

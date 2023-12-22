@@ -7,7 +7,8 @@ interface ModalProps {
 }
 
 const ProductModal = ({ data, close }: ModalProps) => {
-  console.log(data)
+  // console.log(data)
+  
   return (
     <>
       <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">

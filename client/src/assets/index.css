@@ -787,8 +787,8 @@ video {
   width: 80vw;
 }
 
-.w-\[90vw\] {
-  width: 90vw;
+.w-\[95vw\] {
+  width: 95vw;
 }
 
 .w-fit {
@@ -799,10 +799,6 @@ video {
 
 .w-full {
   width: 100%;
-}
-
-.w-\[95vw\] {
-  width: 95vw;
 }
 
 .flex-auto {
