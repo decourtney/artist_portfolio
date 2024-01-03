@@ -32,6 +32,7 @@ export const QUERY_ACCOUNT = gql`
         categories {
           __typename
           name
+          defaultCategory
           image
         }
       }
@@ -39,6 +40,7 @@ export const QUERY_ACCOUNT = gql`
       categories {
         __typename
         name
+        defaultCategory
         image
       }
     }
@@ -51,6 +53,7 @@ export const QUERY_USER_CATEGORIES = gql`
       __typename
       categories {
         name
+        defaultCategory
         image
         products {
           __typename
@@ -85,6 +88,7 @@ export const QUERY_CATEGORY = gql`
       image
       categories {
         name
+        defaultCategory
         image
       }
     }

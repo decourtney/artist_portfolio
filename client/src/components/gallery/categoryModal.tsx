@@ -26,7 +26,7 @@ const GalleryModal = () => {
     navigate("/gallery/");
   };
 
-  console.log(categoryData);
+  // console.log(categoryData);
   return (
     <>
       <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">

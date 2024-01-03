@@ -24,9 +24,13 @@ import Slider from "../components/slider";
 import ProductModal from "../components/gallery/productModal";
 import CategoryModal from "../components/gallery/categoryModal";
 import CategoryItem from "../components/gallery/categoryItem";
+import { setCategoryState } from "../redux/categorySlice";
+import { setProductState } from "../redux/productSlice";
 
 const Gallery = () => {
-  const categoryData = useAppSelector((state) => state.category.data);
+  const categoryData: Category | undefined = useAppSelector(
+    (state) => state.category.data
+  );
   const productData = useAppSelector((state) => state.product.data);
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
@@ -34,65 +38,68 @@ const Gallery = () => {
   const navigate = useNavigate();
   const [isCategoryModal, setIsCategoryModal] = useState(false);
   const [isProductModal, setIsProductModal] = useState(false);
+  const dispatch = useAppDispatch();
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
     variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
   });
 
-  // let categories: any = [];
   let categories: Category[] | null = null;
   if (data) {
     ({ categories } = data.userCategories);
   }
-  // console.log(data)
 
-  // Make adjustments so that all cats and prods are sent to the modals
-  // Enabling scrolling through the rest of the cats or prods in the modal display
-  // useEffect(() => {
-  //   if (categoryName) {
-  //     const categoryForModal = categories?.find(
-  //       (category: Category) => category.name === categoryName
-  //     );
-
-  //     setModalData(categoryForModal);
-  //     setIsCategoryModal(true);
-  // }
-  // if (productName) {
-  // const productForModal = categories?.find((category: Category) => {
-  //   return category.products.find((product: Product) => {
-  //     return product.name === productName;
-  //   });
-  // });
-
-  //     let productForModal = undefined;
-  //     categories?.some((category) => {
-  //       const product = category.products.find((p) => p.name === productName);
-  //       if (product) {
-  //         productForModal = product;
-  //         return true; // to break out of the 'some' loop once a product is found
-  //       }
-  //       return false;
-  //     });
-
-  //     console.log(productForModal);
-  //     setModalData(productForModal);
-  //     setIsProductModal(true);
-  //   }
-  // }, [categoryName, productName]);
-
+  // Handles displaying Modals and dispatching data for Modals
   useEffect(() => {
-    if (productData) {
-      console.log("Product:", productData);
-      setIsProductModal(true);
+    if (data) {
+      if (productName) {
+        const findProductForModal = async () => {
+          try {
+            const category = categoryData
+              ? categories?.find((c) => {
+                  return c.name === categoryData?.name;
+                })
+              : // Catch all for page refresh
+                categories?.find((c) => {
+                  return c.defaultCategory === true;
+                });
+
+            const productForModal = category?.products.find(
+              (p) => p.name === productName
+            );
+
+            dispatch(setProductState(productForModal));
+            setIsProductModal(true);
+            console.log("productformodal:", productForModal);
+          } catch (err) {
+            console.log(err);
+          }
+        };
+
+        findProductForModal();
+      }
+      if (categoryName) {
+        const findCategoryForModal = async () => {
+          try {
+            const categoryForModal = categories?.find(
+              (category: Category) => category.name === categoryName
+            );
+
+            dispatch(setCategoryState(categoryForModal));
+            setIsCategoryModal(true);
+            console.log("categoryformodal:", categoryForModal);
+          } catch (err) {
+            console.log(err);
+          }
+        };
+
+        findCategoryForModal();
+      }
     }
-    if (categoryData) {
-      console.log("Category:", categoryData);
-    }
-  }, []);
+  }, [data]);
 
   if (loading) return <></>;
 
-  console.log(productData)
   return (
     <section className="flex flex-col   min-h-screen">
       <div className="">
@@ -103,9 +110,9 @@ const Gallery = () => {
           ))}
       </div>
 
-      {categoryData ? <CategoryModal /> : null}
+      {categoryName ? <CategoryModal /> : null}
 
-      {isProductModal ? <ProductModal /> : null}
+      {productName ? <ProductModal /> : null}
     </section>
   );
 };

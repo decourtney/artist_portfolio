@@ -19,8 +19,9 @@ export type UserData = {
 
 export type Category = {
   __typename: string;
-  image: string;
   name: string;
+  defaultCategory: boolean;
+  image: string;
   products: [Product];
 };
 

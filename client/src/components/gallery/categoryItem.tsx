@@ -10,14 +10,17 @@ interface CategoryItemProps {
   index: number;
 }
 
-const CategoryItem = ({
-  category,
-  index,
-}: CategoryItemProps) => {
+const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isCenterSlides = false;
   const numberToDisplay = 4;
+
+  const handleOnClickProduct = (item: Product | Category) => {
+    if (item.__typename === "Product") {
+      navigate(`/gallery/${item.name}`);
+    }
+  };
 
   return (
     <>
@@ -26,7 +29,6 @@ const CategoryItem = ({
           type="button"
           className="mb-2 mx-[4%] bg-blue-500"
           onClick={() => {
-            dispatch(setCategoryState(category));
             navigate(`/gallery/c/${category.name}`);
           }}
         >
@@ -34,6 +36,7 @@ const CategoryItem = ({
         </button>
         <div className="px-[4%]">
           <Slider
+            handleOnClickItem={handleOnClickProduct}
             itemsToDisplay={category.products}
             numberToDisplay={numberToDisplay}
             isCenteredSlides={isCenterSlides}

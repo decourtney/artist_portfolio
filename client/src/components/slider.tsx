@@ -12,12 +12,14 @@ const baseCDN =
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface SliderProps {
+  handleOnClickItem: (item: Product | Category) => void;
   itemsToDisplay: Product[] | Category[];
   numberToDisplay: number;
   isCenteredSlides: boolean;
 }
 
 const Slider = ({
+  handleOnClickItem,
   itemsToDisplay,
   numberToDisplay,
   isCenteredSlides,
@@ -47,9 +49,7 @@ const Slider = ({
         <SwiperSlide
           key={index}
           onClick={() => {
-            dispatch(setProductState(item));
-            if (item.__typename === "product") navigate(`/gallery/${item.name}`);
-            else navigate(`/gallery/c/${item.name}`);
+            handleOnClickItem(item);
           }}
         >
           <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-plight shadow-md">
