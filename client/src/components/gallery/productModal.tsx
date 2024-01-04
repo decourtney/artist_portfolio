@@ -10,24 +10,28 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { unsetProductState } from "../../redux/productSlice";
 import { Category, Product } from "../../utils/customClientTypes";
 
-// interface ModalProps {
-//   data: undefined | Category | Product;
-//   close: () => void;
-// }
+const baseCDN =
+  import.meta.env.VITE_BASE_CDN ||
+  "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 const ProductModal = () => {
-  const productData = useAppSelector((state) => state.product.data);
+  const productData = useAppSelector<Product | undefined>(
+    (state) => state.product.data
+  );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  let { username: userParam } = useParams();
+
+  if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const handleClose = () => {
-    dispatch(unsetProductState());
+    // dispatch(unsetProductState());
     navigate("/gallery/");
   };
 
   useEffect(() => {
-    // console.log(productData);
-  }, []);
+    if (productData) console.log(productData);
+  }, [productData]);
 
   return (
     <>
@@ -42,6 +46,12 @@ const ProductModal = () => {
 
             {/*body*/}
             <div className="relative px-6 flex-auto">
+              <img
+                src={`${baseCDN}/${userParam}/${productData?.image}`}
+                className="w-full"
+                alt={`${productData?.name}`}
+                loading="lazy"
+              />
               <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
                 I always felt like I could do anything. That’s the main thing
                 people are controlled by! Thoughts- their perception of

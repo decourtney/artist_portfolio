@@ -28,10 +28,12 @@ import { setCategoryState } from "../redux/categorySlice";
 import { setProductState } from "../redux/productSlice";
 
 const Gallery = () => {
-  const categoryData: Category | undefined = useAppSelector(
+  const categoryData = useAppSelector<Category | undefined>(
     (state) => state.category.data
   );
-  const productData = useAppSelector((state) => state.product.data);
+  const productData = useAppSelector<Product | undefined>(
+    (state) => state.product.data
+  );
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
   const location = useLocation();
@@ -57,7 +59,7 @@ const Gallery = () => {
           try {
             const category = categoryData
               ? categories?.find((c) => {
-                  return c.name === categoryData?.name;
+                  return c.name === categoryData?.name; // FIXME error possibly due to redux type definition for state
                 })
               : // Catch all for page refresh
                 categories?.find((c) => {
@@ -70,7 +72,7 @@ const Gallery = () => {
 
             dispatch(setProductState(productForModal));
             setIsProductModal(true);
-            console.log("productformodal:", productForModal);
+            // console.log("productformodal:", productForModal);
           } catch (err) {
             console.log(err);
           }
@@ -87,7 +89,7 @@ const Gallery = () => {
 
             dispatch(setCategoryState(categoryForModal));
             setIsCategoryModal(true);
-            console.log("categoryformodal:", categoryForModal);
+            // console.log("categoryformodal:", categoryForModal);
           } catch (err) {
             console.log(err);
           }

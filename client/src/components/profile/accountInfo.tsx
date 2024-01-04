@@ -43,6 +43,8 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
     variables: { username: userParam },
   });
 
+  const handleOnClickItem = () => {};
+
   // if (!loading) console.log("query account:", data);
 
   // TODO Style text colors
@@ -93,6 +95,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                 </div>
                 <div className="relative edge-fade flex flex-grow w-full text-xs">
                   <Slider
+                    handleOnClickItem={handleOnClickItem}
                     itemsToDisplay={data.account.categories}
                     numberToDisplay={categoryNumToDisplay}
                     isCenteredSlides={isCenterSlides}
