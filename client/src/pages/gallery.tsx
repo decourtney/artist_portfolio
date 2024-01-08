@@ -103,7 +103,7 @@ const Gallery = () => {
   if (loading) return <></>;
 
   return (
-    <section className="flex flex-col   min-h-screen">
+    <section className="relative flex flex-col">
       <div className="">
         {categories &&
           categories.length > 0 &&

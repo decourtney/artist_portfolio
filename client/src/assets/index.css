@@ -711,10 +711,6 @@ video {
   margin-top: 1.5rem;
 }
 
-.block {
-  display: block;
-}
-
 .flex {
   display: flex;
 }
@@ -759,12 +755,46 @@ video {
   height: 100vh;
 }
 
+.h-auto {
+  height: auto;
+}
+
 .h-full {
   height: 100%;
 }
 
 .h-screen {
   height: 100vh;
+}
+
+.h-\[\] {
+  height: ;
+}
+
+.h-\[100dvh\] {
+  height: 100dvh;
+}
+
+.h-fit {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.h-1\/2 {
+  height: 50%;
+}
+
+.max-h-\[\] {
+  max-height: ;
+}
+
+.max-h-\[100vh\] {
+  max-height: 100vh;
+}
+
+.max-h-\[90vh\] {
+  max-height: 90vh;
 }
 
 .min-h-screen {
@@ -803,6 +833,34 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.max-w-\[\] {
+  max-width: ;
+}
+
+.max-w-\[95\] {
+  max-width: 95;
+}
+
+.max-w-\[95vw\] {
+  max-width: 95vw;
+}
+
+.max-w-\[95d\] {
+  max-width: 95d;
+}
+
+.max-w-\[95dv\] {
+  max-width: 95dv;
+}
+
+.max-w-\[95dvh\] {
+  max-width: 95dvh;
+}
+
+.max-w-\[95dvw\] {
+  max-width: 95dvw;
 }
 
 .flex-auto {
@@ -1072,6 +1130,10 @@ video {
   padding: 1%;
 }
 
+.p-6 {
+  padding: 1.5rem;
+}
+
 .px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -1118,6 +1180,10 @@ video {
 
 .pl-4 {
   padding-left: 1rem;
+}
+
+.pt-6 {
+  padding-top: 1.5rem;
 }
 
 .text-left {
@@ -1276,6 +1342,12 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-2xl {
+  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .outline-none {
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -1308,10 +1380,6 @@ video {
   transition-duration: 150ms;
 }
 
-body::-webkit-scrollbar {
-  display: none;
-}
-
 /* For IE, Edge and Firefox */
 
 body {
@@ -1319,6 +1387,11 @@ body {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none;
+  /* height: 100dvh; */
 }
 
 html {
@@ -1451,6 +1524,17 @@ html {
 @media screen and (min-width: 1601px) and (max-width: 1920px) and (orientation: landscape) {
 }
 
+.before\:bg-black::before {
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
+.before\:opacity-50::before {
+  content: var(--tw-content);
+  opacity: 0.5;
+}
+
 .after\:absolute::after {
   content: var(--tw-content);
   position: absolute;
@@ -1501,6 +1585,17 @@ html {
   content: var(--tw-content);
   --tw-bg-opacity: 1;
   background-color: rgb(91 143 185 / var(--tw-bg-opacity));
+}
+
+.after\:bg-black::after {
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
+.after\:opacity-50::after {
+  content: var(--tw-content);
+  opacity: 0.5;
 }
 
 .after\:content-\[\'\'\]::after {

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import {
   Navigate,
   useParams,
@@ -26,7 +26,10 @@ const GalleryModal = () => {
     navigate("/gallery/");
   };
 
-  // console.log(categoryData);
+    useEffect(() => {
+      if (categoryData) console.log(categoryData);
+    }, [categoryData]);
+
   return (
     <>
       <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">

@@ -35,30 +35,33 @@ const ProductModal = () => {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">
-        <div className="relative w-[95vw] mt-6 mx-auto h-full">
+      <div
+        className="fixed w-full h-full z-50 outline-none focus:outline-none after:opacity-50 after:bg-black"
+        onClick={handleClose}
+      >
+        {/* <div className=" max-w-[95vw] pt-6 mx-auto"> */}
           {/*content*/}
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full h-full bg-secondary outline-none focus:outline-none pointer-events-auto">
+          <div className="relative mx-auto w-fit max-w-[95vw] max-h-[90vh] border-0 rounded-lg shadow-2xl bg-secondary outline-none focus:outline-none pointer-events-auto">
             {/*header*/}
-            <div className="flex justify-center items-center h-32 rounded-t text-light text-2xl">
+            <div className="flex justify-center items-center rounded-t text-light text-2xl">
               <h3 className="font-semibold">Product Modal Title</h3>
             </div>
 
             {/*body*/}
-            <div className="relative px-6 flex-auto">
+            <div className="p-6">
               <img
                 src={`${baseCDN}/${userParam}/${productData?.image}`}
-                className="w-full"
+                className=""
                 alt={`${productData?.name}`}
                 loading="lazy"
               />
-              <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
+              {/* <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
                 I always felt like I could do anything. That’s the main thing
                 people are controlled by! Thoughts- their perception of
                 themselves! They're slowed down by their perception of
                 themselves. If you're taught you can’t do anything, you won’t do
                 anything. I was taught I could do everything.
-              </p>
+              </p> */}
             </div>
             {/* close button */}
             <button
@@ -70,12 +73,13 @@ const ProductModal = () => {
               </span>
             </button>
           </div>
-        </div>
+        {/* </div> */}
+
+        {/* <div
+          className="opacity-50 fixed inset-0 z-40 bg-black"
+          onClick={handleClose}
+        ></div> */}
       </div>
-      <div
-        className="opacity-50 fixed inset-0 z-40 bg-black"
-        onClick={handleClose}
-      ></div>
     </>
   );
 };
