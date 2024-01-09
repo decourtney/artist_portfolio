@@ -15,6 +15,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const dispatch = useAppDispatch();
   const isCenterSlides = false;
   const numberToDisplay = 4;
+  const displayDirection = 'horizontal';
 
   const handleOnClickProduct = (item: Product | Category) => {
     if (item.__typename === "Product") {
@@ -23,27 +24,26 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
   };
 
   return (
-    <>
-      <div className="w-full my-[3vw] bg-dark">
-        <button
-          type="button"
-          className="mb-2 mx-[4%] bg-blue-500"
-          onClick={() => {
-            navigate(`/gallery/c/${category.name}`);
-          }}
-        >
-          <h2 className="text-light pointer-events-none">{category.name}</h2>
-        </button>
-        <div className="px-[4%]">
-          <Slider
-            handleOnClickItem={handleOnClickProduct}
-            itemsToDisplay={category.products}
-            numberToDisplay={numberToDisplay}
-            isCenteredSlides={isCenterSlides}
-          />
-        </div>
+    <div className="w-full mt-12 bg-dark">
+      <button
+        type="button"
+        className="mb-2 mx-[4%] bg-blue-500"
+        onClick={() => {
+          navigate(`/gallery/c/${category.name}`);
+        }}
+      >
+        <h2 className="text-light pointer-events-none">{category.name}</h2>
+      </button>
+      <div className="px-[4%]">
+        <Slider
+          handleOnClickItem={handleOnClickProduct}
+          itemsToDisplay={category.products}
+          numberToDisplay={numberToDisplay}
+          isCenteredSlides={isCenterSlides}
+          displayDirection={displayDirection}
+        />
       </div>
-    </>
+    </div>
   );
 };
 

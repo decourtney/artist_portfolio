@@ -15,7 +15,8 @@ interface SliderProps {
   handleOnClickItem: (item: Product | Category) => void;
   itemsToDisplay: Product[] | Category[];
   numberToDisplay: number;
-  isCenteredSlides: boolean;
+  isCenteredSlides?: boolean;
+  displayDirection?: "horizontal" | "vertical" | undefined;
 }
 
 const Slider = ({
@@ -23,6 +24,7 @@ const Slider = ({
   itemsToDisplay,
   numberToDisplay,
   isCenteredSlides,
+  displayDirection,
 }: SliderProps) => {
   let { username: userParam } = useParams();
   const navigate = useNavigate();
@@ -35,15 +37,18 @@ const Slider = ({
       modules={[Grid, Navigation, Scrollbar, A11y]}
       spaceBetween={10}
       slidesPerView={numberToDisplay}
-      grid={{ rows: 1 }}
+      grid={{ fill: "column", rows: 1 }}
       // loop={true}
-      loopAddBlankSlides={true}
+      // loopAddBlankSlides={true}
       centeredSlides={isCenteredSlides}
       navigation
       freeMode={false}
+      direction={displayDirection}
+      // autoHeight={true}
       // scrollbar={{ draggable: true }}
       // onSlideChange={() => console.log("slide change")}
       // onSwiper={(swiper: any) => console.log(swiper)}
+      className=" bg-red-400"
     >
       {itemsToDisplay.map((item, index) => (
         <SwiperSlide
@@ -52,21 +57,19 @@ const Slider = ({
             handleOnClickItem(item);
           }}
         >
-          <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-plight shadow-md">
-            <div className="flex justify-center items-center w-full h-full p-1 rounded-lg bg-slate-50 shadow-md">
-              {item.image ? (
-                <img
-                  src={`${baseCDN}/${userParam}/${item.image}`}
-                  className="w-full"
-                  alt={`Slide ${index}`}
-                  loading="lazy"
-                />
-              ) : (
-                <div className="px-1 text-pdark font-bold text-[3vw]">
-                  <span>{item.name}</span>
-                </div>
-              )}
-            </div>
+          <div className="w-full p-1 rounded-md shadow-md bg-orange-400">
+            {item.image ? (
+              <img
+                src={`${baseCDN}/${userParam}/${item.image}`}
+                className="inline-block w-full h-auto"
+                alt={`${item.name}`}
+                loading="lazy"
+              />
+            ) : (
+              <div className="px-1 text-pdark font-bold text-[3vw]">
+                <span>{item.name}</span>
+              </div>
+            )}
           </div>
         </SwiperSlide>
       ))}
