@@ -34,10 +34,7 @@ const ProductModal = () => {
   }, [productData]);
 
   return (
-    <div
-      className="fixed flex justify-center items-center w-full h-full z-50 outline-none focus:outline-none before:opacity-50 before:bg-black before:absolute before:inset-0"
-      // onClick={handleClose}
-    >
+    <div className="fixed flex justify-center items-center w-full h-full z-50 outline-none focus:outline-none before:opacity-50 before:bg-black before:absolute before:inset-0">
       {/* content */}
       <div className="relative w-fit h-fit p-1 border-0 rounded-md shadow-2xl bg-secondary outline-none focus:outline-none pointer-events-auto">
         {/* image */}

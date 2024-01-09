@@ -28,12 +28,12 @@ const GalleryModal = () => {
 
   const handleClose = () => {
     dispatch(unsetCategoryState());
-    navigate("/gallery/");
+    navigate(-1);
   };
 
    const handleOnClickProduct = (item: Product | Category) => {
      if (item.__typename === "Product") {
-       navigate(`/gallery/${categoryData?.name}/${item.name}`);
+       navigate(`/gallery/c/${categoryData?.name}/${item.name}`);
      }
    };
 
@@ -44,10 +44,7 @@ const GalleryModal = () => {
   if (!categoryData) return <></>;
 
   return (
-    <div
-      className="fixed flex justify-center items-center w-full h-full z-50 outline-none focus:outline-none before:opacity-50 before:bg-black before:absolute before:inset-0"
-      // onClick={handleClose}
-    >
+    <div className="fixed flex justify-center items-center w-full h-full z-50 outline-none focus:outline-none before:opacity-50 before:bg-black before:absolute before:inset-0">
       <div className="w-fit h-full pt-3 overflow-scroll">
         {/*content*/}
         <div className="relative w-fit h-fit max-w-[90vw] px-3 pb-3 border-0 rounded-lg shadow-lg bg-secondary outline-none focus:outline-none pointer-events-auto">

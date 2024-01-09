@@ -51,6 +51,7 @@ const Gallery = () => {
     ({ categories } = data.userCategories);
   }
 
+  console.log(categoryName, productName)
   // Handles displaying Modals and dispatching data for Modals
   useEffect(() => {
     if (data) {
