@@ -15,6 +15,10 @@ body::-webkit-scrollbar {
   /* height: 100dvh; */
 }
 
+.no-scrollbar::-webkit-scrollbar {  
+  display: none;
+}
+
 html {
   background-color: rgb(24 61 61);
 }

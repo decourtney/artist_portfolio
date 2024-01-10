@@ -51,7 +51,7 @@ const Gallery = () => {
     ({ categories } = data.userCategories);
   }
 
-  console.log(categoryName, productName)
+  console.log(categoryName, productName);
   // Handles displaying Modals and dispatching data for Modals
   useEffect(() => {
     if (data) {
@@ -73,6 +73,7 @@ const Gallery = () => {
 
             dispatch(setProductState(productForModal));
             setIsProductModal(true);
+            setIsCategoryModal(false);
             // console.log("productformodal:", productForModal);
           } catch (err) {
             console.log(err);
@@ -80,8 +81,7 @@ const Gallery = () => {
         };
 
         findProductForModal();
-      }
-      if (categoryName) {
+      } else if (categoryName) {
         const findCategoryForModal = async () => {
           try {
             const categoryForModal = categories?.find(
@@ -90,6 +90,7 @@ const Gallery = () => {
 
             dispatch(setCategoryState(categoryForModal));
             setIsCategoryModal(true);
+            setIsProductModal(false);
             // console.log("categoryformodal:", categoryForModal);
           } catch (err) {
             console.log(err);
@@ -113,9 +114,9 @@ const Gallery = () => {
           ))}
       </div>
 
-      {categoryName ? <CategoryModal /> : null}
+      {isCategoryModal ? <CategoryModal /> : null}
 
-      {productName ? <ProductModal /> : null}
+      {isProductModal ? <ProductModal /> : null}
     </section>
   );
 };

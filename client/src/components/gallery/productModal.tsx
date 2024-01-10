@@ -24,9 +24,14 @@ const ProductModal = () => {
 
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  const handleClose = () => {
+  const handleBack = () => {
     // dispatch(unsetProductState());
     navigate(-1);
+  };
+
+  const handleClose = () => {
+    // dispatch(unsetProductState());
+    navigate("/gallery/");
   };
 
   useEffect(() => {
@@ -34,9 +39,40 @@ const ProductModal = () => {
   }, [productData]);
 
   return (
-    <div className="fixed flex justify-center items-center w-full h-full z-50 outline-none focus:outline-none before:opacity-50 before:bg-black before:absolute before:inset-0">
+    <div
+      id="productModal"
+      className="fixed flex justify-center items-center w-full h-full z-50"
+    >
+      <div
+        className="absolute w-full h-full bg-black opacity-75"
+        onClick={handleClose}
+      />
       {/* content */}
-      <div className="relative w-fit h-fit p-1 border-0 rounded-md shadow-2xl bg-secondary outline-none focus:outline-none pointer-events-auto">
+      <div className="fixed w-fit h-fit p-1 border-0 rounded-md shadow-2xl bg-secondary outline-none focus:outline-none pointer-events-auto">
+        {/* title */}
+        <div className="relative w-full h-full py-1 px-8 text-center text-light">
+          <h3>{productData?.name}</h3>
+
+          {/* back button */}
+          <button
+            className="absolute top-0 left-0 bg-transparent border-0 outline-none focus:outline-none"
+            onClick={handleBack}
+          >
+            <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
+              arrow_back
+            </span>
+          </button>
+          {/* close button */}
+          <button
+            className="absolute top-0 right-0 bg-transparent border-0 outline-none focus:outline-none"
+            onClick={handleClose}
+          >
+            <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
+              close
+            </span>
+          </button>
+        </div>
+
         {/* image */}
         <img
           src={`${baseCDN}/${userParam}/${productData?.image}`}
@@ -44,16 +80,6 @@ const ProductModal = () => {
           alt={`${productData?.name}`}
           loading="lazy"
         />
-
-        {/* close button */}
-        <button
-          className="absolute top-[2%] right-[2%] bg-transparent border-0 outline-none focus:outline-none"
-          onClick={handleClose}
-        >
-          <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none text-light">
-            close
-          </span>
-        </button>
       </div>
     </div>
   );
