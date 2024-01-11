@@ -24,7 +24,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
   };
 
   return (
-    <div className="w-full mt-12 bg-dark">
+    <div className="w-full bg-dark">
       <button
         type="button"
         className="mb-2 mx-[4%] bg-blue-500"

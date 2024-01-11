@@ -105,7 +105,7 @@ const Gallery = () => {
   if (loading) return <></>;
 
   return (
-    <section className="relative flex flex-col">
+    <section id="gallery" className="relative flex flex-col">
       <div className="">
         {categories &&
           categories.length > 0 &&
