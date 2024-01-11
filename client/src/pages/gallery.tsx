@@ -106,13 +106,13 @@ const Gallery = () => {
 
   return (
     <section id="gallery" className="relative flex flex-col">
-      <div className="">
+      {/* <div className=""> */}
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => (
             <CategoryItem key={index} category={category} index={index} />
           ))}
-      </div>
+      {/* </div> */}
 
       {isCategoryModal ? <CategoryModal /> : null}
 

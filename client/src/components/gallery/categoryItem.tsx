@@ -3,6 +3,7 @@ import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { setCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
+import { motion, useScroll } from "framer-motion";
 import Slider from "../slider";
 
 interface CategoryItemProps {
@@ -13,9 +14,10 @@ interface CategoryItemProps {
 const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { scrollYProgress } = useScroll();
   const isCenterSlides = false;
   const numberToDisplay = 4;
-  const displayDirection = 'horizontal';
+  const displayDirection = "horizontal";
 
   const handleOnClickProduct = (item: Product | Category) => {
     if (item.__typename === "Product") {
@@ -24,7 +26,13 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
   };
 
   return (
-    <div className="w-full bg-dark">
+    <motion.div
+      key={category.name}
+      id="category-item"
+      className="w-full pt-14 bg-dark"
+      // initial={{ y: "100%" }}
+      style={{ translateY: scrollYProgress }}
+    >
       <button
         type="button"
         className="mb-2 mx-[4%] bg-blue-500"
@@ -43,7 +51,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
           displayDirection={displayDirection}
         />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

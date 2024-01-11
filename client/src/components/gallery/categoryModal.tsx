@@ -66,6 +66,7 @@ const GalleryModal = () => {
           <div className="flex flex-row flex-wrap mb-[2vw]">
             {categoryData.products.map((product, index) => (
               <motion.div
+                key={product.name}
                 className="relative w-1/2 h-36 my-1"
                 whileHover={{ overflow: "visible", zIndex: 50 }}
               >
@@ -81,7 +82,9 @@ const GalleryModal = () => {
                   />
                 </motion.div>
                 <div className="absolute top-2/3 bottom-0 left-0 right-0 mx-1 p-2 bg-dark">
-                  <h3 className="font-bold text-[2dvw] text-slate-300">{product.name}</h3>
+                  <h3 className="font-bold text-[2dvw] text-slate-300">
+                    {product.name}
+                  </h3>
                 </div>
               </motion.div>
             ))}

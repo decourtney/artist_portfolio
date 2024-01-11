@@ -49,22 +49,21 @@ const ProductModal = () => {
       />
       {/* content */}
       <div className="fixed w-fit h-fit p-1 border-0 rounded-md shadow-2xl bg-secondary outline-none focus:outline-none pointer-events-auto">
-        {/* title */}
-        <div className="relative w-full h-full py-1 px-8 text-center text-light">
-          <h3>{productData?.name}</h3>
-
+        {/* buttons */}
+        <div className="relative w-full h-full px-8 text-center text-light">
           {/* back button */}
           <button
-            className="absolute top-0 left-0 bg-transparent border-0 outline-none focus:outline-none"
+            className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
             onClick={handleBack}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
               arrow_back
             </span>
           </button>
+
           {/* close button */}
           <button
-            className="absolute top-0 right-0 bg-transparent border-0 outline-none focus:outline-none"
+            className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
             onClick={handleClose}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">

@@ -5,11 +5,11 @@ import mountains from "../images/mountains.jpg";
 
 const Home = () => {
   return (
-      <section id="home" className="flex flex-col justify-center items-center w-full min-h-screen bg-secondary -z-10">
+      <section id="home" className="flex flex-col justify-center items-center w-full h-full min-h-screen max-h-screen bg-secondary -z-10">
         <motion.div
           initial={{}}
           animate={{}}
-          exit={{ y: "-100%", opacity: 0, transition: { duration: 0.5 } }}
+          exit={{}}
           className="w-full h-full"
         >
           <img src={mountains} className="w-full" />
