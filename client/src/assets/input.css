@@ -12,7 +12,6 @@ body {
 
 body::-webkit-scrollbar {
   display: none;
-  /* height: 100dvh; */
 }
 
 .no-scrollbar::-webkit-scrollbar {  

@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { setCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion, useScroll } from "framer-motion";
-import Slider from "../slider";
+import Slider from "../slider/slider";
 
 interface CategoryItemProps {
   category: Category;
@@ -14,7 +14,7 @@ interface CategoryItemProps {
 const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { scrollYProgress } = useScroll();
+  const { scrollYProgress, scrollY } = useScroll();
   const isCenterSlides = false;
   const numberToDisplay = 4;
   const displayDirection = "horizontal";
@@ -30,8 +30,6 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
       key={category.name}
       id="category-item"
       className="w-full pt-14 bg-dark"
-      // initial={{ y: "100%" }}
-      style={{ translateY: scrollYProgress }}
     >
       <button
         type="button"

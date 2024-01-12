@@ -26,6 +26,7 @@ import CategoryModal from "../components/gallery/categoryModal";
 import CategoryItem from "../components/gallery/categoryItem";
 import { setCategoryState } from "../redux/categorySlice";
 import { setProductState } from "../redux/productSlice";
+import Hero from "../components/home/hero";
 
 const Gallery = () => {
   const categoryData = useAppSelector<Category | undefined>(
@@ -60,12 +61,12 @@ const Gallery = () => {
           try {
             const category = categoryData
               ? categories?.find((c) => {
-                  return c.name === categoryData?.name; // FIXME error possibly due to redux type definition for state
-                })
+                return c.name === categoryData?.name; // FIXME error possibly due to redux type definition for state
+              })
               : // Catch all for page refresh
-                categories?.find((c) => {
-                  return c.defaultCategory === true;
-                });
+              categories?.find((c) => {
+                return c.defaultCategory === true;
+              });
 
             const productForModal = category?.products.find(
               (p) => p.name === productName
@@ -105,19 +106,22 @@ const Gallery = () => {
   if (loading) return <></>;
 
   return (
-    <section id="gallery" className="relative flex flex-col">
-      {/* <div className=""> */}
+    <>
+      {/* <Hero /> */}
+      <section id="gallery" className="relative flex flex-col">
+        {/* <div className=""> */}
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => (
             <CategoryItem key={index} category={category} index={index} />
           ))}
-      {/* </div> */}
+        {/* </div> */}
 
-      {isCategoryModal ? <CategoryModal /> : null}
+        {isCategoryModal ? <CategoryModal /> : null}
 
-      {isProductModal ? <ProductModal /> : null}
-    </section>
+        {isProductModal ? <ProductModal /> : null}
+      </section>
+    </>
   );
 };
 
