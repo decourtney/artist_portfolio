@@ -52,7 +52,6 @@ const Gallery = () => {
     ({ categories } = data.userCategories);
   }
 
-  console.log(categoryName, productName);
   // Handles displaying Modals and dispatching data for Modals
   useEffect(() => {
     if (data) {
@@ -112,9 +111,13 @@ const Gallery = () => {
         {/* <div className=""> */}
         {categories &&
           categories.length > 0 &&
-          categories.map((category: Category, index: number) => (
-            <CategoryItem key={index} category={category} index={index} />
-          ))}
+          categories.map((category: Category, index: number) => 
+            {if(category.products.length > 0){return <CategoryItem
+              key={`${category.name}-${index}`}
+              category={category}
+              index={index}
+            />;}}
+          )}
         {/* </div> */}
 
         {isCategoryModal ? <CategoryModal /> : null}

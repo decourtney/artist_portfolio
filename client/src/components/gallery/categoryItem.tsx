@@ -29,7 +29,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
     <motion.div
       key={category.name}
       id="category-item"
-      className="w-full pt-14 bg-dark"
+      className="w-full pt-14 "
     >
       <button
         type="button"
@@ -47,6 +47,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
           numberToDisplay={numberToDisplay}
           isCenteredSlides={isCenterSlides}
           displayDirection={displayDirection}
+          categoryIndex={index}
         />
       </div>
     </motion.div>

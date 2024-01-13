@@ -9,23 +9,29 @@ interface SliderProps {
   numberToDisplay: number;
   isCenteredSlides?: boolean;
   displayDirection?: "horizontal" | "vertical" | undefined;
+  categoryIndex: number;
 }
 
-const Slider = ({ handleOnClickItem,
-                  itemsToDisplay,
-                  numberToDisplay,
-                  isCenteredSlides,
-                  displayDirection, }: SliderProps) => {
+const Slider = ({
+  handleOnClickItem,
+  itemsToDisplay,
+  categoryIndex,
+  numberToDisplay,
+  isCenteredSlides,
+  displayDirection,
+}: SliderProps) => {
   const [sliderHasMoved, setSliderHasMoved] = useState(false); // boolean to display prev arrow
   const [sliderMoving, setSliderMoving] = useState(false); // boolean for slider animation
   const [movePercentage, setMovePercentage] = useState(0); // move percentage to shift slider during animation
-  const [sliderMoveDirection, setSliderMoveDirection] = useState<String | null>(null); // direction of movement of animation
+  const [sliderMoveDirection, setSliderMoveDirection] = useState<String | null>(
+    null
+  ); // direction of movement of animation
   const [lowestVisibleIndex, setLowestVisibleIndex] = useState(0); // lowest visible index of slider content
-  const [itemsInRow, setItemsInRow] = useState(2); // number of items in the slider content changed dynamically on window size
+  const [itemsInRow, setItemsInRow] = useState(20); // number of items in the slider content changed dynamically on window size
 
   const totalItems = itemsToDisplay.length;
 
-  console.log(itemsToDisplay);
+  console.log("Items To Display", itemsToDisplay);
 
   useEffect(() => {
     handleWindowResize(window);
@@ -55,34 +61,54 @@ const Slider = ({ handleOnClickItem,
     const mid = [];
     const right = [];
 
+    let visibleIndexCounter = 0;
     for (let i = 0; i < itemsInRow; i++) {
-      // left
+      if (visibleIndexCounter + lowestVisibleIndex >= totalItems) {
+        visibleIndexCounter = 0;
+      }
+
       if (sliderHasMoved) {
-        if (lowestVisibleIndex + i - itemsInRow < 0) {
-          left.push(totalItems - itemsInRow + lowestVisibleIndex + i);
-        } else {
-          left.push(i + lowestVisibleIndex - itemsInRow); // issue here
-        }
+        // left
+        // if (lowestVisibleIndex + i - itemsInRow < 0) {
+        //   left.push(totalItems - itemsInRow + lowestVisibleIndex + i);
+        // } else {
+        //   left.push(i + lowestVisibleIndex - itemsInRow); // issue here
+        // }
+
+        left.push(visibleIndexCounter + lowestVisibleIndex - itemsInRow);
       }
 
       // mid
-      if (i + lowestVisibleIndex >= totalItems) {
-        mid.push(i + lowestVisibleIndex - totalItems);
-      } else {
-        mid.push(i + lowestVisibleIndex);
-      }
+      // if (i + lowestVisibleIndex >= totalItems) {
+      //   mid.push(i + lowestVisibleIndex - totalItems);
+      //   console.log("Mid Push Upper:", i + lowestVisibleIndex - totalItems);
+      // } else {
+      //   mid.push(i + lowestVisibleIndex);
+      //   console.log("Mid Push Lower:", i + lowestVisibleIndex);
+      // }
+
+      mid.push(visibleIndexCounter + lowestVisibleIndex);
 
       // right
-      if (i + lowestVisibleIndex + itemsInRow >= totalItems) {
-        right.push(i + lowestVisibleIndex + itemsInRow - totalItems);
-      } else {
-        right.push(i + lowestVisibleIndex + itemsInRow);
-      }
+      // if (i + lowestVisibleIndex + itemsInRow >= totalItems) {
+      //   right.push(i + lowestVisibleIndex + itemsInRow - totalItems);
+      //   console.log(
+      //     "Right Push Upper2:",
+      //     i + lowestVisibleIndex + itemsInRow - totalItems
+      //   );
+      // } else {
+      //   right.push(i + lowestVisibleIndex + itemsInRow);
+      //   console.log("Right Push Lower:", i + lowestVisibleIndex + itemsInRow);
+      // }
+
+      right.push(visibleIndexCounter + lowestVisibleIndex);
+
+      visibleIndexCounter++;
     }
 
     // combine indexes
     const indexToDisplay = [...left, ...mid, ...right];
-    console.log(indexToDisplay);
+    console.log("Index To Display:", indexToDisplay);
 
     // add on leading and trailing indexes for peek image when sliding
     if (sliderHasMoved) {
@@ -98,16 +124,31 @@ const Slider = ({ handleOnClickItem,
     }
 
     const sliderContents = [];
+    let itemToDisplayCounter = 0;
     for (let index of indexToDisplay) {
-      console.log(`${itemsToDisplay[index].name}`)
+      console.log(itemsToDisplay[index]);
       sliderContents.push(
         <SliderItem
           itemToDisplay={itemsToDisplay[index]}
-          key={`${itemsToDisplay[index].name}$`}
+          key={`${itemsToDisplay[index]?.name}-${categoryIndex}-${itemToDisplayCounter}`}
           width={100 / itemsInRow}
         />
       );
+
+      itemToDisplayCounter++;
     }
+
+    // let itemToDisplayCounter = 0;
+    // for (let i = 0; i < indexToDisplay.length; i++) {
+    //   console.log(itemsToDisplay[i]);
+    //   sliderContents.push(
+    //     <SliderItem
+    //       itemToDisplay={itemsToDisplay[i]}
+    //       key={`${itemsToDisplay[i]?.name}-${categoryIndex}-${i}`}
+    //       width={100 / itemsInRow}
+    //     />
+    //   );
+    // }
 
     // adds empty divs to take up appropriate spacing when slider at initial position
     if (!sliderHasMoved) {
@@ -206,8 +247,9 @@ const Slider = ({ handleOnClickItem,
     };
   } else {
     style = {
-      transform: `translateX(-${100 + (sliderHasMoved ? 100 / itemsInRow : 0)
-        }%)`,
+      transform: `translateX(-${
+        100 + (sliderHasMoved ? 100 / itemsInRow : 0)
+      }%)`,
     };
   }
 
