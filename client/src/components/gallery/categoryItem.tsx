@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { setCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion, useScroll } from "framer-motion";
-import Slider from "../slider/slider";
+import Slider from "../slider3/slider";
 
 interface CategoryItemProps {
   category: Category;

@@ -27,11 +27,11 @@ const Slider = ({
     null
   ); // direction of movement of animation
   const [lowestVisibleIndex, setLowestVisibleIndex] = useState(0); // lowest visible index of slider content
-  const [itemsInRow, setItemsInRow] = useState(20); // number of items in the slider content changed dynamically on window size
+  const [itemsInRow, setItemsInRow] = useState(4); // number of items in the slider content changed dynamically on window size
 
   const totalItems = itemsToDisplay.length;
 
-  console.log("Items To Display", itemsToDisplay);
+  // console.log("Items To Display", itemsToDisplay);
 
   useEffect(() => {
     handleWindowResize(window);
@@ -76,6 +76,7 @@ const Slider = ({
         // }
 
         left.push(visibleIndexCounter + lowestVisibleIndex - itemsInRow);
+        right.push(visibleIndexCounter + lowestVisibleIndex);
       }
 
       // mid
@@ -101,14 +102,12 @@ const Slider = ({
       //   console.log("Right Push Lower:", i + lowestVisibleIndex + itemsInRow);
       // }
 
-      right.push(visibleIndexCounter + lowestVisibleIndex);
-
       visibleIndexCounter++;
     }
 
     // combine indexes
     const indexToDisplay = [...left, ...mid, ...right];
-    console.log("Index To Display:", indexToDisplay);
+    // console.log("Index To Display:", indexToDisplay);
 
     // add on leading and trailing indexes for peek image when sliding
     if (sliderHasMoved) {
@@ -126,7 +125,7 @@ const Slider = ({
     const sliderContents = [];
     let itemToDisplayCounter = 0;
     for (let index of indexToDisplay) {
-      console.log(itemsToDisplay[index]);
+      // console.log(itemsToDisplay[index]);
       sliderContents.push(
         <SliderItem
           itemToDisplay={itemsToDisplay[index]}
@@ -254,11 +253,14 @@ const Slider = ({
   }
 
   return (
-    <div className="slider">
+    <div
+      id="slider"
+      className="bg-red-400 relative flex mb-5 h-full"
+    >
       {sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
-      <div className="slider-content" style={style}>
+      <div className=" whitespace-nowrap bg-purple-500" >
         {renderSliderContent()}
       </div>
       <SliderControl arrowDirection={"right"} onClick={handleNext} />

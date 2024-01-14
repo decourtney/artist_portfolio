@@ -20,7 +20,7 @@ import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { Category, Product } from "../utils/customClientTypes";
 import { LoggedInUser } from "../utils/customClientTypes";
 import { useInView } from "react-intersection-observer";
-import Slider from "../components/slider";
+import Slider from "../components/slider1/slider";
 import ProductModal from "../components/gallery/productModal";
 import CategoryModal from "../components/gallery/categoryModal";
 import CategoryItem from "../components/gallery/categoryItem";
@@ -60,12 +60,12 @@ const Gallery = () => {
           try {
             const category = categoryData
               ? categories?.find((c) => {
-                return c.name === categoryData?.name; // FIXME error possibly due to redux type definition for state
-              })
+                  return c.name === categoryData?.name; // FIXME error possibly due to redux type definition for state
+                })
               : // Catch all for page refresh
-              categories?.find((c) => {
-                return c.defaultCategory === true;
-              });
+                categories?.find((c) => {
+                  return c.defaultCategory === true;
+                });
 
             const productForModal = category?.products.find(
               (p) => p.name === productName
@@ -111,13 +111,17 @@ const Gallery = () => {
         {/* <div className=""> */}
         {categories &&
           categories.length > 0 &&
-          categories.map((category: Category, index: number) => 
-            {if(category.products.length > 0){return <CategoryItem
-              key={`${category.name}-${index}`}
-              category={category}
-              index={index}
-            />;}}
-          )}
+          categories.map((category: Category, index: number) => {
+            if (category.products.length > 0) {
+              return (
+                <CategoryItem
+                  key={`${category.name}-${index}`}
+                  category={category}
+                  index={index}
+                />
+              );
+            }
+          })}
         {/* </div> */}
 
         {isCategoryModal ? <CategoryModal /> : null}

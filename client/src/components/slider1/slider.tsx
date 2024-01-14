@@ -1,11 +1,11 @@
 import { Navigate, useParams, useNavigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { setProductState } from "../redux/productSlice";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { setProductState } from "../../redux/productSlice";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Grid, Navigation, Scrollbar, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/bundle";
-import { Product, Category } from "../utils/customClientTypes";
+import { Product, Category } from "../../utils/customClientTypes";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||

@@ -13,13 +13,15 @@ const SliderItem = ({ itemToDisplay, width }: SliderItemProps) => {
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
   
   return (
-    <div className="slider-item" style={{ width: `${width}%` }}>
+    // <div className="h-full w-auto">
+    <div id="slider-item" className="inline-block py-[4%]">
       <img
-        className="slider-image"
+        className="block w-full h-full"
         src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
         alt={itemToDisplay.name}
       />
     </div>
+    // </div>
   );
 };
 
