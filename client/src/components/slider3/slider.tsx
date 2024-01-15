@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Product, Category } from "../../utils/customClientTypes";
+import { motion } from "framer-motion";
 import SliderItem from "./sliderItem";
 
 interface SliderProps {
@@ -23,12 +24,13 @@ const Slider = ({
   const [lowestVisibleIndex, setLowestVisibleIndex] = useState(0);
   const [sliderHasMoved, setSliderHasMoved] = useState(true);
 
-  const getIndexGroup = (type: string) => {
+  /* Returns an array of indexes. Starting index is relative to the lowestVisibleIndex and position requested */
+  const getIndexGroup = (position: "previous" | "visible" | "next") => {
     let indexes = [];
     let currentIndex = 0;
 
     // Get the starting index based on group position
-    switch (type) {
+    switch (position) {
       case "previous":
         currentIndex =
           (lowestVisibleIndex - itemsPerGroup + itemsToDisplay.length) %
@@ -73,9 +75,9 @@ const Slider = ({
   const handleNext = () => {};
 
   return (
-    <>
-      <div id="slider" className="relative">
-        <div className="flex flex-row items-center">
+    <div id="slider" className="relative">
+      <div className="relative flex flex-row items-center h-36 w-full bg-orange-500">
+        <div className="absolute flex h-full w-full">
           {getIndexGroup("visible").map((index, i) => {
             return (
               <SliderItem
@@ -86,8 +88,20 @@ const Slider = ({
             );
           })}
         </div>
+
+        <div className="absolute left-full flex h-full w-full">
+          {getIndexGroup("next").map((index, i) => {
+            return (
+              <SliderItem
+                itemToDisplay={itemsToDisplay[index]}
+                key={`${itemsToDisplay[index]?.name}-${categoryIndex}-${i}`}
+                width={100 / itemsPerGroup}
+              />
+            );
+          })}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

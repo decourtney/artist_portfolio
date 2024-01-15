@@ -40,7 +40,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
       >
         <h2 className="text-light pointer-events-none">{category.name}</h2>
       </button>
-      <div className="px-[4%]">
+      <div className="px-[4%] bg-red-500">
         <Slider
           handleOnClickItem={handleOnClickProduct}
           itemsToDisplay={category.products}

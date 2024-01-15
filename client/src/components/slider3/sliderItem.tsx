@@ -15,10 +15,11 @@ const SliderItem = ({ itemToDisplay, width }: SliderItemProps) => {
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
+  // TODO Removing the div changes the slider display - test later
   return (
-    <div id="slider-item" className="w-full h-full">
+    <div id="slider-item" className="h-full w-full"> 
       <img
-        className="block w-full h-full"
+        className="h-full w-full object-cover"
         src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
         alt={itemToDisplay.name}
       />
