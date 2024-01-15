@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Product, Category } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
 import SliderItem from "./sliderItem";
+import SliderControl from "./sliderControl";
 
 interface SliderProps {
   handleOnClickItem: (item: Product | Category) => void;
@@ -23,6 +24,26 @@ const Slider = ({
   const [itemsPerGroup, setItemsPerGroup] = useState(4);
   const [lowestVisibleIndex, setLowestVisibleIndex] = useState(0);
   const [sliderHasMoved, setSliderHasMoved] = useState(true);
+
+  useEffect(() => {
+    handleWindowResize(window);
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  });
+
+  // handle window resize and sets items in row
+  const handleWindowResize = (e: any) => {
+    if (window.innerWidth > 1440) {
+      setItemsPerGroup(6);
+    } else if (window.innerWidth >= 1000) {
+      setItemsPerGroup(5);
+    } else if (window.innerWidth < 1000) {
+      setItemsPerGroup(4);
+    }
+  };
 
   /* Returns an array of indexes. Starting index is relative to the lowestVisibleIndex and position requested */
   const getIndexGroup = (position: "previous" | "visible" | "next") => {
@@ -72,11 +93,17 @@ const Slider = ({
 
   const handlePrev = () => {};
 
-  const handleNext = () => {};
+  const handleNext = () => {
+    console.log('next clicked')
+  };
 
   return (
-    <div id="slider" className="relative">
-      <div className="relative flex flex-row items-center h-36 w-full bg-orange-500">
+    <div id="slider" className="group relative px-[4%]">
+      {sliderHasMoved && (
+        <SliderControl arrowDirection={"left"} onClick={handlePrev} />
+      )}
+
+      <div className="relative flex flex-row items-center h-[20dvh]">
         <div className="absolute flex h-full w-full">
           {getIndexGroup("visible").map((index, i) => {
             return (
@@ -101,6 +128,8 @@ const Slider = ({
           })}
         </div>
       </div>
+
+      <SliderControl arrowDirection={"right"} onClick={handleNext} />
     </div>
   );
 };

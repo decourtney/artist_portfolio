@@ -260,9 +260,11 @@ const Slider = ({
       {sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
+      
       <div className=" whitespace-nowrap bg-purple-500" >
         {renderSliderContent()}
       </div>
+
       <SliderControl arrowDirection={"right"} onClick={handleNext} />
     </div>
   );

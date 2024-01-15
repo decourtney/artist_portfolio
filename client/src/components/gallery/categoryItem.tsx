@@ -40,7 +40,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
       >
         <h2 className="text-light pointer-events-none">{category.name}</h2>
       </button>
-      <div className="px-[4%] bg-red-500">
+      {/* <div className="w-full"> */}
         <Slider
           handleOnClickItem={handleOnClickProduct}
           itemsToDisplay={category.products}
@@ -49,7 +49,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
           displayDirection={displayDirection}
           categoryIndex={index}
         />
-      </div>
+      {/* </div> */}
     </motion.div>
   );
 };
