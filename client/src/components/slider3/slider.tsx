@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Children } from "react";
 import { Product, Category } from "../../utils/customClientTypes";
-import { motion } from "framer-motion";
+import { motion, useAnimate, AnimatePresence, stagger } from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
 
@@ -23,7 +24,11 @@ const Slider = ({
 }: SliderProps) => {
   const [itemsPerGroup, setItemsPerGroup] = useState(4);
   const [lowestVisibleIndex, setLowestVisibleIndex] = useState(0);
-  const [sliderHasMoved, setSliderHasMoved] = useState(true);
+  const [sliderHasMoved, setSliderHasMoved] = useState(false);
+  const [previousGroup, setPreviousGroup] = useState<number[]>([]);
+  const [visibleGroup, setVisibleGroup] = useState<number[]>([]);
+  const [nextGroup, setNextGroup] = useState<number[]>([]);
+  const [scope, animate] = useAnimate();
 
   useEffect(() => {
     handleWindowResize(window);
@@ -48,6 +53,9 @@ const Slider = ({
   /* Returns an array of indexes. Starting index is relative to the lowestVisibleIndex and position requested */
   const getIndexGroup = (position: "previous" | "visible" | "next") => {
     let indexes = [];
+    let previous = [];
+    let visible = [];
+    let next = [];
     let currentIndex = 0;
 
     // Get the starting index based on group position
@@ -82,19 +90,51 @@ const Slider = ({
     return indexes;
   };
 
-  const getSlides = () => {};
+  useEffect(() => {
+    setPreviousGroup(getIndexGroup("previous"));
+    setVisibleGroup(getIndexGroup("visible"));
+    setNextGroup(getIndexGroup("next"));
+  }, [lowestVisibleIndex, itemsPerGroup]);
 
-  // console.log(getPreviousIndexes(), getVisibleIndexes(), getNextIndexes());
-  console.log(
-    getIndexGroup("previous"),
-    getIndexGroup("visible"),
-    getIndexGroup("next")
-  );
+  // console.log(
+  //   getIndexGroup("previous"),
+  //   getIndexGroup("visible"),
+  //   getIndexGroup("next")
+  // );
 
-  const handlePrev = () => {};
+  const handlePrev = async () => {
+    await animate(
+      "#slider-item",
+      { translateX: `${100 * itemsPerGroup}%` },
+      { duration: 1 }
+    );
+    setSliderHasMoved(true);
 
-  const handleNext = () => {
-    console.log('next clicked')
+    setLowestVisibleIndex(
+      (lowestVisibleIndex - itemsPerGroup + itemsToDisplay.length) %
+        itemsToDisplay.length
+    );
+
+    setPreviousGroup(getIndexGroup("previous"));
+    setVisibleGroup(getIndexGroup("visible"));
+    setNextGroup(getIndexGroup("next"));
+  };
+
+  const handleNext = async () => {
+    await animate(
+      "#slider-item",
+      { translateX: `-${100 * itemsPerGroup}%` },
+      { duration: 1 }
+    );
+    setSliderHasMoved(true);
+
+    setLowestVisibleIndex(
+      (lowestVisibleIndex + itemsPerGroup) % itemsToDisplay.length
+    );
+
+    setPreviousGroup(getIndexGroup("previous"));
+    setVisibleGroup(getIndexGroup("visible"));
+    setNextGroup(getIndexGroup("next"));
   };
 
   return (
@@ -103,30 +143,55 @@ const Slider = ({
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
 
-      <div className="relative flex flex-row items-center h-[20dvh]">
-        <div className="absolute flex h-full w-full">
-          {getIndexGroup("visible").map((index, i) => {
-            return (
-              <SliderItem
-                itemToDisplay={itemsToDisplay[index]}
-                key={`${itemsToDisplay[index]?.name}-${categoryIndex}-${i}`}
-                width={100 / itemsPerGroup}
-              />
-            );
-          })}
-        </div>
+      <div
+        ref={scope}
+        className="slider-row relative flex flex-row items-center h-[20dvh]"
+      >
+        {/* <SliderItem
+          key={uuidv4()}
+          itemsToDisplay={itemsToDisplay}
+          indexList={visibleGroup}
+        />
+        <SliderItem
+          key={uuidv4()}
+          itemsToDisplay={itemsToDisplay}
+          indexList={nextGroup}
+          position={"left-full"}
+        /> */}
 
-        <div className="absolute left-full flex h-full w-full">
-          {getIndexGroup("next").map((index, i) => {
+        <section className="slider-group absolute right-full flex h-full w-full">
+          {sliderHasMoved &&
+            previousGroup.map((index, i) => {
+              return (
+                <SliderItem
+                  itemToDisplay={itemsToDisplay[index]}
+                  key={uuidv4()}
+                />
+              );
+            })}
+        </section>
+
+        <section className="slider-group absolute flex h-full w-full">
+          {visibleGroup.map((index, i) => {
             return (
               <SliderItem
                 itemToDisplay={itemsToDisplay[index]}
-                key={`${itemsToDisplay[index]?.name}-${categoryIndex}-${i}`}
-                width={100 / itemsPerGroup}
+                key={uuidv4()}
               />
             );
           })}
-        </div>
+        </section>
+
+        <section className="slider-group absolute left-full flex h-full w-full">
+          {nextGroup.map((index, i) => {
+            return (
+              <SliderItem
+                itemToDisplay={itemsToDisplay[index]}
+                key={uuidv4()}
+              />
+            );
+          })}
+        </section>
       </div>
 
       <SliderControl arrowDirection={"right"} onClick={handleNext} />
