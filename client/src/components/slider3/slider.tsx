@@ -77,10 +77,9 @@ const Slider = ({
 
     // Get the starting index based on group position
     switch (position) {
-      case "previous":
-        // Endcap for group
+      case "previous": {
         setPreviousPeek(
-          (lowestVisibleIndex - itemsPerGroup - 1 + itemsToDisplay.length) %
+          (lowestVisibleIndex - 1 + itemsToDisplay.length) %
             itemsToDisplay.length
         );
 
@@ -88,10 +87,11 @@ const Slider = ({
           (lowestVisibleIndex - itemsPerGroup + itemsToDisplay.length) %
           itemsToDisplay.length;
         break;
+      }
       case "visible":
         currentIndex = lowestVisibleIndex;
         break;
-      case "next":
+      case "next": {
         currentIndex =
           (lowestVisibleIndex + itemsPerGroup) % itemsToDisplay.length;
 
@@ -100,6 +100,7 @@ const Slider = ({
           (lowestVisibleIndex + itemsPerGroup * 2) % itemsToDisplay.length
         );
         break;
+      }
       default:
         currentIndex = 0;
         break;
@@ -168,7 +169,7 @@ const Slider = ({
   };
 
   return (
-    <div id="slider" className="group relative px-[4%]">
+    <div id="slider" className="group relative px-[4%] overflow-hidden">
       {sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
@@ -180,7 +181,7 @@ const Slider = ({
         <section className="slider-group absolute right-full flex h-full w-full">
           <div
             id="groupCap"
-            className={`slider-group absolute right-full flex justify-end h-full w-full`}
+            className={`absolute right-full flex justify-end h-full w-full`}
           >
             <SliderItem
               key={uuidv4()}

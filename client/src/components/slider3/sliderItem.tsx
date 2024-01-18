@@ -32,6 +32,7 @@ const SliderItem = ({ itemToDisplay, sliderItemWidth }: SliderItemProps) => {
         className="h-full w-full object-cover"
         src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
         alt={itemToDisplay.name}
+        loading="lazy"
       />
     </div>
   );
