@@ -169,7 +169,7 @@ const Slider = ({
   };
 
   return (
-    <div id="slider" className="group relative px-[4%] overflow-hidden">
+    <div id="slider" className="group relative px-[4%] overflow-clip">
       {sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
@@ -187,6 +187,7 @@ const Slider = ({
               key={uuidv4()}
               itemToDisplay={itemsToDisplay[previousPeek]}
               sliderItemWidth={sliderItemWidth}
+              // onClick={handleOnClickItem}
             />
           </div>
 
@@ -197,6 +198,7 @@ const Slider = ({
                   key={uuidv4()}
                   itemToDisplay={itemsToDisplay[index]}
                   sliderItemWidth={sliderItemWidth}
+                  // onClick={handleOnClickItem}
                 />
               );
             })}
@@ -209,6 +211,7 @@ const Slider = ({
                 key={uuidv4()}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth}
+                // onClick={handleOnClickItem}
               />
             );
           })}
@@ -221,6 +224,7 @@ const Slider = ({
                 key={uuidv4()}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth}
+                // onClick={handleOnClickItem}
               />
             );
           })}
@@ -233,6 +237,7 @@ const Slider = ({
               key={uuidv4()}
               itemToDisplay={itemsToDisplay[nextPeek]}
               sliderItemWidth={sliderItemWidth}
+              // onClick={handleOnClickItem}
             />
           </div>
         </section>

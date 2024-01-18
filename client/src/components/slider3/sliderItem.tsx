@@ -1,18 +1,23 @@
 import React, { useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
 
 interface SliderItemProps {
   itemToDisplay: Category | Product;
   sliderItemWidth?: number;
+  // onClick: (item: Category | Product) => void;
 }
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
-const SliderItem = ({ itemToDisplay, sliderItemWidth }: SliderItemProps) => {
+const SliderItem = ({
+  itemToDisplay,
+  sliderItemWidth,
+}: SliderItemProps) => {
+    const navigate = useNavigate();
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
@@ -27,6 +32,7 @@ const SliderItem = ({ itemToDisplay, sliderItemWidth }: SliderItemProps) => {
       id="slider-item"
       className={`slider-item h-full`}
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
+      onClick={() => navigate(`/gallery/${itemToDisplay.name}`)}
     >
       <img
         className="h-full w-full object-cover"
