@@ -19,6 +19,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const numberToDisplay = 4;
   const displayDirection = "horizontal";
 
+  // TODO I dont think this function is used anywhere - remove?
   const handleOnClickProduct = (item: Product | Category) => {
     if (item.__typename === "Product") {
       navigate(`/gallery/${item.name}`);

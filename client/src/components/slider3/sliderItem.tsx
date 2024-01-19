@@ -28,7 +28,7 @@ const SliderItem = ({
 
   // TODO Removing the div changes the slider display, Object-position - test later
   return (
-    <div
+    <motion.div
       id="slider-item"
       className={`slider-item h-full`}
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
@@ -40,7 +40,7 @@ const SliderItem = ({
         alt={itemToDisplay.name}
         loading="lazy"
       />
-    </div>
+    </motion.div>
   );
 };
 

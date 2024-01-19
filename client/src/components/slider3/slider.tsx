@@ -78,11 +78,12 @@ const Slider = ({
     // Get the starting index based on group position
     switch (position) {
       case "previous": {
+        // Calc index for group peek
         setPreviousPeek(
-          (lowestVisibleIndex - 1 + itemsToDisplay.length) %
-            itemsToDisplay.length
+          (lowestVisibleIndex - (itemsPerGroup + 1) + itemsToDisplay.length) %
+          itemsToDisplay.length
         );
-
+        console.log(previousPeek)
         currentIndex =
           (lowestVisibleIndex - itemsPerGroup + itemsToDisplay.length) %
           itemsToDisplay.length;
@@ -95,9 +96,9 @@ const Slider = ({
         currentIndex =
           (lowestVisibleIndex + itemsPerGroup) % itemsToDisplay.length;
 
-        // Endcap for group
+        // Calc index for group peek
         setNextPeek(
-          (lowestVisibleIndex + itemsPerGroup * 2) % itemsToDisplay.length
+          (lowestVisibleIndex + (itemsPerGroup * 2)) % itemsToDisplay.length
         );
         break;
       }
@@ -135,7 +136,7 @@ const Slider = ({
 
       setLowestVisibleIndex(
         (lowestVisibleIndex - itemsPerGroup + itemsToDisplay.length) %
-          itemsToDisplay.length
+        itemsToDisplay.length
       );
 
       setPreviousGroup(getIndexGroup("previous"));
@@ -187,7 +188,6 @@ const Slider = ({
               key={uuidv4()}
               itemToDisplay={itemsToDisplay[previousPeek]}
               sliderItemWidth={sliderItemWidth}
-              // onClick={handleOnClickItem}
             />
           </div>
 
@@ -198,7 +198,7 @@ const Slider = ({
                   key={uuidv4()}
                   itemToDisplay={itemsToDisplay[index]}
                   sliderItemWidth={sliderItemWidth}
-                  // onClick={handleOnClickItem}
+                // onClick={handleOnClickItem}
                 />
               );
             })}
@@ -211,7 +211,7 @@ const Slider = ({
                 key={uuidv4()}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth}
-                // onClick={handleOnClickItem}
+              // onClick={handleOnClickItem}
               />
             );
           })}
@@ -224,7 +224,7 @@ const Slider = ({
                 key={uuidv4()}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth}
-                // onClick={handleOnClickItem}
+              // onClick={handleOnClickItem}
               />
             );
           })}
@@ -237,7 +237,7 @@ const Slider = ({
               key={uuidv4()}
               itemToDisplay={itemsToDisplay[nextPeek]}
               sliderItemWidth={sliderItemWidth}
-              // onClick={handleOnClickItem}
+            // onClick={handleOnClickItem}
             />
           </div>
         </section>

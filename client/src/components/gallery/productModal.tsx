@@ -75,7 +75,7 @@ const ProductModal = () => {
         {/* image */}
         <img
           src={`${baseCDN}/${userParam}/${productData?.image}`}
-          className="inline-block w-full h-auto max-h-[96dvh]"
+          className="inline-block w-full h-auto min-w-[90dvw] max-h-[96dvh] object-cover"
           alt={`${productData?.name}`}
           loading="lazy"
         />
