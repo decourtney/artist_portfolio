@@ -49,6 +49,13 @@ const Slider = ({
     };
   });
 
+  useEffect(() => {
+    setPreviousGroup(getIndexGroup("previous"));
+    setVisibleGroup(getIndexGroup("visible"));
+    setNextGroup(getIndexGroup("next"));
+    setSliderItemWidth(100 / itemsPerGroup);
+  }, [lowestVisibleIndex, itemsPerGroup]);
+
   // handle window resize and sets items in row
   const handleWindowResize = (e: any) => {
     if (window.innerWidth > 1440) {
@@ -60,19 +67,17 @@ const Slider = ({
     }
   };
 
-  useEffect(() => {
-    setPreviousGroup(getIndexGroup("previous"));
-    setVisibleGroup(getIndexGroup("visible"));
-    setNextGroup(getIndexGroup("next"));
-    setSliderItemWidth(100 / itemsPerGroup);
-  }, [lowestVisibleIndex, itemsPerGroup]);
+  const getPositiveModulo = (n: number) => {
+    const mod =
+      ((n % itemsToDisplay.length) + itemsToDisplay.length) %
+      itemsToDisplay.length;
+
+    return mod;
+  };
 
   /* Returns an array of indexes. Starting index is relative to the lowestVisibleIndex and position requested */
   const getIndexGroup = (position: "previous" | "visible" | "next") => {
     let indexes = [];
-    let previous = [];
-    let visible = [];
-    let next = [];
     let currentIndex = 0;
 
     // Get the starting index based on group position
@@ -80,13 +85,10 @@ const Slider = ({
       case "previous": {
         // Calc index for group peek
         setPreviousPeek(
-          (lowestVisibleIndex - (itemsPerGroup + 1) + itemsToDisplay.length) %
-          itemsToDisplay.length
+          getPositiveModulo(lowestVisibleIndex - itemsPerGroup - 1)
         );
-        console.log(previousPeek)
-        currentIndex =
-          (lowestVisibleIndex - itemsPerGroup + itemsToDisplay.length) %
-          itemsToDisplay.length;
+
+        currentIndex = getPositiveModulo(lowestVisibleIndex - itemsPerGroup);
         break;
       }
       case "visible":
@@ -98,7 +100,7 @@ const Slider = ({
 
         // Calc index for group peek
         setNextPeek(
-          (lowestVisibleIndex + (itemsPerGroup * 2)) % itemsToDisplay.length
+          (lowestVisibleIndex + itemsPerGroup * 2) % itemsToDisplay.length
         );
         break;
       }
@@ -108,10 +110,6 @@ const Slider = ({
     }
 
     for (let i = 0; i < itemsPerGroup; i++) {
-      if (currentIndex < 0 || Object.is(currentIndex, -0)) {
-        currentIndex =
-          (currentIndex + itemsToDisplay.length) % itemsToDisplay.length;
-      }
       indexes.push(currentIndex);
 
       currentIndex = (currentIndex + 1) % itemsToDisplay.length;
@@ -126,7 +124,7 @@ const Slider = ({
 
       await animate(
         "#slider-item",
-        { translateX: `${100 * itemsPerGroup}%` },
+        { x: `${100 * itemsPerGroup}%` },
         {
           duration: 1,
           onComplete: () => (isSliding = false),
@@ -135,13 +133,10 @@ const Slider = ({
       setSliderHasMoved(true);
 
       setLowestVisibleIndex(
-        (lowestVisibleIndex - itemsPerGroup + itemsToDisplay.length) %
-        itemsToDisplay.length
+        getPositiveModulo(lowestVisibleIndex - itemsPerGroup)
       );
 
       setPreviousGroup(getIndexGroup("previous"));
-      setVisibleGroup(getIndexGroup("visible"));
-      setNextGroup(getIndexGroup("next"));
     }
   };
 
@@ -151,7 +146,7 @@ const Slider = ({
 
       await animate(
         "#slider-item",
-        { translateX: `-${100 * itemsPerGroup}%` },
+        { x: `-${100 * itemsPerGroup}%` },
         {
           duration: 1,
           onComplete: () => (isSliding = false),
@@ -163,8 +158,6 @@ const Slider = ({
         (lowestVisibleIndex + itemsPerGroup) % itemsToDisplay.length
       );
 
-      setPreviousGroup(getIndexGroup("previous"));
-      setVisibleGroup(getIndexGroup("visible"));
       setNextGroup(getIndexGroup("next"));
     }
   };
@@ -198,7 +191,7 @@ const Slider = ({
                   key={uuidv4()}
                   itemToDisplay={itemsToDisplay[index]}
                   sliderItemWidth={sliderItemWidth}
-                // onClick={handleOnClickItem}
+                  // onClick={handleOnClickItem}
                 />
               );
             })}
@@ -211,7 +204,7 @@ const Slider = ({
                 key={uuidv4()}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth}
-              // onClick={handleOnClickItem}
+                // onClick={handleOnClickItem}
               />
             );
           })}
@@ -224,7 +217,7 @@ const Slider = ({
                 key={uuidv4()}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth}
-              // onClick={handleOnClickItem}
+                // onClick={handleOnClickItem}
               />
             );
           })}
@@ -237,7 +230,7 @@ const Slider = ({
               key={uuidv4()}
               itemToDisplay={itemsToDisplay[nextPeek]}
               sliderItemWidth={sliderItemWidth}
-            // onClick={handleOnClickItem}
+              // onClick={handleOnClickItem}
             />
           </div>
         </section>
