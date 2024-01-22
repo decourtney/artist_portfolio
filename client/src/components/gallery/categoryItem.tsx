@@ -19,11 +19,9 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const numberToDisplay = 4;
   const displayDirection = "horizontal";
 
-  // TODO I dont think this function is used anywhere - remove?
-  const handleOnClickProduct = (item: Product | Category) => {
-    if (item.__typename === "Product") {
-      navigate(`/gallery/${item.name}`);
-    }
+  const handleOnClick = () => {
+    dispatch(setCategoryState(category as Category));
+    navigate(`/gallery/c/${category.name}`);
   };
 
   return (
@@ -35,20 +33,17 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
       <button
         type="button"
         className="mb-2 mx-[4%] bg-blue-500"
-        onClick={() => {
-          navigate(`/gallery/c/${category.name}`);
-        }}
+        onClick={handleOnClick}
       >
         <h2 className="text-light pointer-events-none">{category.name}</h2>
       </button>
-        <Slider
-          handleOnClickItem={handleOnClickProduct}
-          itemsToDisplay={category.products}
-          numberToDisplay={numberToDisplay}
-          isCenteredSlides={isCenterSlides}
-          displayDirection={displayDirection}
-          categoryIndex={index}
-        />
+      <Slider
+        itemsToDisplay={category.products}
+        numberToDisplay={numberToDisplay}
+        isCenteredSlides={isCenterSlides}
+        displayDirection={displayDirection}
+        categoryIndex={index}
+      />
     </motion.div>
   );
 };

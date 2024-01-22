@@ -52,57 +52,69 @@ const Gallery = () => {
     ({ categories } = data.userCategories);
   }
 
-  // Handles displaying Modals and dispatching data for Modals
+  // Handles displaying and dispatching data for Modals
+  // useEffect(() => {
+  //   if (data) {
+  //     if (productName) {
+  //       const findProductForModal = async () => {
+  //         try {
+  //           const category = categoryData
+  //             ? categories?.find((c) => {
+  //                 return c.name === categoryData?.name;
+  //               })
+  //             : // Catch all for page refresh
+  //               categories?.find((c) => {
+  //                 return c.defaultCategory === true;
+  //               });
+
+  //           const productForModal = category?.products.find(
+  //             (p) => p.name === productName
+  //           );
+
+  //           dispatch(setProductState(productForModal));
+  //           setIsProductModal(true);
+  //           setIsCategoryModal(false);
+  //           // console.log("productformodal:", productForModal);
+  //         } catch (err) {
+  //           console.log(err);
+  //         }
+  //       };
+
+  //       findProductForModal();
+  //     } else if (categoryName) {
+  //       const findCategoryForModal = async () => {
+  //         try {
+  //           const categoryForModal = categories?.find(
+  //             (category: Category) => category.name === categoryName
+  //           );
+
+  //           dispatch(setCategoryState(categoryForModal));
+  //           setIsCategoryModal(true);
+  //           setIsProductModal(false);
+  //           // console.log("categoryformodal:", categoryForModal);
+  //         } catch (err) {
+  //           console.log(err);
+  //         }
+  //       };
+
+  //       findCategoryForModal();
+  //     }
+  //   }
+  // }, [data]);
+
   useEffect(() => {
     if (data) {
       if (productName) {
-        const findProductForModal = async () => {
-          try {
-            const category = categoryData
-              ? categories?.find((c) => {
-                  return c.name === categoryData?.name; // FIXME error possibly due to redux type definition for state
-                })
-              : // Catch all for page refresh
-                categories?.find((c) => {
-                  return c.defaultCategory === true;
-                });
-
-            const productForModal = category?.products.find(
-              (p) => p.name === productName
-            );
-
-            dispatch(setProductState(productForModal));
-            setIsProductModal(true);
-            setIsCategoryModal(false);
-            // console.log("productformodal:", productForModal);
-          } catch (err) {
-            console.log(err);
-          }
-        };
-
-        findProductForModal();
+        setIsProductModal(true);
+        // setIsCategoryModal(false);
       } else if (categoryName) {
-        const findCategoryForModal = async () => {
-          try {
-            const categoryForModal = categories?.find(
-              (category: Category) => category.name === categoryName
-            );
-
-            dispatch(setCategoryState(categoryForModal));
-            setIsCategoryModal(true);
-            setIsProductModal(false);
-            // console.log("categoryformodal:", categoryForModal);
-          } catch (err) {
-            console.log(err);
-          }
-        };
-
-        findCategoryForModal();
+        setIsCategoryModal(true);
+        // setIsProductModal(false);
       }
     }
   }, [data]);
 
-  if (loading) return <></>;
+  if (loading) return null;
 
   return (
     <>

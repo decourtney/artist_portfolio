@@ -7,12 +7,13 @@ import {
   stagger,
   useAnimationFrame,
 } from "framer-motion";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { setLowestVisibleIndex, setIsSliding } from "../../redux/sliderSlice";
 import { v4 as uuidv4 } from "uuid";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
 
 interface SliderProps {
-  handleOnClickItem: (item: Product | Category) => void;
   itemsToDisplay: Product[] | Category[];
   numberToDisplay: number;
   isCenteredSlides?: boolean;
@@ -21,24 +22,47 @@ interface SliderProps {
 }
 
 const Slider = ({
-  handleOnClickItem,
   itemsToDisplay,
   categoryIndex,
   numberToDisplay,
   isCenteredSlides,
   displayDirection,
 }: SliderProps) => {
-  const [itemsPerGroup, setItemsPerGroup] = useState(4);
-  const [lowestVisibleIndex, setLowestVisibleIndex] = useState(0);
+  // const dispatch = useAppDispatch();
+  // const currentIndex = useAppSelector((state) => state.slider.currentIndex);
+  // const isSliding = useAppSelector((state) => state.slider.isSliding);
+
+  const [itemsPerGroup, setItemsPerGroup] = useState(1);
+  // const [lowestVisibleIndex, setLowestVisibleIndex] = useState(0);
+  const [renderSlider, setRenderSlider] = useState(false);
   const [sliderHasMoved, setSliderHasMoved] = useState(false);
   const [previousGroup, setPreviousGroup] = useState<number[]>([]);
   const [visibleGroup, setVisibleGroup] = useState<number[]>([]);
   const [nextGroup, setNextGroup] = useState<number[]>([]);
+
+  // const previousGroup = useRef<number[]>([]);
+  // const visibleGroup = useRef<number[]>([]);
+  // const nextGroup = useRef<number[]>([]);
+  // const previousPeek = useRef<number>(0);
+  // const nextPeek = useRef<number>(0);
+
   const [previousPeek, setPreviousPeek] = useState<number>(0);
   const [nextPeek, setNextPeek] = useState<number>(0);
+  // const [sliderItemWidth, setSliderItemWidth] = useState(0);
+  const lowestVisibleIndex = useRef(0);
   const [scope, animate] = useAnimate();
-  const [sliderItemWidth, setSliderItemWidth] = useState(0);
+  let sliderItemWidth = useRef(0);
   let isSliding = false;
+
+  useEffect(() => {
+    // setPreviousGroup(renderContent("previous"));
+    // setVisibleGroup(renderContent("visible"));
+    // setNextGroup(renderContent("next"));
+
+    // setSliderItemWidth(100 / itemsPerGroup);
+    sliderItemWidth.current = 100 / itemsPerGroup;
+    getSliderIndexGroups();
+  }, [renderSlider, itemsPerGroup]);
 
   useEffect(() => {
     handleWindowResize(window);
@@ -48,13 +72,6 @@ const Slider = ({
       window.removeEventListener("resize", handleWindowResize);
     };
   });
-
-  useEffect(() => {
-    setPreviousGroup(getIndexGroup("previous"));
-    setVisibleGroup(getIndexGroup("visible"));
-    setNextGroup(getIndexGroup("next"));
-    setSliderItemWidth(100 / itemsPerGroup);
-  }, [lowestVisibleIndex, itemsPerGroup]);
 
   // handle window resize and sets items in row
   const handleWindowResize = (e: any) => {
@@ -76,46 +93,29 @@ const Slider = ({
   };
 
   /* Returns an array of indexes. Starting index is relative to the lowestVisibleIndex and position requested */
-  const getIndexGroup = (position: "previous" | "visible" | "next") => {
-    let indexes = [];
-    let currentIndex = 0;
-
-    // Get the starting index based on group position
-    switch (position) {
-      case "previous": {
-        // Calc index for group peek
-        setPreviousPeek(
-          getPositiveModulo(lowestVisibleIndex - itemsPerGroup - 1)
-        );
-
-        currentIndex = getPositiveModulo(lowestVisibleIndex - itemsPerGroup);
-        break;
-      }
-      case "visible":
-        currentIndex = lowestVisibleIndex;
-        break;
-      case "next": {
-        currentIndex =
-          (lowestVisibleIndex + itemsPerGroup) % itemsToDisplay.length;
-
-        // Calc index for group peek
-        setNextPeek(
-          (lowestVisibleIndex + itemsPerGroup * 2) % itemsToDisplay.length
-        );
-        break;
-      }
-      default:
-        currentIndex = 0;
-        break;
-    }
+  const getSliderIndexGroups = () => {
+    let previous = [];
+    let visible = [];
+    let next = [];
+    let currentIndex = lowestVisibleIndex.current;
 
     for (let i = 0; i < itemsPerGroup; i++) {
-      indexes.push(currentIndex);
+      previous.push(getPositiveModulo(currentIndex - itemsPerGroup));
+      visible.push(currentIndex);
+      next.push(getPositiveModulo(currentIndex + itemsPerGroup));
 
       currentIndex = (currentIndex + 1) % itemsToDisplay.length;
     }
 
-    return indexes;
+    setPreviousPeek(
+      getPositiveModulo(lowestVisibleIndex.current - itemsPerGroup - 1)
+    );
+    setPreviousGroup(previous);
+    setVisibleGroup(visible);
+    setNextGroup(next);
+    setNextPeek(
+      (lowestVisibleIndex.current + itemsPerGroup * 2) % itemsToDisplay.length
+    );
   };
 
   const handlePrev = async () => {
@@ -132,11 +132,11 @@ const Slider = ({
       );
       setSliderHasMoved(true);
 
-      setLowestVisibleIndex(
-        getPositiveModulo(lowestVisibleIndex - itemsPerGroup)
+      lowestVisibleIndex.current = getPositiveModulo(
+        lowestVisibleIndex.current - itemsPerGroup
       );
 
-      setPreviousGroup(getIndexGroup("previous"));
+      setRenderSlider(!renderSlider);
     }
   };
 
@@ -154,16 +154,15 @@ const Slider = ({
       );
       setSliderHasMoved(true);
 
-      setLowestVisibleIndex(
-        (lowestVisibleIndex + itemsPerGroup) % itemsToDisplay.length
-      );
+      lowestVisibleIndex.current =
+        (lowestVisibleIndex.current + itemsPerGroup) % itemsToDisplay.length;
 
-      setNextGroup(getIndexGroup("next"));
+      setRenderSlider(!renderSlider);
     }
   };
 
   return (
-    <div id="slider" className="group relative px-[4%] overflow-clip">
+    <div id="slider" className="group relative px-[4%] overflow-hidden">
       {sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
@@ -174,13 +173,13 @@ const Slider = ({
       >
         <section className="slider-group absolute right-full flex h-full w-full">
           <div
-            id="groupCap"
+            id="groupPeek"
             className={`absolute right-full flex justify-end h-full w-full`}
           >
             <SliderItem
               key={uuidv4()}
               itemToDisplay={itemsToDisplay[previousPeek]}
-              sliderItemWidth={sliderItemWidth}
+              sliderItemWidth={sliderItemWidth.current}
             />
           </div>
 
@@ -190,8 +189,7 @@ const Slider = ({
                 <SliderItem
                   key={uuidv4()}
                   itemToDisplay={itemsToDisplay[index]}
-                  sliderItemWidth={sliderItemWidth}
-                  // onClick={handleOnClickItem}
+                  sliderItemWidth={sliderItemWidth.current}
                 />
               );
             })}
@@ -203,8 +201,7 @@ const Slider = ({
               <SliderItem
                 key={uuidv4()}
                 itemToDisplay={itemsToDisplay[index]}
-                sliderItemWidth={sliderItemWidth}
-                // onClick={handleOnClickItem}
+                sliderItemWidth={sliderItemWidth.current}
               />
             );
           })}
@@ -216,21 +213,19 @@ const Slider = ({
               <SliderItem
                 key={uuidv4()}
                 itemToDisplay={itemsToDisplay[index]}
-                sliderItemWidth={sliderItemWidth}
-                // onClick={handleOnClickItem}
+                sliderItemWidth={sliderItemWidth.current}
               />
             );
           })}
 
           <div
-            id="groupCap"
+            id="groupPeek"
             className="absolute left-full flex justify-start h-full w-full"
           >
             <SliderItem
               key={uuidv4()}
               itemToDisplay={itemsToDisplay[nextPeek]}
-              sliderItemWidth={sliderItemWidth}
-              // onClick={handleOnClickItem}
+              sliderItemWidth={sliderItemWidth.current}
             />
           </div>
         </section>

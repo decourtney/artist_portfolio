@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { unsetProductState } from "../../redux/productSlice";
+import { motion } from "framer-motion";
 import { Category, Product } from "../../utils/customClientTypes";
 
 const baseCDN =
@@ -43,14 +44,21 @@ const ProductModal = () => {
       id="productModal"
       className="fixed flex justify-center items-center w-full h-full z-50"
     >
-      <div
+      <motion.div
         className="absolute w-full h-full bg-black opacity-75"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.75 }}
         onClick={handleClose}
       />
       {/* content */}
-      <div className="fixed w-fit h-fit p-1 border-0 rounded-md shadow-2xl bg-secondary outline-none focus:outline-none pointer-events-auto">
+      <div className="fixed w-fit h-fit p-1 border-0 rounded-md outline-none focus:outline-none pointer-events-auto">
         {/* buttons */}
-        <div className="relative w-full h-full px-8 text-center text-light">
+        <motion.div
+          className="relative w-full h-full text-center text-light"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           {/* back button */}
           <button
             className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
@@ -70,15 +78,17 @@ const ProductModal = () => {
               close
             </span>
           </button>
-        </div>
 
-        {/* image */}
-        <img
-          src={`${baseCDN}/${userParam}/${productData?.image}`}
-          className="inline-block w-full h-auto min-w-[90dvw] max-h-[96dvh] object-cover"
-          alt={`${productData?.name}`}
-          loading="lazy"
-        />
+          {/* image */}
+          {/* <div className="flex justify-center items-center h-min w-min max-h-[96dvh] max-w-[96dvw] min-h-[96dvh] min-w-[96dvw]"> */}
+          <img
+            src={`${baseCDN}/${userParam}/${productData?.image}`}
+            className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
+            alt={`${productData?.name}`}
+            loading="lazy"
+          />
+          {/* </div> */}
+        </motion.div>
       </div>
     </div>
   );

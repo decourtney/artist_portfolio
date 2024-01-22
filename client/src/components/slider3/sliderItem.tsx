@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { setProductState } from "../../redux/productSlice";
 
 interface SliderItemProps {
   itemToDisplay: Category | Product;
@@ -13,26 +15,28 @@ const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
-const SliderItem = ({
-  itemToDisplay,
-  sliderItemWidth,
-}: SliderItemProps) => {
-    const navigate = useNavigate();
+const SliderItem = ({ itemToDisplay, sliderItemWidth }: SliderItemProps) => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const productData = useAppSelector<Product | undefined>(
+    (state) => state.product.data
+  );
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  const roundToDecimalPlaces = (num: number, decimalPlaces: number) => {
-    const factor = Math.pow(10, decimalPlaces);
-    return Math.round(num * factor) / factor;
-  };
+  const handleOnClick=()=>{
+    dispatch(setProductState(itemToDisplay as Product))
+    navigate(`/gallery/${itemToDisplay.name}`)
+  }
 
   // TODO Removing the div changes the slider display, Object-position - test later
   return (
-    <motion.div
+    <div
       id="slider-item"
       className={`slider-item h-full`}
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
-      onClick={() => navigate(`/gallery/${itemToDisplay.name}`)}
+      // onClick={() => navigate(`/gallery/${itemToDisplay.name}`)}
+      onClick={handleOnClick}
     >
       <img
         className="h-full w-full object-cover"
@@ -40,7 +44,7 @@ const SliderItem = ({
         alt={itemToDisplay.name}
         loading="lazy"
       />
-    </motion.div>
+    </div>
   );
 };
 

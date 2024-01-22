@@ -802,6 +802,11 @@ video {
   height: 100%;
 }
 
+.h-min {
+  height: -webkit-min-content;
+  height: min-content;
+}
+
 .h-screen {
   height: 100vh;
 }
@@ -812,6 +817,10 @@ video {
 
 .max-h-screen {
   max-height: 100vh;
+}
+
+.min-h-\[96dvh\] {
+  min-height: 96dvh;
 }
 
 .min-h-full {
@@ -856,12 +865,21 @@ video {
   width: 100%;
 }
 
-.min-w-\[90dvw\] {
-  min-width: 90dvw;
+.w-min {
+  width: -webkit-min-content;
+  width: min-content;
+}
+
+.min-w-\[96dvw\] {
+  min-width: 96dvw;
 }
 
 .max-w-\[90vw\] {
   max-width: 90vw;
+}
+
+.max-w-\[96dvw\] {
+  max-width: 96dvw;
 }
 
 .flex-grow {
@@ -986,10 +1004,6 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
-}
-
-.overflow-clip {
-  overflow: clip;
 }
 
 .overflow-scroll {
@@ -1169,6 +1183,10 @@ video {
   --tw-gradient-to: transparent var(--tw-gradient-to-position);
 }
 
+.object-contain {
+  object-fit: contain;
+}
+
 .object-cover {
   object-fit: cover;
 }
@@ -1211,11 +1229,6 @@ video {
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
-}
-
-.px-8 {
-  padding-left: 2rem;
-  padding-right: 2rem;
 }
 
 .px-\[4\%\] {
@@ -1404,12 +1417,6 @@ video {
 
 .opacity-75 {
   opacity: 0.75;
-}
-
-.shadow-2xl {
-  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .shadow-\[0px_0px_2px_\#5B8FB9\] {
