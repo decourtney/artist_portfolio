@@ -4,15 +4,15 @@ import { useAnimate } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
-import { setLowestVisibleIndex } from "../../redux/sliderSlice";
+import { setLowestVisibleIndex, setSliderHasMoved } from "../../redux/sliderSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 
 interface SliderProps {
-  itemsToDisplay: Product[] | Category[];
+  categoryToDisplay: Category;
 }
 
 // Try changing lowestvisibleindex to a global state
-const Slider = ({ itemsToDisplay }: SliderProps) => {
+const Slider = ({ categoryToDisplay }: SliderProps) => {
   const [itemsPerGroup, setItemsPerGroup] = useState(1);
   const [renderSlider, setRenderSlider] = useState(false);
   const [sliderHasMoved, setSliderHasMoved] = useState(false);
@@ -22,13 +22,19 @@ const Slider = ({ itemsToDisplay }: SliderProps) => {
   const [previousPeek, setPreviousPeek] = useState<number>(0);
   const [nextPeek, setNextPeek] = useState<number>(0);
   const dispatch = useAppDispatch();
+  const sliderState = useAppSelector((state) => state.slider.sliderState);
   const lowestVisibleIndex = useAppSelector<number>(
     (state) => state.slider.lowestVisibleIndex
   );
+  // const sliderHasMoved = useAppSelector<boolean>(
+  //   (state) => state.slider.sliderHasMoved)
   const [scope, animate] = useAnimate();
   // const lowestVisibleIndex = useRef(0);
   const sliderItemWidth = useRef(0);
+  const itemsToDisplay = categoryToDisplay.products
+  const sliderId = `${categoryToDisplay.name}-slider`
   let isSliding = false;
+  console.log(sliderState)
 
   useEffect(() => {
     getSliderIndexGroups();

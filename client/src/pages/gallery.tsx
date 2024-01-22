@@ -125,6 +125,7 @@ const Gallery = () => {
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {
             if (category.products.length > 0) {
+              
               return (
                 <CategoryItem
                   key={`${category.name}-${index}`}

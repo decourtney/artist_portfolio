@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { setCategoryState } from "../../redux/categorySlice";
@@ -19,6 +19,10 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const numberToDisplay = 4;
   const displayDirection = "horizontal";
 
+  useEffect(()=>{
+    
+  })
+
   const handleOnClick = () => {
     dispatch(setCategoryState(category as Category));
     navigate(`/gallery/c/${category.name}`);
@@ -38,7 +42,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
         <h2 className="text-light pointer-events-none">{category.name}</h2>
       </button>
       <Slider
-        itemsToDisplay={category.products}
+        categoryToDisplay={category}
       />
     </motion.div>
   );
