@@ -136,9 +136,9 @@ const Gallery = () => {
           })}
         {/* </div> */}
 
-        {isCategoryModal ? <CategoryModal /> : null}
+        {isCategoryModal && <CategoryModal />}
 
-        {isProductModal ? <ProductModal /> : null}
+        {isProductModal && <ProductModal />}
       </section>
     </>
   );

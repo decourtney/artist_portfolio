@@ -36,7 +36,7 @@ const ProductModal = () => {
   };
 
   useEffect(() => {
-    if (productData) console.log(productData);
+    // if (productData) console.log(productData);
   }, [productData]);
 
   return (

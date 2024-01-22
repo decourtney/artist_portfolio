@@ -35,7 +35,6 @@ const SliderItem = ({ itemToDisplay, sliderItemWidth }: SliderItemProps) => {
       id="slider-item"
       className={`slider-item h-full`}
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
-      // onClick={() => navigate(`/gallery/${itemToDisplay.name}`)}
       onClick={handleOnClick}
     >
       <img

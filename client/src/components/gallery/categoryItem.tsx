@@ -39,10 +39,6 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
       </button>
       <Slider
         itemsToDisplay={category.products}
-        numberToDisplay={numberToDisplay}
-        isCenteredSlides={isCenterSlides}
-        displayDirection={displayDirection}
-        categoryIndex={index}
       />
     </motion.div>
   );

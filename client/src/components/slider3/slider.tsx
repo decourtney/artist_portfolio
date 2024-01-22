@@ -1,67 +1,38 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Product, Category } from "../../utils/customClientTypes";
-import {
-  motion,
-  useAnimate,
-  AnimatePresence,
-  stagger,
-  useAnimationFrame,
-} from "framer-motion";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { setLowestVisibleIndex, setIsSliding } from "../../redux/sliderSlice";
+import { useAnimate } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
+import { setLowestVisibleIndex } from "../../redux/sliderSlice";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 
 interface SliderProps {
   itemsToDisplay: Product[] | Category[];
-  numberToDisplay: number;
-  isCenteredSlides?: boolean;
-  displayDirection?: "horizontal" | "vertical" | undefined;
-  categoryIndex: number;
 }
 
-const Slider = ({
-  itemsToDisplay,
-  categoryIndex,
-  numberToDisplay,
-  isCenteredSlides,
-  displayDirection,
-}: SliderProps) => {
-  // const dispatch = useAppDispatch();
-  // const currentIndex = useAppSelector((state) => state.slider.currentIndex);
-  // const isSliding = useAppSelector((state) => state.slider.isSliding);
-
+// Try changing lowestvisibleindex to a global state
+const Slider = ({ itemsToDisplay }: SliderProps) => {
   const [itemsPerGroup, setItemsPerGroup] = useState(1);
-  // const [lowestVisibleIndex, setLowestVisibleIndex] = useState(0);
   const [renderSlider, setRenderSlider] = useState(false);
   const [sliderHasMoved, setSliderHasMoved] = useState(false);
   const [previousGroup, setPreviousGroup] = useState<number[]>([]);
   const [visibleGroup, setVisibleGroup] = useState<number[]>([]);
   const [nextGroup, setNextGroup] = useState<number[]>([]);
-
-  // const previousGroup = useRef<number[]>([]);
-  // const visibleGroup = useRef<number[]>([]);
-  // const nextGroup = useRef<number[]>([]);
-  // const previousPeek = useRef<number>(0);
-  // const nextPeek = useRef<number>(0);
-
   const [previousPeek, setPreviousPeek] = useState<number>(0);
   const [nextPeek, setNextPeek] = useState<number>(0);
-  // const [sliderItemWidth, setSliderItemWidth] = useState(0);
-  const lowestVisibleIndex = useRef(0);
+  const dispatch = useAppDispatch();
+  const lowestVisibleIndex = useAppSelector<number>(
+    (state) => state.slider.lowestVisibleIndex
+  );
   const [scope, animate] = useAnimate();
-  let sliderItemWidth = useRef(0);
+  // const lowestVisibleIndex = useRef(0);
+  const sliderItemWidth = useRef(0);
   let isSliding = false;
 
   useEffect(() => {
-    // setPreviousGroup(renderContent("previous"));
-    // setVisibleGroup(renderContent("visible"));
-    // setNextGroup(renderContent("next"));
-
-    // setSliderItemWidth(100 / itemsPerGroup);
-    sliderItemWidth.current = 100 / itemsPerGroup;
     getSliderIndexGroups();
+    sliderItemWidth.current = 100 / itemsPerGroup;
   }, [renderSlider, itemsPerGroup]);
 
   useEffect(() => {
@@ -97,7 +68,7 @@ const Slider = ({
     let previous = [];
     let visible = [];
     let next = [];
-    let currentIndex = lowestVisibleIndex.current;
+    let currentIndex = lowestVisibleIndex;
 
     for (let i = 0; i < itemsPerGroup; i++) {
       previous.push(getPositiveModulo(currentIndex - itemsPerGroup));
@@ -107,14 +78,12 @@ const Slider = ({
       currentIndex = (currentIndex + 1) % itemsToDisplay.length;
     }
 
-    setPreviousPeek(
-      getPositiveModulo(lowestVisibleIndex.current - itemsPerGroup - 1)
-    );
+    setPreviousPeek(getPositiveModulo(lowestVisibleIndex - itemsPerGroup - 1));
     setPreviousGroup(previous);
     setVisibleGroup(visible);
     setNextGroup(next);
     setNextPeek(
-      (lowestVisibleIndex.current + itemsPerGroup * 2) % itemsToDisplay.length
+      (lowestVisibleIndex + itemsPerGroup * 2) % itemsToDisplay.length
     );
   };
 
@@ -132,8 +101,13 @@ const Slider = ({
       );
       setSliderHasMoved(true);
 
-      lowestVisibleIndex.current = getPositiveModulo(
-        lowestVisibleIndex.current - itemsPerGroup
+      // lowestVisibleIndex.current = getPositiveModulo(
+      //   lowestVisibleIndex.current - itemsPerGroup
+      // );
+      dispatch(
+        setLowestVisibleIndex(
+          getPositiveModulo(lowestVisibleIndex - itemsPerGroup)
+        )
       );
 
       setRenderSlider(!renderSlider);
@@ -154,8 +128,14 @@ const Slider = ({
       );
       setSliderHasMoved(true);
 
-      lowestVisibleIndex.current =
-        (lowestVisibleIndex.current + itemsPerGroup) % itemsToDisplay.length;
+      // lowestVisibleIndex.current =
+      //   (lowestVisibleIndex.current + itemsPerGroup) % itemsToDisplay.length;
+
+      dispatch(
+        setLowestVisibleIndex(
+          (lowestVisibleIndex + itemsPerGroup) % itemsToDisplay.length
+        )
+      );
 
       setRenderSlider(!renderSlider);
     }
