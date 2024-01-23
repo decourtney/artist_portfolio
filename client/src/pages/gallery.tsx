@@ -29,12 +29,6 @@ import { setProductState } from "../redux/productSlice";
 import Hero from "../components/home/hero";
 
 const Gallery = () => {
-  const categoryData = useAppSelector<Category | undefined>(
-    (state) => state.category.data
-  );
-  const productData = useAppSelector<Product | undefined>(
-    (state) => state.product.data
-  );
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
   const location = useLocation();
@@ -52,7 +46,7 @@ const Gallery = () => {
     ({ categories } = data.userCategories);
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (data) {
       if (productName) {
         setIsProductModal(true);
@@ -63,8 +57,6 @@ const Gallery = () => {
       }
     }
   }, [data]);
-
-  if (loading) return null;
 
   return (
     <>

@@ -7,7 +7,6 @@ import {
   Link,
 } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { unsetCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
 import Slider from "../slider1/slider";
@@ -18,7 +17,7 @@ const baseCDN =
 
 // need this modal to redirect to /gallery/:productName - need to test how it looks when the back button is clicked
 const GalleryModal = () => {
-  const categoryData = useAppSelector<Category | undefined>(
+  const categoryData = useAppSelector<Category>(
     (state) => state.category.data
   );
   const navigate = useNavigate();
@@ -28,7 +27,6 @@ const GalleryModal = () => {
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const handleClose = () => {
-    // dispatch(unsetCategoryState());
     navigate("/gallery/");
   };
 
@@ -42,7 +40,7 @@ const GalleryModal = () => {
     if (categoryData) console.log(categoryData);
   }, [categoryData]);
 
-  if (!categoryData) return <></>;
+  if (!categoryData) return null
 
   return (
     <div

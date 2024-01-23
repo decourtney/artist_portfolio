@@ -31,6 +31,12 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const itemsToDisplay = categoryToDisplay.products;
   const sliderId = `${categoryToDisplay.name}-slider`;
 
+
+  useLayoutEffect(() => {
+    getSliderIndexGroups();
+    sliderItemWidth.current = 100 / itemsPerGroup;
+  }, [renderSlider, itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
+  
   useEffect(() => {
     if (!sliderState[sliderId]) {
       dispatch(
@@ -42,11 +48,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       );
     }
   }, []);
-
-  useLayoutEffect(() => {
-    getSliderIndexGroups();
-    sliderItemWidth.current = 100 / itemsPerGroup;
-  }, [renderSlider, itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
 
   useEffect(() => {
     handleWindowResize(window);
