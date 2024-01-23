@@ -36,6 +36,15 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     getSliderIndexGroups();
     sliderItemWidth.current = 100 / itemsPerGroup;
   }, [renderSlider, itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
+
+  useLayoutEffect(() => {
+    handleWindowResize(window);
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, []);
   
   useEffect(() => {
     if (!sliderState[sliderId]) {
@@ -47,15 +56,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         })
       );
     }
-  }, []);
-
-  useEffect(() => {
-    handleWindowResize(window);
-    window.addEventListener("resize", handleWindowResize);
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
   }, []);
 
   // handle window resize and sets items in row
@@ -129,8 +129,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           },
         }
       );
-
-      setRenderSlider(!renderSlider);
     }
   };
 
@@ -161,16 +159,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           },
         }
       );
-
-      // dispatch(
-      //   setSliderState({
-      //     sliderId,
-      //     lowestVisibleIndex: currentLowestIndex,
-      //     sliderHasMoved: true,
-      //   })
-      // );
-
-      // setRenderSlider(!renderSlider);
     }
   };
 

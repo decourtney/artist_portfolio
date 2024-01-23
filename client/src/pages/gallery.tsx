@@ -16,7 +16,7 @@ import {
   usePresence,
 } from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-
+import { v4 as uuidv4 } from "uuid";
 import { Category, Product } from "../utils/customClientTypes";
 import { LoggedInUser } from "../utils/customClientTypes";
 import { useInView } from "react-intersection-observer";
@@ -58,6 +58,8 @@ const Gallery = () => {
     }
   }, [data]);
 
+  if(loading) return null
+
   return (
     <>
       {/* <Hero /> */}
@@ -70,7 +72,7 @@ const Gallery = () => {
               
               return (
                 <CategoryItem
-                  key={`${category.name}-${index}`}
+                  key={uuidv4()}
                   category={category}
                   index={index}
                 />
