@@ -18,12 +18,15 @@ export type UserData = {
 };
 
 export type Category = {
-  image: string;
+  __typename: string;
   name: string;
+  defaultCategory: boolean;
+  image: string;
   products: [Product];
 };
 
 export type Product = {
+  __typename: string;
   name: string;
   description: string;
   image: string;

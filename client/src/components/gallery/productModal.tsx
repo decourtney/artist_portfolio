@@ -1,51 +1,107 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useEffect, useLayoutEffect } from "react";
+import {
+  Navigate,
+  useParams,
+  useNavigate,
+  useLocation,
+  Link,
+} from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { AnimatePresence, motion } from "framer-motion";
 import { Category, Product } from "../../utils/customClientTypes";
 
-interface ModalProps {
-  data: undefined | Category | Product;
-  close: () => void;
-}
+const baseCDN =
+  import.meta.env.VITE_BASE_CDN ||
+  "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
-const ProductModal = ({ data, close }: ModalProps) => {
-  console.log(data)
+const ProductModal = () => {
+  const [loadedImageSrc, setLoadedImageSrc] = useState('');
+  const productData = useAppSelector<Product>(
+    (state) => state.product.data
+  );
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  let { username: userParam } = useParams();
+  let productImage = {};
+
+  if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
+
+  useEffect(() => {
+    const img = new Image();
+    const imgsrc = `${baseCDN}/${userParam}/${productData?.image}`;
+    img.src = imgsrc;
+    img.onload = () => {
+      setLoadedImageSrc(imgsrc);
+    };
+  }, [productData]);
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const handleClose = () => {
+    navigate("/gallery/");
+  };
+
   return (
-    <>
-      <div className="fixed inset-0 z-50 outline-none focus:outline-none pointer-events-none">
-        <div className="relative w-[95vw] mt-6 mx-auto h-full">
-          {/*content*/}
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full h-full bg-secondary outline-none focus:outline-none pointer-events-auto">
-            {/*header*/}
-            <div className="flex justify-center items-center h-32 rounded-t text-light text-2xl">
-              <h3 className="font-semibold">Product Modal Title</h3>
-            </div>
+    <div
+      id="productModal"
+      className="fixed flex justify-center items-center w-full h-full z-50"
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          className="absolute w-full h-full bg-black opacity-75"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.75 }}
+          onClick={handleClose}
+        />
+      </AnimatePresence>
+      {/* content */}
+      <div className="fixed w-fit h-fit p-1 border-0 rounded-md outline-none focus:outline-none pointer-events-auto">
+        {/* buttons */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            className="relative w-full h-full text-center text-light"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
 
-            {/*body*/}
-            <div className="relative px-6 flex-auto">
-              <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
-                I always felt like I could do anything. That’s the main thing
-                people are controlled by! Thoughts- their perception of
-                themselves! They're slowed down by their perception of
-                themselves. If you're taught you can’t do anything, you won’t do
-                anything. I was taught I could do everything.
-              </p>
-            </div>
+            {/* back button */}
+            <button
+              className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
+              onClick={handleBack}
+            >
+              <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
+                arrow_back
+              </span>
+            </button>
+
             {/* close button */}
             <button
-              className="absolute top-5 right-5 bg-transparent border-0 outline-none focus:outline-none"
-              onClick={close}
+              className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
+              onClick={handleClose}
             >
-              <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none text-light">
+              <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
                 close
               </span>
             </button>
-          </div>
-        </div>
+
+            {/* image */}
+            {/* <div className="flex justify-center items-center h-min w-min max-h-[96dvh] max-w-[96dvw] min-h-[96dvh] min-w-[96dvw]"> */}
+            {loadedImageSrc && (
+              <img
+                src={loadedImageSrc}
+                className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
+                alt={`${productData?.name}`}
+                loading="lazy"
+              />
+            )}
+            {/* </div> */}
+          </motion.div>
+        </AnimatePresence>
       </div>
-      <div
-        className="opacity-50 fixed inset-0 z-40 bg-black"
-        onClick={close}
-      ></div>
-    </>
+    </div >
   );
 };
 

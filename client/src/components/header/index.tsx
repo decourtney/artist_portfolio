@@ -13,83 +13,156 @@ const Header = () => {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-40">
+    <header className="fixed top-0 left-0 right-0 z-50">
       {/* <div className="relative"> */}
       <AnimatePresence mode="wait">
         {isDisplayNavMenu && <Nav handleOnNavClick={handleOnNavClick} />}
       </AnimatePresence>
       {/* </div> */}
 
-      <section className="absolute top-0 left-0 flex justify-center w-full text-plight">
-        <div className="flex justify-between items-center w-full mx-[2%] p-[1%]">
-          {/* Artist brand/name/icon */}
-          <div className="flex justify-start w-full">
-            <Link to="/">
-              <motion.button
-                className=""
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 1 }}
-              >
-                <p className="text-plight text-lg font-black mx-[5%] my-[1%]">
-                  G
-                </p>
-              </motion.button>
-            </Link>
-          </div>
-
-          {/* TODO temp links for testing */}
-          <div className="flex flex-row space-x-5">
-            <Link to="/">
-              <motion.p
-                className="drop-shadow-[3px_3px_2px_#183D3D]"
-                whileHover={{
-                  scale: 1.1,
-                  filter: "drop-shadow(5px 8px 6px #183D3D)",
-                }}
-              >
-                Home
-              </motion.p>
-            </Link>
-            <Link to="gallery">
-              <motion.p
-                className="drop-shadow-[3px_3px_2px_#183D3D]"
-                whileHover={{
-                  scale: 1.1,
-                  filter: "drop-shadow(5px 8px 6px #183D3D)",
-                }}
-              >
-                Gallery
-              </motion.p>
-            </Link>
-          </div>
-
-          <div className="flex justify-end items-center w-full">
-            {/* Display logout icon */}
-            {Auth.loggedIn() && (
-              <div className="flex justify-end w-full">
-                <span
-                  className="material-symbols-rounded text-xl cursor-pointer"
-                  onClick={() => Auth.logout()}
-                >
-                  logout
-                </span>
-              </div>
-            )}
-            {/* Display nav menu icon */}
+      <nav className="flex w-full h-14 px-24 text-plight text-lg font-black bg-gradient-to-b from-dark via-dark to-transparent ">
+        {/* Artist brand/name/icon */}
+        <div className="flex flex-row justify-start items-center w-full h-full">
+          <Link to="/">
             <motion.button
-              className="ml-1"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 1 }}
-              onClick={() => handleOnNavClick()}
+              className="drop-shadow-[2px_2px_1px_#183D3D]"
+              whileHover={{
+                scale: 1.05,
+                filter: "drop-shadow(2px 2px 2px #183D3D)",
+              }} whileTap={{ scale: 1 }}
             >
-              <span className="material-symbols-rounded align-middle">
-                more_horiz
-              </span>
+              <h2>
+                G
+              </h2>
             </motion.button>
-          </div>
+          </Link>
         </div>
-      </section>
-    </nav>
+
+        {/* TODO temp links for testing */}
+        <div className="flex flex-row justify-end items-center w-full h-full space-x-5">
+
+          {/* Home */}
+          <Link to="/">
+            <motion.div
+              className="drop-shadow-[2px_2px_1px_#183D3D]"
+              whileHover={{
+                scale: 1.05,
+                filter: "drop-shadow(2px 2px 2px #183D3D)",
+              }} whileTap={{ scale: 1 }}
+
+            >
+              <h2>
+                Home
+              </h2>
+            </motion.div>
+          </Link>
+
+          {/* Gallery */}
+          <Link to="gallery">
+            <motion.div
+              className="drop-shadow-[2px_2px_1px_#183D3D]"
+              whileHover={{
+                scale: 1.05,
+                filter: "drop-shadow(2px 2px 2px #183D3D)",
+              }} whileTap={{ scale: 1 }}
+
+            >
+              <h2>
+                Gallery
+              </h2>
+            </motion.div>
+          </Link>
+
+          {/* About */}
+          <Link to="gallery">
+            <motion.div
+              className="drop-shadow-[2px_2px_1px_#183D3D]"
+              whileHover={{
+                scale: 1.05,
+                filter: "drop-shadow(2px 2px 2px #183D3D)",
+              }} whileTap={{ scale: 1 }}
+
+            >
+              <h2>
+                About
+              </h2>
+            </motion.div>
+          </Link>
+
+          {/* Contact */}
+          <Link to="gallery">
+            <motion.div
+              className="drop-shadow-[2px_2px_1px_#183D3D]"
+              whileHover={{
+                scale: 1.05,
+                filter: "drop-shadow(2px 2px 2px #183D3D)",
+              }} whileTap={{ scale: 1 }}
+            >
+              <h2>
+                Contact
+              </h2>
+            </motion.div>
+          </Link>
+
+          {/* Logout */}
+          {Auth.loggedIn() && (
+            <motion.div
+              className="drop-shadow-[2px_2px_1px_#183D3D]"
+              whileHover={{
+                scale: 1.05,
+                filter: "drop-shadow(2px 2px 2px #183D3D)",
+              }} whileTap={{ scale: 1 }}
+              onClick={() => Auth.logout()}>
+              <h2 className="">
+                Logout
+              </h2>
+            </motion.div>
+          )}
+
+          {/* Reduced Nav Icon */}
+          <motion.button
+            className="drop-shadow-[2px_2px_1px_#183D3D]"
+            whileHover={{
+              scale: 1.05,
+              filter: "drop-shadow(2px 2px 2px #183D3D)",
+            }} whileTap={{ scale: 1 }}
+            onClick={() => handleOnNavClick()}
+          >
+            <span className="material-symbols-rounded align-middle"> {/* Change to invisible after logic is added  */}
+              more_horiz
+            </span>
+          </motion.button>
+        </div>
+
+        {/* <div className="flex justify-end items-center w-full"> */}
+        {/* Display logout icon */}
+        {/* {Auth.loggedIn() && (
+            <div className="flex justify-end w-full">
+              <span
+                className="material-symbols-rounded text-xl cursor-pointer"
+                onClick={() => Auth.logout()}
+              >
+                <h2>
+                  Logout
+                </h2>
+              </span>
+            </div>
+          )} */}
+        {/* Display nav menu icon */}
+        {/* <motion.button
+            className="ml-1"
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 1 }}
+            onClick={() => handleOnNavClick()}
+          >
+            <span className="material-symbols-rounded align-middle">
+              more_horiz
+            </span>
+          </motion.button> */}
+        {/* </div> */}
+      </nav>
+      {/* <div className="h-5 bg-gradient-to-b from-dark via-dark to-transparent"></div> */}
+    </header>
   );
 };
 

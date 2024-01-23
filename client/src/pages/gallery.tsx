@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import {
   Navigate,
   useParams,
@@ -15,13 +15,18 @@ import {
   AnimatePresence,
   usePresence,
 } from "framer-motion";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { v4 as uuidv4 } from "uuid";
 import { Category, Product } from "../utils/customClientTypes";
 import { LoggedInUser } from "../utils/customClientTypes";
 import { useInView } from "react-intersection-observer";
-import Slider from "../components/slider";
+import Slider from "../components/slider1/slider";
 import ProductModal from "../components/gallery/productModal";
-import GalleryModal from "../components/gallery/categoryModal";
+import CategoryModal from "../components/gallery/categoryModal";
 import CategoryItem from "../components/gallery/categoryItem";
+import { setCategoryState } from "../redux/categorySlice";
+import { setProductState } from "../redux/productSlice";
+import Hero from "../components/home/hero";
 
 const Gallery = () => {
   const { categoryName, productName } = useParams();
@@ -30,72 +35,57 @@ const Gallery = () => {
   const navigate = useNavigate();
   const [isCategoryModal, setIsCategoryModal] = useState(false);
   const [isProductModal, setIsProductModal] = useState(false);
-  const [modalData, setModalData] = useState<undefined | Category | Product>(
-    undefined
-  );
-  const modalContent = useRef<Category | null>(null);
+  const dispatch = useAppDispatch();
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
     variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
   });
 
-  // let categories: any = [];
   let categories: Category[] | null = null;
   if (data) {
     ({ categories } = data.userCategories);
   }
 
-  // Make adjustments so that all cats and prods are sent to the modals
-  // Enabling scrolling through the rest of the cats or prods in the modal display
   useEffect(() => {
-    if (categoryName) {
-      const categoryForModal = categories?.find(
-        (category: Category) => category.name === categoryName
-      );
-
-      setModalData(categoryForModal);
-      setIsCategoryModal(true);
+    if (data) {
+      if (productName) {
+        setIsProductModal(true);
+        // setIsCategoryModal(false);
+      } else if (categoryName) {
+        setIsCategoryModal(true);
+        // setIsProductModal(false);
+      }
     }
-    if (productName) {    
-      let productForModal = undefined;
-      categories?.some((category) => {
-        const product = category.products.find((p) => p.name === productName);
-        if (product) {
-            productForModal = product;
-          return true; // to break out of the 'some' loop once a product is found
-        }
-        return false;
-      });
+  }, [data]);
 
-      setModalData(productForModal);
-      setIsProductModal(true);
-    }
-  }, [categoryName, productName]);
-
-  if (loading) return <></>;
-
-  const handleCloseModal = () => {
-    navigate(-1);
-  };
+  if(loading) return null
 
   return (
-    <section className="flex flex-col   min-h-screen">
-      <div className="">
+    <>
+      {/* <Hero /> */}
+      <section id="gallery" className="relative flex flex-col">
+        {/* <div className=""> */}
         {categories &&
           categories.length > 0 &&
-          categories.map((category: Category, index: number) => (
-            <CategoryItem key={index} category={category} index={index} />
-          ))}
-      </div>
+          categories.map((category: Category, index: number) => {
+            if (category.products.length > 0) {
+              
+              return (
+                <CategoryItem
+                  key={uuidv4()}
+                  category={category}
+                  index={index}
+                />
+              );
+            }
+          })}
+        {/* </div> */}
 
-      {isCategoryModal ? (
-        <GalleryModal data={modalData} close={handleCloseModal} />
-      ) : null}
+        {isCategoryModal && <CategoryModal />}
 
-      {isProductModal ? (
-        <ProductModal data={modalData} close={handleCloseModal} />
-      ) : null}
-    </section>
+        {isProductModal && <ProductModal />}
+      </section>
+    </>
   );
 };
 

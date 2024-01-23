@@ -6,6 +6,7 @@ const typeDefs = gql`
   type Category {
     _id: ID
     name: String
+    defaultCategory: Boolean
     image: String
     products: [Product]
   }

@@ -13,13 +13,14 @@ import {
   useAnimationControls,
 } from "framer-motion";
 import CreateCategory from "./createCategory";
-import Slider from "../slider";
+import Slider from "../slider1/slider";
 import BackButton from "./backButton";
 import CollapsibleButton from "./collapsibleButton";
 import DragnDrop from "./dragndrop";
 
 // TODO Remove and just use .env
-const baseCDN = import.meta.env.VITE_BASE_CDN ||
+const baseCDN =
+  import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 // TODO Not currently in use
@@ -41,6 +42,8 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
   const { loading, data } = useQuery(QUERY_ACCOUNT, {
     variables: { username: userParam },
   });
+
+  const handleOnClickItem = () => {};
 
   // if (!loading) console.log("query account:", data);
 
@@ -92,6 +95,7 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                 </div>
                 <div className="relative edge-fade flex flex-grow w-full text-xs">
                   <Slider
+                    handleOnClickItem={handleOnClickItem}
                     itemsToDisplay={data.account.categories}
                     numberToDisplay={categoryNumToDisplay}
                     isCenteredSlides={isCenterSlides}
