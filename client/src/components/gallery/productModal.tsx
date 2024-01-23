@@ -81,12 +81,14 @@ const ProductModal = () => {
 
           {/* image */}
           {/* <div className="flex justify-center items-center h-min w-min max-h-[96dvh] max-w-[96dvw] min-h-[96dvh] min-w-[96dvw]"> */}
-          <img
-            src={`${baseCDN}/${userParam}/${productData?.image}`}
-            className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
-            alt={`${productData?.name}`}
-            loading="lazy"
-          />
+          {productData && (
+            <img
+              src={`${baseCDN}/${userParam}/${productData?.image}`}
+              className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
+              alt={`${productData?.name}`}
+              loading="lazy"
+            />
+          )}
           {/* </div> */}
         </motion.div>
       </div>

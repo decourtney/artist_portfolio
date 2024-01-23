@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
+import { RootState } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { setCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
@@ -11,17 +12,9 @@ interface CategoryItemProps {
   index: number;
 }
 
-const CategoryItem = ({ category, index }: CategoryItemProps) => {
+const CategoryItem = ({ category }: CategoryItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { scrollYProgress, scrollY } = useScroll();
-  const isCenterSlides = false;
-  const numberToDisplay = 4;
-  const displayDirection = "horizontal";
-
-  useEffect(()=>{
-    
-  })
 
   const handleOnClick = () => {
     dispatch(setCategoryState(category as Category));

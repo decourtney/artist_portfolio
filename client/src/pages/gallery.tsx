@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import {
   Navigate,
   useParams,
@@ -52,57 +52,7 @@ const Gallery = () => {
     ({ categories } = data.userCategories);
   }
 
-  // Handles displaying and dispatching data for Modals
-  // useEffect(() => {
-  //   if (data) {
-  //     if (productName) {
-  //       const findProductForModal = async () => {
-  //         try {
-  //           const category = categoryData
-  //             ? categories?.find((c) => {
-  //                 return c.name === categoryData?.name;
-  //               })
-  //             : // Catch all for page refresh
-  //               categories?.find((c) => {
-  //                 return c.defaultCategory === true;
-  //               });
-
-  //           const productForModal = category?.products.find(
-  //             (p) => p.name === productName
-  //           );
-
-  //           dispatch(setProductState(productForModal));
-  //           setIsProductModal(true);
-  //           setIsCategoryModal(false);
-  //           // console.log("productformodal:", productForModal);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       };
-
-  //       findProductForModal();
-  //     } else if (categoryName) {
-  //       const findCategoryForModal = async () => {
-  //         try {
-  //           const categoryForModal = categories?.find(
-  //             (category: Category) => category.name === categoryName
-  //           );
-
-  //           dispatch(setCategoryState(categoryForModal));
-  //           setIsCategoryModal(true);
-  //           setIsProductModal(false);
-  //           // console.log("categoryformodal:", categoryForModal);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       };
-
-  //       findCategoryForModal();
-  //     }
-  //   }
-  // }, [data]);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (data) {
       if (productName) {
         setIsProductModal(true);

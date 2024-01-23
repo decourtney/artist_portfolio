@@ -1,34 +1,45 @@
-import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Category, Product } from "../utils/customClientTypes";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface SliderState {
-  lowestVisibleIndex: number;
-  sliderHasMoved: boolean;
-  isSliding: boolean;
-  sliderState: { [sliderId: string]: { lowestVisibleIndex: number, sliderHasMoved: boolean } };
+  sliderState: {
+    [sliderId: string]: {
+      lowestVisibleIndex: number;
+      sliderHasMoved: boolean;
+      isSliding: boolean;
+    };
+  };
 }
 
 export const sliderSlice = createSlice({
   name: "slider",
-  initialState: { lowestVisibleIndex: 0, sliderHasMoved: false, isSliding: false, sliderState: {} },
+  initialState: {
+    sliderState: {} as {
+      [sliderId: string]: {
+        lowestVisibleIndex: 0;
+        sliderHasMoved: false;
+        isSliding: false;
+      };
+    },
+  },
   reducers: {
-    setLowestVisibleIndex: (
+    setSliderState: (
       state: SliderState,
-      action: PayloadAction<number>
+      action: PayloadAction<{
+        sliderId: string;
+        lowestVisibleIndex?: number;
+        sliderHasMoved?: boolean;
+        isSliding?: boolean;
+      }>
     ) => {
-      state.lowestVisibleIndex = action.payload;
+      const { sliderId, ...newState } = action.payload;
+      state.sliderState[sliderId] = {
+        ...state.sliderState[sliderId],
+        ...newState,
+      };
     },
-    setSliderHasMoved: (state: SliderState, action: PayloadAction<boolean>) => { state.sliderHasMoved = action.payload; },
-    setIsSliding: (state: SliderState, action: PayloadAction<boolean>) => {
-      state.isSliding = action.payload;
-    },
-    setSliderState: (state: SliderState, action: PayloadAction<{ sliderId: string; lowestVisibleIndex: number; sliderHasMoved: boolean }>) => {
-      const { sliderId, lowestVisibleIndex, sliderHasMoved } = action.payload;
-      state.sliderState[sliderId] = { lowestVisibleIndex, sliderHasMoved };
-    },
-  }
+  },
 });
 
-export const { setLowestVisibleIndex, setSliderHasMoved, setIsSliding, setSliderState } = sliderSlice.actions;
+export const { setSliderState } = sliderSlice.actions;
 
 export default sliderSlice.reducer;

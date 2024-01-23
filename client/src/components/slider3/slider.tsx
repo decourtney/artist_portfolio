@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Product, Category } from "../../utils/customClientTypes";
 import { useAnimate } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
-import { setLowestVisibleIndex, setSliderHasMoved } from "../../redux/sliderSlice";
+import { setSliderState } from "../../redux/sliderSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { RootState } from "../../store";
 
 interface SliderProps {
   categoryToDisplay: Category;
@@ -15,31 +16,37 @@ interface SliderProps {
 const Slider = ({ categoryToDisplay }: SliderProps) => {
   const [itemsPerGroup, setItemsPerGroup] = useState(1);
   const [renderSlider, setRenderSlider] = useState(false);
-  const [sliderHasMoved, setSliderHasMoved] = useState(false);
   const [previousGroup, setPreviousGroup] = useState<number[]>([]);
   const [visibleGroup, setVisibleGroup] = useState<number[]>([]);
   const [nextGroup, setNextGroup] = useState<number[]>([]);
   const [previousPeek, setPreviousPeek] = useState<number>(0);
   const [nextPeek, setNextPeek] = useState<number>(0);
-  const dispatch = useAppDispatch();
-  const sliderState = useAppSelector((state) => state.slider.sliderState);
-  const lowestVisibleIndex = useAppSelector<number>(
-    (state) => state.slider.lowestVisibleIndex
-  );
-  // const sliderHasMoved = useAppSelector<boolean>(
-  //   (state) => state.slider.sliderHasMoved)
   const [scope, animate] = useAnimate();
-  // const lowestVisibleIndex = useRef(0);
+  const dispatch = useAppDispatch();
+  const sliderState = useAppSelector(
+    (state: RootState) => state.slider.sliderState
+  );
   const sliderItemWidth = useRef(0);
-  const itemsToDisplay = categoryToDisplay.products
-  const sliderId = `${categoryToDisplay.name}-slider`
-  let isSliding = false;
-  console.log(sliderState)
+  const isSlidingRef = useRef(false);
+  const itemsToDisplay = categoryToDisplay.products;
+  const sliderId = `${categoryToDisplay.name}-slider`;
 
   useEffect(() => {
+    if (!sliderState[sliderId]) {
+      dispatch(
+        setSliderState({
+          sliderId: `${categoryToDisplay.name}-slider`,
+          lowestVisibleIndex: 0,
+          sliderHasMoved: false,
+        })
+      );
+    }
+  }, []);
+
+  useLayoutEffect(() => {
     getSliderIndexGroups();
     sliderItemWidth.current = 100 / itemsPerGroup;
-  }, [renderSlider, itemsPerGroup]);
+  }, [renderSlider, itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
 
   useEffect(() => {
     handleWindowResize(window);
@@ -48,7 +55,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
-  });
+  }, []);
 
   // handle window resize and sets items in row
   const handleWindowResize = (e: any) => {
@@ -74,6 +81,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     let previous = [];
     let visible = [];
     let next = [];
+    const lowestVisibleIndex = sliderState[sliderId]?.lowestVisibleIndex;
     let currentIndex = lowestVisibleIndex;
 
     for (let i = 0; i < itemsPerGroup; i++) {
@@ -94,26 +102,31 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handlePrev = async () => {
-    if (!isSliding) {
-      isSliding = true;
+    if (!isSlidingRef.current) {
+      isSlidingRef.current = true;
+
+      const currentLowestIndex = getPositiveModulo(
+        sliderState[sliderId].lowestVisibleIndex - itemsPerGroup
+      );
 
       await animate(
         "#slider-item",
         { x: `${100 * itemsPerGroup}%` },
         {
           duration: 1,
-          onComplete: () => (isSliding = false),
+          ease: "easeInOut",
+          onComplete: () => {
+            isSlidingRef.current = false;
+            dispatch(
+              setSliderState({
+                sliderId,
+                lowestVisibleIndex: currentLowestIndex,
+                sliderHasMoved: true,
+                isSliding: false,
+              })
+            );
+          },
         }
-      );
-      setSliderHasMoved(true);
-
-      // lowestVisibleIndex.current = getPositiveModulo(
-      //   lowestVisibleIndex.current - itemsPerGroup
-      // );
-      dispatch(
-        setLowestVisibleIndex(
-          getPositiveModulo(lowestVisibleIndex - itemsPerGroup)
-        )
       );
 
       setRenderSlider(!renderSlider);
@@ -121,35 +134,48 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handleNext = async () => {
-    if (!isSliding) {
-      isSliding = true;
+    if (!isSlidingRef.current) {
+      isSlidingRef.current = true;
+
+      const currentLowestIndex =
+        (sliderState[sliderId].lowestVisibleIndex + itemsPerGroup) %
+        itemsToDisplay.length;
 
       await animate(
         "#slider-item",
         { x: `-${100 * itemsPerGroup}%` },
         {
           duration: 1,
-          onComplete: () => (isSliding = false),
+          ease: "easeInOut",
+          onComplete: () => {
+            isSlidingRef.current = false;
+            dispatch(
+              setSliderState({
+                sliderId,
+                lowestVisibleIndex: currentLowestIndex,
+                sliderHasMoved: true,
+                isSliding: false,
+              })
+            );
+          },
         }
       );
-      setSliderHasMoved(true);
 
-      // lowestVisibleIndex.current =
-      //   (lowestVisibleIndex.current + itemsPerGroup) % itemsToDisplay.length;
+      // dispatch(
+      //   setSliderState({
+      //     sliderId,
+      //     lowestVisibleIndex: currentLowestIndex,
+      //     sliderHasMoved: true,
+      //   })
+      // );
 
-      dispatch(
-        setLowestVisibleIndex(
-          (lowestVisibleIndex + itemsPerGroup) % itemsToDisplay.length
-        )
-      );
-
-      setRenderSlider(!renderSlider);
+      // setRenderSlider(!renderSlider);
     }
   };
 
   return (
     <div id="slider" className="group relative px-[4%] overflow-hidden">
-      {sliderHasMoved && (
+      {sliderState[sliderId] && sliderState[sliderId].sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
 
@@ -169,7 +195,8 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             />
           </div>
 
-          {sliderHasMoved &&
+          {sliderState[sliderId] &&
+            sliderState[sliderId].sliderHasMoved &&
             previousGroup.map((index) => {
               return (
                 <SliderItem
