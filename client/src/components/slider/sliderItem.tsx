@@ -3,7 +3,9 @@ import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { RootState } from "../../store";
 import { setProductState } from "../../redux/productSlice";
+import { setGalleryState } from "../../redux/gallerySlice";
 
 interface SliderItemProps {
   itemToDisplay: Category | Product;
@@ -18,34 +20,44 @@ const baseCDN =
 const SliderItem = ({ itemToDisplay, sliderItemWidth }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const productData = useAppSelector<Product | undefined>(
-    (state) => state.product.data
+  const gallerySlice = useAppSelector(
+    (state: RootState) => state.gallery.galleryState
   );
+  const sliderItemRef = useRef<HTMLDivElement>(null);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  const handleOnClick = () => {
-    dispatch(setProductState(itemToDisplay as Product))
-    navigate(`/gallery/${itemToDisplay.name}`)
-  }
+  useEffect(() => {
+    // if (sliderItemRef) console.log(sliderItemRef.current?.offsetTop);
+  }, []);
 
-  if(!itemToDisplay) return null;
+  const handleOnClick = () => {
+    dispatch(setProductState(itemToDisplay as Product));
+    navigate(`/gallery/${itemToDisplay.name}`);
+  };
+
+  if (!itemToDisplay) return null;
 
   return (
     <div
+      ref={sliderItemRef}
       id="slider-item"
-      className={`slider-item h-full`}
+      className={`slider-item px-0.5`}
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
       onClick={handleOnClick}
+      onMouseEnter={() => dispatch(setGalleryState({ showMiniModal: true }))}
     >
-      {itemToDisplay && <img
-        className="h-full w-full object-cover"
-        src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
-        alt={itemToDisplay.name}
-        loading="lazy"
-        onError={() => console.log('Error fetching image:', itemToDisplay.name)}
-      />}
-
+      {itemToDisplay && (
+        <img
+          className="h-full w-full object-cover rounded-sm"
+          src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
+          alt={itemToDisplay.name}
+          loading="lazy"
+          onError={() =>
+            console.log("Error fetching image:", itemToDisplay.name)
+          }
+        />
+      )}
     </div>
   );
 };

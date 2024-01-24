@@ -4,9 +4,9 @@ import { useAnimate } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
-import { setSliderState } from "../../redux/sliderSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
+import { setSliderState } from "../../redux/sliderSlice";
 
 interface SliderProps {
   categoryToDisplay: Category;
@@ -163,7 +163,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   return (
-    <div id="slider" className="group relative px-[4%] overflow-hidden">
+    <div id="slider" className="group relative px-[4vw] overflow-hidden">
       {sliderState[sliderId] && sliderState[sliderId].sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
@@ -172,7 +172,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         ref={scope}
         className="slider-row relative flex flex-row items-center h-[20dvh]"
       >
-        <section className="slider-group absolute right-full flex h-full w-full">
+        <section className="absolute right-full flex h-full w-full">
           <div
             id="groupPeek"
             className={`absolute right-full flex justify-end h-full w-full`}
@@ -197,7 +197,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             })}
         </section>
 
-        <section className="slider-group absolute flex h-full w-full">
+        <section className="absolute flex h-full w-full">
           {visibleGroup.map((index) => {
             return (
               <SliderItem
@@ -209,7 +209,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           })}
         </section>
 
-        <section className="slider-group absolute left-full flex h-full w-full">
+        <section className="absolute left-full flex h-full w-full">
           {nextGroup.map((index) => {
             return (
               <SliderItem

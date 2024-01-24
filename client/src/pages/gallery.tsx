@@ -16,25 +16,31 @@ import {
   usePresence,
 } from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { RootState } from "../store";
+import { setGalleryState } from "../redux/gallerySlice";
+import { setCategoryState } from "../redux/categorySlice";
+import { setProductState } from "../redux/productSlice";
 import { v4 as uuidv4 } from "uuid";
 import { Category, Product } from "../utils/customClientTypes";
 import { LoggedInUser } from "../utils/customClientTypes";
 import { useInView } from "react-intersection-observer";
-import Slider from "../components/slider1/slider";
-import ProductModal from "../components/gallery/productModal";
-import CategoryModal from "../components/gallery/categoryModal";
 import CategoryItem from "../components/gallery/categoryItem";
-import { setCategoryState } from "../redux/categorySlice";
-import { setProductState } from "../redux/productSlice";
+import CategoryModal from "../components/gallery/categoryModal";
+import ProductModal from "../components/gallery/productModal";
+import MiniModal from "../components/gallery/miniModal";
 import Hero from "../components/home/hero";
 
 const Gallery = () => {
+  const galleryState = useAppSelector(
+    (state: RootState) => state.gallery.galleryState
+  );
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
   const location = useLocation();
   const navigate = useNavigate();
   const [isCategoryModal, setIsCategoryModal] = useState(false);
   const [isProductModal, setIsProductModal] = useState(false);
+  const [isMiniModal, setIsMiniModal] = useState(false);
   const dispatch = useAppDispatch();
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
@@ -54,11 +60,11 @@ const Gallery = () => {
       } else if (categoryName) {
         setIsCategoryModal(true);
         // setIsProductModal(false);
-      }
+      } else if (galleryState.showMiniModal) setIsMiniModal(true);
     }
   }, [data]);
 
-  if(loading) return null
+  if (loading) return null;
 
   return (
     <>
@@ -69,7 +75,6 @@ const Gallery = () => {
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {
             if (category.products.length > 0) {
-              
               return (
                 <CategoryItem
                   key={uuidv4()}
@@ -84,6 +89,8 @@ const Gallery = () => {
         {isCategoryModal && <CategoryModal />}
 
         {isProductModal && <ProductModal />}
+
+        {isMiniModal && <MiniModal />}
       </section>
     </>
   );
