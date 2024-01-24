@@ -45,7 +45,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
-  
+
   useEffect(() => {
     if (!sliderState[sliderId]) {
       dispatch(
@@ -187,9 +187,11 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           {sliderState[sliderId] &&
             sliderState[sliderId].sliderHasMoved &&
             previousGroup.map((index) => {
+              const key = uuidv4();
               return (
                 <SliderItem
-                  key={uuidv4()}
+                  key={key}
+                  referenceKey={key}
                   itemToDisplay={itemsToDisplay[index]}
                   sliderItemWidth={sliderItemWidth.current}
                 />
@@ -199,9 +201,11 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
         <section className="absolute flex h-full w-full">
           {visibleGroup.map((index) => {
+            const key = uuidv4();
             return (
               <SliderItem
-                key={uuidv4()}
+                key={key}
+                referenceKey={key}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth.current}
               />
@@ -211,9 +215,11 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
         <section className="absolute left-full flex h-full w-full">
           {nextGroup.map((index) => {
+            const key = uuidv4();
             return (
               <SliderItem
-                key={uuidv4()}
+                key={key}
+                referenceKey={key}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth.current}
               />

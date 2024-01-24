@@ -2,24 +2,24 @@ import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Category, Product } from "../utils/customClientTypes";
 
 interface GalleryState {
-  galleryState: { sliderItemRef: HTMLDivElement; showMiniModal: boolean };
+  galleryState: { sliderItemRef: string | null; showMiniModal: boolean };
 }
 
 export const gallerySlice = createSlice({
   name: "gallery",
   initialState: {
-    galleryState: {} as { sliderItemRef: null; showMiniModal: false },
+    galleryState: { sliderItemRef: null, showMiniModal: false },
   },
   reducers: {
     setGalleryState: (
       state: GalleryState,
       action: PayloadAction<{
-        sliderItemRef?: HTMLDivElement;
+        sliderItemRef?: string;
         showMiniModal?: boolean;
       }>
     ) => {
       const { ...newState } = action.payload;
-      state.galleryState = { ...newState };
+      state.galleryState = { ...state.galleryState, ...newState };
     },
   },
 });

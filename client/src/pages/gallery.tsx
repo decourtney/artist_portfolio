@@ -34,6 +34,9 @@ const Gallery = () => {
   const galleryState = useAppSelector(
     (state: RootState) => state.gallery.galleryState
   );
+  const productState = useAppSelector(
+    (state: RootState) => state.product.productState
+  );
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
   const location = useLocation();
@@ -60,9 +63,21 @@ const Gallery = () => {
       } else if (categoryName) {
         setIsCategoryModal(true);
         // setIsProductModal(false);
-      } else if (galleryState.showMiniModal) setIsMiniModal(true);
+      }
     }
   }, [data]);
+
+  useEffect(() => {
+    if (galleryState.showMiniModal) {
+      console.log('show mini modal set to true')
+      console.log(galleryState.sliderItemRef)
+      // setTimeout(() => {
+      //   dispatch(setGalleryState({ showMiniModal: false }));
+      //   console.log("show mini modal set to false")
+      // }, 2000);
+    }
+
+  }, [galleryState.showMiniModal])
 
   if (loading) return null;
 
