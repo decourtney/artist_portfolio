@@ -70,11 +70,8 @@ const Gallery = () => {
   useEffect(() => {
     if (galleryState.showMiniModal) {
       console.log('show mini modal set to true')
-      console.log(galleryState.sliderItemRef)
-      // setTimeout(() => {
-      //   dispatch(setGalleryState({ showMiniModal: false }));
-      //   console.log("show mini modal set to false")
-      // }, 2000);
+      console.log(galleryState.sliderItemId);
+      
     }
 
   }, [galleryState.showMiniModal])
@@ -105,7 +102,7 @@ const Gallery = () => {
 
         {isProductModal && <ProductModal />}
 
-        {isMiniModal && <MiniModal />}
+        {galleryState.showMiniModal && <MiniModal />}
       </section>
     </>
   );

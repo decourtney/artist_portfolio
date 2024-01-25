@@ -16,8 +16,8 @@ const baseCDN =
 
 const ProductModal = () => {
   const [loadedImageSrc, setLoadedImageSrc] = useState('');
-  const productData = useAppSelector<Product>(
-    (state) => state.product.data
+  const productState = useAppSelector<Product>(
+    (state) => state.product.productState.data
   );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -28,12 +28,12 @@ const ProductModal = () => {
 
   useEffect(() => {
     const img = new Image();
-    const imgsrc = `${baseCDN}/${userParam}/${productData?.image}`;
+    const imgsrc = `${baseCDN}/${userParam}/${productState?.image}`;
     img.src = imgsrc;
     img.onload = () => {
       setLoadedImageSrc(imgsrc);
     };
-  }, [productData]);
+  }, [productState]);
 
   const handleBack = () => {
     navigate(-1);
@@ -93,7 +93,7 @@ const ProductModal = () => {
               <img
                 src={loadedImageSrc}
                 className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
-                alt={`${productData?.name}`}
+                alt={`${productState?.name}`}
                 loading="lazy"
               />
             )}

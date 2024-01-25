@@ -8,7 +8,7 @@ import { setProductState } from "../../redux/productSlice";
 import { setGalleryState } from "../../redux/gallerySlice";
 
 interface SliderItemProps {
-  referenceKey?: string;
+  sliderItemId: string;
   itemToDisplay: Category | Product;
   sliderItemWidth: number;
   // onClick: (item: Category | Product) => void;
@@ -18,13 +18,16 @@ const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
-const SliderItem = ({ referenceKey, itemToDisplay, sliderItemWidth }: SliderItemProps) => {
+const SliderItem = ({
+  sliderItemId,
+  itemToDisplay,
+  sliderItemWidth,
+}: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const gallerySlice = useAppSelector(
     (state: RootState) => state.gallery.galleryState
   );
-  const sliderItemRef = useRef<HTMLDivElement>(null);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
@@ -41,13 +44,14 @@ const SliderItem = ({ referenceKey, itemToDisplay, sliderItemWidth }: SliderItem
 
   return (
     <div
-      ref={sliderItemRef}
-      id="slider-item"
-      className={`slider-item px-0.5`}
+      id={sliderItemId}
+      className="slider-item px-0.5"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
-      //onClick={handleOnClick}
-      onMouseEnter={() => dispatch(setGalleryState({ sliderItemRef: referenceKey, showMiniModal: true }))}
-      onMouseLeave={() => dispatch(setGalleryState({ showMiniModal: false }))}
+      onMouseEnter={() =>
+        dispatch(
+          setGalleryState({ sliderItemId: sliderItemId, showMiniModal: true })
+        )
+      }
     >
       {itemToDisplay && (
         <img

@@ -26,6 +26,8 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const sliderState = useAppSelector(
     (state: RootState) => state.slider.sliderState
   );
+  const previousPeekKey = uuidv4()
+  const nextPeekKey = uuidv4();
   const sliderItemWidth = useRef(0);
   const isSlidingRef = useRef(false);
   const itemsToDisplay = categoryToDisplay.products;
@@ -111,7 +113,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       );
 
       await animate(
-        "#slider-item",
+        ".slider-item",
         { x: `${100 * itemsPerGroup}%` },
         {
           duration: 1,
@@ -141,7 +143,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         itemsToDisplay.length;
 
       await animate(
-        "#slider-item",
+        ".slider-item",
         { x: `-${100 * itemsPerGroup}%` },
         {
           duration: 1,
@@ -178,7 +180,8 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             className={`absolute right-full flex justify-end h-full w-full`}
           >
             <SliderItem
-              key={uuidv4()}
+              key={previousPeekKey}
+              sliderItemId={previousPeekKey}
               itemToDisplay={itemsToDisplay[previousPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />
@@ -191,7 +194,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
               return (
                 <SliderItem
                   key={key}
-                  referenceKey={key}
+                  sliderItemId={key}
                   itemToDisplay={itemsToDisplay[index]}
                   sliderItemWidth={sliderItemWidth.current}
                 />
@@ -205,7 +208,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             return (
               <SliderItem
                 key={key}
-                referenceKey={key}
+                sliderItemId={key}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth.current}
               />
@@ -219,7 +222,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             return (
               <SliderItem
                 key={key}
-                referenceKey={key}
+                sliderItemId={key}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth.current}
               />
@@ -231,7 +234,8 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             className="absolute left-full flex justify-start h-full w-full"
           >
             <SliderItem
-              key={uuidv4()}
+              key={nextPeekKey}
+              sliderItemId={nextPeekKey}
               itemToDisplay={itemsToDisplay[nextPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />

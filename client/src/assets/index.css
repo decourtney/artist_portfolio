@@ -799,6 +799,10 @@ video {
   height: 100vh;
 }
 
+.h-\[\'\$\{sliderItemElement\?\.offsetHeight\}px\'\] {
+  height: '${sliderItemElement?.offsetHeight}px';
+}
+
 .max-h-\[96dvh\] {
   max-height: 96dvh;
 }
@@ -852,6 +856,18 @@ video {
 .w-min {
   width: -webkit-min-content;
   width: min-content;
+}
+
+.w-\[\'\$\{sliderItemElement\?\.offsetWidth\}px\'\] {
+  width: '${sliderItemElement?.offsetWidth}px';
+}
+
+.w-\[\] {
+  width: ;
+}
+
+.w-\[197px\] {
+  width: 197px;
 }
 
 .min-w-\[96dvw\] {
