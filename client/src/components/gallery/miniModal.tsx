@@ -17,7 +17,7 @@ import { Category, Product } from "../../utils/customClientTypes";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
 import { setSliderState } from "../../redux/sliderSlice";
-import { setGalleryState } from "../../redux/gallerySlice";
+import { setMiniModalState } from "../../redux/miniModalSlice";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -25,37 +25,35 @@ const baseCDN =
 
 const MiniModal = () => {
   const dispatch = useAppDispatch();
-  const galleryState = useAppSelector(
-    (state: RootState) => state.gallery.galleryState
+  const { sliderItem, sliderItemRect, showMiniModal } = useAppSelector(
+    (state: RootState) => state.miniModal.miniModalState
   );
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    if (galleryState.sliderItemId) {
-      const sliderItemElement = document.getElementById(
-        galleryState.sliderItemId
-      );
+    console.log(sliderItemRect);
+  }, [sliderItemRect]);
 
-      // FIXME Issues with mini modal - check if sliderItemElement can be populated outside the useEffect
-      // FIXME data was here before using the useEffect
-      console.log(sliderItemElement)
-      if (sliderItemElement) {
-        setDimensions({
-          width: sliderItemElement.offsetWidth,
-          height: sliderItemElement.offsetHeight,
-        });
-      }
-    }
-  }, [galleryState.sliderItemId]);
-  
-  // console.log(dimensions)
+  if (!showMiniModal || !sliderItemRect) return null;
+
   return (
-    <section
-      className={`absolute top-0 left-0 w-[${dimensions.width}px] h-[${dimensions.height}px] bg-blue-500`}
-      onClick={() =>
-        dispatch(setGalleryState({ sliderItemId: null, showMiniModal: false }))
-      }
-    ></section>
+    <section>
+      <motion.div
+        className="bg-blue-500"
+        style={{ position: "absolute", ...sliderItemRect }}
+        initial={{ top: 0, left: 0 }}
+        animate={{
+          bottom: "50%",
+          height: "50%",
+          left: "50%",
+          right: "50%",
+          top: "50%",
+          width: "50%",
+          x: "-50%",
+          y: "-50%",
+        }}
+        onClick={() => dispatch(setMiniModalState({ showMiniModal: false }))}
+      ></motion.div>
+    </section>
   );
 };
 

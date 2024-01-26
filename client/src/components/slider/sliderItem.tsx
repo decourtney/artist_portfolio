@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
 import { setProductState } from "../../redux/productSlice";
-import { setGalleryState } from "../../redux/gallerySlice";
+import { setMiniModalState } from "../../redux/miniModalSlice";
+import MiniModal from "../gallery/miniModal";
 
 interface SliderItemProps {
   sliderItemId: string;
@@ -25,15 +26,26 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const gallerySlice = useAppSelector(
-    (state: RootState) => state.gallery.galleryState
+  const galleryState = useAppSelector(
+    (state: RootState) => state.miniModal.miniModalState
   );
+  const sliderItemRef = useRef<HTMLElement>(null);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  useEffect(() => {
-    // if (sliderItemRef) console.log(sliderItemRef.current?.offsetTop);
-  }, []);
+const handleMouseEnter = () => {
+  const rect = sliderItemRef.current?.getBoundingClientRect();
+  if (rect) {
+    console.log(rect);
+    const { bottom, height, left, right, top, width, x, y } = rect;
+    dispatch(
+      setMiniModalState({
+        sliderItemRect: { bottom, height, left, right, top, width, x, y },
+        showMiniModal: true,
+      })
+    );
+  }
+};
 
   const handleOnClick = () => {
     dispatch(setProductState(itemToDisplay as Product));
@@ -43,15 +55,12 @@ const SliderItem = ({
   if (!itemToDisplay) return null;
 
   return (
-    <div
+    <section
+      ref={sliderItemRef}
       id={sliderItemId}
       className="slider-item px-0.5"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
-      onMouseEnter={() =>
-        dispatch(
-          setGalleryState({ sliderItemId: sliderItemId, showMiniModal: true })
-        )
-      }
+      onMouseEnter={handleMouseEnter}
     >
       {itemToDisplay && (
         <img
@@ -64,7 +73,9 @@ const SliderItem = ({
           }
         />
       )}
-    </div>
+
+      {/* {galleryState.showMiniModal && <MiniModal />} */}
+    </section>
   );
 };
 

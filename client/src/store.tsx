@@ -1,15 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import categoryReducer from "./redux/categorySlice";
 import productReducer from "./redux/productSlice";
-import sliderReducer from "./redux/sliderSlice"
-import galleryReducer from "./redux/gallerySlice";
+import sliderReducer from "./redux/sliderSlice";
+import miniModalReducer from "./redux/miniModalSlice";
 
 export const store = configureStore({
   reducer: {
     category: categoryReducer,
     product: productReducer,
     slider: sliderReducer,
-    gallery: galleryReducer
+    miniModal: miniModalReducer,
   },
 });
 

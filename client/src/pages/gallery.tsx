@@ -17,7 +17,6 @@ import {
 } from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { RootState } from "../store";
-import { setGalleryState } from "../redux/gallerySlice";
 import { setCategoryState } from "../redux/categorySlice";
 import { setProductState } from "../redux/productSlice";
 import { v4 as uuidv4 } from "uuid";
@@ -31,8 +30,8 @@ import MiniModal from "../components/gallery/miniModal";
 import Hero from "../components/home/hero";
 
 const Gallery = () => {
-  const galleryState = useAppSelector(
-    (state: RootState) => state.gallery.galleryState
+  const miniModalState = useAppSelector(
+    (state: RootState) => state.miniModal.miniModalState
   );
   const productState = useAppSelector(
     (state: RootState) => state.product.productState
@@ -68,20 +67,15 @@ const Gallery = () => {
   }, [data]);
 
   useEffect(() => {
-    if (galleryState.showMiniModal) {
-      console.log('show mini modal set to true')
-      console.log(galleryState.sliderItemId);
-      
-    }
-
-  }, [galleryState.showMiniModal])
+    console.log();
+  });
 
   if (loading) return null;
 
   return (
     <>
       {/* <Hero /> */}
-      <section id="gallery" className="relative flex flex-col">
+      <section id="gallery" className="relative flex flex-col w-full h-full">
         {/* <div className=""> */}
         {categories &&
           categories.length > 0 &&
@@ -102,7 +96,9 @@ const Gallery = () => {
 
         {isProductModal && <ProductModal />}
 
-        {galleryState.showMiniModal && <MiniModal />}
+        {miniModalState.showMiniModal && (
+          <MiniModal />
+        )}
       </section>
     </>
   );
