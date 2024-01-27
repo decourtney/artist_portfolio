@@ -231,7 +231,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
           <div
             id="groupPeek"
-            className="absolute left-full flex justify-start h-full w-full"
+            className="absolute left-full flex justify-start h-full w-full pointer-events-none"
           >
             <SliderItem
               key={nextPeekKey}

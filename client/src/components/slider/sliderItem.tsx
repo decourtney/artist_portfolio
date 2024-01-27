@@ -26,26 +26,26 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const galleryState = useAppSelector(
+  const miniModalState = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const sliderItemRef = useRef<HTMLElement>(null);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-const handleMouseEnter = () => {
-  const rect = sliderItemRef.current?.getBoundingClientRect();
-  if (rect) {
-    console.log(rect);
-    const { bottom, height, left, right, top, width, x, y } = rect;
-    dispatch(
-      setMiniModalState({
-        sliderItemRect: { bottom, height, left, right, top, width, x, y },
-        showMiniModal: true,
-      })
-    );
-  }
-};
+  const handleMouseEnter = () => {
+    const rect = sliderItemRef.current?.getBoundingClientRect();
+    if (rect) {
+      const { bottom, height, left, right, top, width, x, y } = rect;
+      dispatch(
+        setMiniModalState({
+          sliderItem: itemToDisplay,
+          sliderItemRect: { bottom, height, left, right, top, width, x, y },
+          showMiniModal: true,
+        })
+      );
+    }
+  };
 
   const handleOnClick = () => {
     dispatch(setProductState(itemToDisplay as Product));
@@ -58,9 +58,9 @@ const handleMouseEnter = () => {
     <section
       ref={sliderItemRef}
       id={sliderItemId}
-      className="slider-item px-0.5"
+      className="slider-item relative px-0.5"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
-      onMouseEnter={handleMouseEnter}
+      onMouseOver={handleMouseEnter}
     >
       {itemToDisplay && (
         <img
@@ -73,8 +73,6 @@ const handleMouseEnter = () => {
           }
         />
       )}
-
-      {/* {galleryState.showMiniModal && <MiniModal />} */}
     </section>
   );
 };

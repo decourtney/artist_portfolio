@@ -66,10 +66,6 @@ const Gallery = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-    console.log();
-  });
-
   if (loading) return null;
 
   return (
@@ -91,14 +87,9 @@ const Gallery = () => {
             }
           })}
         {/* </div> */}
-
         {isCategoryModal && <CategoryModal />}
-
         {isProductModal && <ProductModal />}
-
-        {miniModalState.showMiniModal && (
-          <MiniModal />
-        )}
+        {miniModalState.showMiniModal && <MiniModal />}
       </section>
     </>
   );
