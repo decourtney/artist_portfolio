@@ -36,9 +36,8 @@ const MiniModal = () => {
     // console.log(sliderItem);
   }, [sliderItemRect]);
 
-  // Not sure why but framer-motion's AnimatePresence is buggy with the current setup
-  // So handleMouseLeave awaits the animation then disables the modal
   const handleMouseLeave = async () => {
+    console.log('mouse left')
     await animate(
       scope.current,
       {
@@ -53,35 +52,38 @@ const MiniModal = () => {
   if (!showMiniModal || !sliderItemRect) return null;
 
   const variants = {
+    initial: {
+      top: 0, left: 0, right: 0, bottom: 0,
+    },
     open: {
       width: sliderItemRect.width + sliderItemRect.width * 0.2,
       height: sliderItemRect.height + sliderItemRect.height * 0.2,
+      margin: "calculate margin from width and new width",
       transition: {
         duration: 0.2,
       },
     },
-    close: {
-      width: sliderItemRect.width,
-      height: sliderItemRect.height,
-      transition: { duration: 0.2 },
-    },
   };
 
   return (
-    <div className="absolute w-full h-full  ">
-      <motion.div
-        ref={scope}
-        key={sliderItem.name}
-        className="absolute bg-red-500 z-50"
-        style={{ ...sliderItemRect }}
-        variants={variants}
-        initial={{ top: 0, left: 0 }}
-        animate="open"
-        // exit="close"
-        onMouseLeave={handleMouseLeave}
-      >
-        stuff
-      </motion.div>
+    <div className={`absolute w-full h-full z-10`}
+    >
+      {/* <div className="relative "> */}
+      <div className="absolute flex justify-center items-center bg-green-500" style={{ ...sliderItemRect }}>
+        <motion.div
+          ref={scope}
+          key={sliderItem.name}
+          className="absolute bg-red-500 w-full h-full"
+          //style={{ ...sliderItemRect }}
+          variants={variants}
+          initial='initial'
+          animate="open"
+          onMouseOut={handleMouseLeave}
+        >
+          stuff
+        </motion.div>
+      </div>
+      {/* </div> */}
     </div>
   );
 };

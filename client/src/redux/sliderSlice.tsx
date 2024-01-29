@@ -32,15 +32,10 @@ export const sliderSlice = createSlice({
         sliderId?: string;
         lowestVisibleIndex?: number;
         sliderHasMoved?: boolean;
-
         globalSettings?: { isSliding?: boolean };
       }>
     ) => {
       const { sliderId, ...newState } = action.payload;
-      // state.sliderState[sliderId] = {
-      //   ...state.sliderState[sliderId],
-      //   ...newState,
-      // };
       if (sliderId) {
         // Update individual slider state
         state.sliderState[sliderId] = {

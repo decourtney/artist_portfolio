@@ -1,12 +1,27 @@
+/* 
+Slider uses a combination of Redux and local state management. Redux is used to track individual slider's
+lowest visible index for slide scrolling and if the slider has moved - resulting in the display of the 
+previous button and peek card. Redux also has a global state, isSliding, to disable mouse events while
+any slider is moving.
+
+Currently, the slider adjusts the number of displayed cards relative to the window width and slides that
+many cards each iteration.
+
+Possible additions:
+- Need more window size breakpoints.
+- Currently the animation can be easily modified in code for different visuals but would
+be nice to have this a configurable option.
+- Configurable slide speed.
+- Disable/Enable looping slides.
+*/
+
 import React, {
   useState,
   useEffect,
   useRef,
   useLayoutEffect,
-  Dispatch,
-  SetStateAction,
 } from "react";
-import { Product, Category } from "../../utils/customClientTypes";
+import { Category } from "../../utils/customClientTypes";
 import { useAnimate } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import SliderItem from "./sliderItem";
@@ -21,14 +36,12 @@ interface SliderProps {
 
 // Try changing lowestvisibleindex to a global state
 const Slider = ({ categoryToDisplay }: SliderProps) => {
-  const [itemsPerGroup, setItemsPerGroup] = useState(1);
-  const [renderSlider, setRenderSlider] = useState(false);
-  const [previousGroup, setPreviousGroup] = useState<number[]>([]);
-  const [visibleGroup, setVisibleGroup] = useState<number[]>([]);
-  const [nextGroup, setNextGroup] = useState<number[]>([]);
-  const [previousPeek, setPreviousPeek] = useState<number>(0);
-  const [nextPeek, setNextPeek] = useState<number>(0);
-  const [isSliding, setIsSliding] = useState(false);
+  const [itemsPerGroup, setItemsPerGroup] = useState(1); // This value is dynamically changed with window size
+  const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
+  const [visibleGroup, setVisibleGroup] = useState<number[]>([]); // Stores indexes of visible group
+  const [nextGroup, setNextGroup] = useState<number[]>([]); // Stores indexes of next group
+  const [previousPeek, setPreviousPeek] = useState<number>(0); // Stores the index of the previous peek card
+  const [nextPeek, setNextPeek] = useState<number>(0); // Stores the index of the next peek card
   const [slideDirection, setSlideDirection] = useState<"next" | "prev" | null>(
     null
   );
@@ -43,9 +56,10 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const previousPeekKey = uuidv4();
   const nextPeekKey = uuidv4();
   const sliderItemWidth = useRef(0);
-  const isSlidingRef = useRef(false);
   const itemsToDisplay = categoryToDisplay.products;
-  const sliderId = `${categoryToDisplay.name}-slider`;
+  const sliderId = `${categoryToDisplay.name}-slider`; // Used to track each slider for redux state management
+
+  if (!itemsToDisplay) return null
 
   useLayoutEffect(() => {
     getSliderIndexGroups();
@@ -74,14 +88,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   }, []);
 
   useEffect(() => {
-    setIsSliding(sliderGlobalState.isSliding);
-    console.log(sliderGlobalState.isSliding)
-    console.log(isSliding)
-  }, [sliderGlobalState.isSliding]);
-
-  useEffect(() => {
-    setIsSliding(sliderGlobalState.isSliding);
-    if (isSliding) {
+    if (sliderGlobalState.isSliding) {
       let currentLowestIndex: number;
       let xValue: string;
 
@@ -110,15 +117,14 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             ease: "easeInOut",
             onComplete: () => {
               setSlideDirection(null);
-              // setIsSliding(false);
               dispatch(
                 setSliderState({
                   sliderId,
                   lowestVisibleIndex: currentLowestIndex,
                   sliderHasMoved: true,
-                  globalSettings: { isSliding: false },
                 })
               );
+              dispatch(setSliderState({ globalSettings: { isSliding: false } }));
             },
           }
         );
@@ -126,7 +132,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
       playAnim();
     }
-  }, [isSliding]);
+  }, [sliderGlobalState.isSliding]);
 
   // handle window resize and sets items in row
   const handleWindowResize = (e: any) => {
@@ -173,17 +179,15 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handlePrev = async () => {
-    if (!isSliding) {
+    if (!sliderGlobalState.isSliding) {
       setSlideDirection("prev");
-      // setIsSliding(true);
       dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
   };
 
   const handleNext = async () => {
-    if (!isSliding) {
+    if (!sliderGlobalState.isSliding) {
       setSlideDirection("next");
-      // setIsSliding(true);
       dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
   };
@@ -196,11 +200,10 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
       <div
         ref={scope}
-        className={`slider-row relative flex flex-row items-center h-[20dvh] ${
-          isSliding
-            ? "pointer-events-none"
-            : "pointer-events-auto"
-        }`}
+        className={`slider-row relative flex flex-row items-center h-[20dvh] ${sliderGlobalState.isSliding
+          ? "pointer-events-none"
+          : "pointer-events-auto"
+          }`}
       >
         <section className="absolute right-full flex h-full w-full">
           <div

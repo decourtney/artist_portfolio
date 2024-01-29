@@ -547,6 +547,10 @@ video {
   visibility: hidden;
 }
 
+.static {
+  position: static;
+}
+
 .fixed {
   position: fixed;
 }
@@ -623,6 +627,14 @@ video {
   z-index: 50;
 }
 
+.z-20 {
+  z-index: 20;
+}
+
+.z-30 {
+  z-index: 30;
+}
+
 .mx-1 {
   margin-left: 0.25rem;
   margin-right: 0.25rem;
@@ -666,6 +678,26 @@ video {
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.my-\[\] {
+  margin-top: ;
+  margin-bottom: ;
+}
+
+.my-\[50\%\] {
+  margin-top: 50%;
+  margin-bottom: 50%;
 }
 
 .mb-1 {
@@ -718,6 +750,22 @@ video {
 
 .mt-5 {
   margin-top: 1.25rem;
+}
+
+.ml-10 {
+  margin-left: 2.5rem;
+}
+
+.ml-\[c\] {
+  margin-left: c;
+}
+
+.ml-\[calc\(\)\] {
+  margin-left: calc();
+}
+
+.block {
+  display: block;
 }
 
 .inline-block {
@@ -854,6 +902,10 @@ video {
   width: min-content;
 }
 
+.w-screen {
+  width: 100vw;
+}
+
 .min-w-\[96dvw\] {
   min-width: 96dvw;
 }
@@ -866,8 +918,20 @@ video {
   max-width: 96dvw;
 }
 
+.max-w-full {
+  max-width: 100%;
+}
+
 .flex-grow {
   flex-grow: 1;
+}
+
+.origin-center {
+  transform-origin: center;
+}
+
+.transform {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .cursor-pointer {
@@ -982,8 +1046,16 @@ video {
   margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-visible {
+  overflow: visible;
 }
 
 .overflow-scroll {
@@ -1090,11 +1162,6 @@ video {
   background-color: rgb(147 177 166 / var(--tw-bg-opacity));
 }
 
-.bg-orange-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 115 22 / var(--tw-bg-opacity));
-}
-
 .bg-pdark {
   --tw-bg-opacity: 1;
   background-color: rgb(3 0 28 / var(--tw-bg-opacity));
@@ -1137,6 +1204,11 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-purple-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(168 85 247 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-25 {
@@ -1605,11 +1677,6 @@ html {
 }
 
 @media screen and (min-width: 1601px) and (max-width: 1920px) and (orientation: landscape) {
-}
-
-.after\:pointer-events-none::after {
-  content: var(--tw-content);
-  pointer-events: none;
 }
 
 .after\:absolute::after {
