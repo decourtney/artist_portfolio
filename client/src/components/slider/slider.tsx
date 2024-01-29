@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Product, Category } from "../../utils/customClientTypes";
 import { useAnimate } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
@@ -21,23 +28,29 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const [nextGroup, setNextGroup] = useState<number[]>([]);
   const [previousPeek, setPreviousPeek] = useState<number>(0);
   const [nextPeek, setNextPeek] = useState<number>(0);
+  const [isSliding, setIsSliding] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<"next" | "prev" | null>(
+    null
+  );
   const [scope, animate] = useAnimate();
   const dispatch = useAppDispatch();
   const sliderState = useAppSelector(
     (state: RootState) => state.slider.sliderState
   );
-  const previousPeekKey = uuidv4()
+  const sliderGlobalState = useAppSelector(
+    (state: RootState) => state.slider.globalSettings
+  );
+  const previousPeekKey = uuidv4();
   const nextPeekKey = uuidv4();
   const sliderItemWidth = useRef(0);
   const isSlidingRef = useRef(false);
   const itemsToDisplay = categoryToDisplay.products;
   const sliderId = `${categoryToDisplay.name}-slider`;
 
-
   useLayoutEffect(() => {
     getSliderIndexGroups();
     sliderItemWidth.current = 100 / itemsPerGroup;
-  }, [renderSlider, itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
+  }, [itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
 
   useLayoutEffect(() => {
     handleWindowResize(window);
@@ -59,6 +72,61 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       );
     }
   }, []);
+
+  useEffect(() => {
+    setIsSliding(sliderGlobalState.isSliding);
+    console.log(sliderGlobalState.isSliding)
+    console.log(isSliding)
+  }, [sliderGlobalState.isSliding]);
+
+  useEffect(() => {
+    setIsSliding(sliderGlobalState.isSliding);
+    if (isSliding) {
+      let currentLowestIndex: number;
+      let xValue: string;
+
+      if (slideDirection === "next") {
+        {
+          currentLowestIndex = getPositiveModulo(
+            sliderState[sliderId].lowestVisibleIndex + itemsPerGroup
+          );
+          xValue = `-${100 * itemsPerGroup}%`;
+        }
+      } else if (slideDirection === "prev") {
+        {
+          currentLowestIndex = getPositiveModulo(
+            sliderState[sliderId].lowestVisibleIndex - itemsPerGroup
+          );
+          xValue = `${100 * itemsPerGroup}%`;
+        }
+      }
+
+      const playAnim = async () => {
+        await animate(
+          ".slider-item",
+          { x: xValue },
+          {
+            duration: 1,
+            ease: "easeInOut",
+            onComplete: () => {
+              setSlideDirection(null);
+              // setIsSliding(false);
+              dispatch(
+                setSliderState({
+                  sliderId,
+                  lowestVisibleIndex: currentLowestIndex,
+                  sliderHasMoved: true,
+                  globalSettings: { isSliding: false },
+                })
+              );
+            },
+          }
+        );
+      };
+
+      playAnim();
+    }
+  }, [isSliding]);
 
   // handle window resize and sets items in row
   const handleWindowResize = (e: any) => {
@@ -105,62 +173,18 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handlePrev = async () => {
-    if (!isSlidingRef.current) {
-      isSlidingRef.current = true;
-
-      const currentLowestIndex = getPositiveModulo(
-        sliderState[sliderId].lowestVisibleIndex - itemsPerGroup
-      );
-
-      await animate(
-        ".slider-item",
-        { x: `${100 * itemsPerGroup}%` },
-        {
-          duration: 1,
-          ease: "easeInOut",
-          onComplete: () => {
-            isSlidingRef.current = false;
-            dispatch(
-              setSliderState({
-                sliderId,
-                lowestVisibleIndex: currentLowestIndex,
-                sliderHasMoved: true,
-                isSliding: false,
-              })
-            );
-          },
-        }
-      );
+    if (!isSliding) {
+      setSlideDirection("prev");
+      // setIsSliding(true);
+      dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
   };
 
   const handleNext = async () => {
-    if (!isSlidingRef.current) {
-      isSlidingRef.current = true;
-
-      const currentLowestIndex =
-        (sliderState[sliderId].lowestVisibleIndex + itemsPerGroup) %
-        itemsToDisplay.length;
-
-      await animate(
-        ".slider-item",
-        { x: `-${100 * itemsPerGroup}%` },
-        {
-          duration: 1,
-          ease: "easeInOut",
-          onComplete: () => {
-            isSlidingRef.current = false;
-            dispatch(
-              setSliderState({
-                sliderId,
-                lowestVisibleIndex: currentLowestIndex,
-                sliderHasMoved: true,
-                isSliding: false,
-              })
-            );
-          },
-        }
-      );
+    if (!isSliding) {
+      setSlideDirection("next");
+      // setIsSliding(true);
+      dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
   };
 
@@ -172,7 +196,11 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
       <div
         ref={scope}
-        className="slider-row relative flex flex-row items-center h-[20dvh]"
+        className={`slider-row relative flex flex-row items-center h-[20dvh] ${
+          isSliding
+            ? "pointer-events-none"
+            : "pointer-events-auto"
+        }`}
       >
         <section className="absolute right-full flex h-full w-full">
           <div
@@ -231,7 +259,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
           <div
             id="groupPeek"
-            className="absolute left-full flex justify-start h-full w-full pointer-events-none"
+            className="absolute left-full flex justify-start h-full w-full"
           >
             <SliderItem
               key={nextPeekKey}

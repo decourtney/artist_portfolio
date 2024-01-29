@@ -5,8 +5,10 @@ interface SliderState {
     [sliderId: string]: {
       lowestVisibleIndex: number;
       sliderHasMoved: boolean;
-      isSliding: boolean;
     };
+  };
+  globalSettings: {
+    isSliding?: boolean;
   };
 }
 
@@ -17,25 +19,41 @@ export const sliderSlice = createSlice({
       [sliderId: string]: {
         lowestVisibleIndex: number;
         sliderHasMoved: false;
-        isSliding: false;
       };
+    },
+    globalSettings: {
+      isSliding: false,
     },
   },
   reducers: {
     setSliderState: (
       state: SliderState,
       action: PayloadAction<{
-        sliderId: string;
+        sliderId?: string;
         lowestVisibleIndex?: number;
         sliderHasMoved?: boolean;
-        isSliding?: boolean;
+
+        globalSettings?: { isSliding?: boolean };
       }>
     ) => {
       const { sliderId, ...newState } = action.payload;
-      state.sliderState[sliderId] = {
-        ...state.sliderState[sliderId],
-        ...newState,
-      };
+      // state.sliderState[sliderId] = {
+      //   ...state.sliderState[sliderId],
+      //   ...newState,
+      // };
+      if (sliderId) {
+        // Update individual slider state
+        state.sliderState[sliderId] = {
+          ...state.sliderState[sliderId],
+          ...newState,
+        };
+      } else {
+        // Update global settings
+        state.globalSettings = {
+          ...state.globalSettings,
+          ...newState.globalSettings,
+        };
+      }
     },
   },
 });

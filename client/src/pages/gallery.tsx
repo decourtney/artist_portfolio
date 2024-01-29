@@ -66,13 +66,16 @@ const Gallery = () => {
     }
   }, [data]);
 
+  useLayoutEffect(() => {
+    setIsMiniModal(miniModalState.showMiniModal);
+  }, [miniModalState.showMiniModal]);
+
   if (loading) return null;
 
   return (
     <>
       {/* <Hero /> */}
       <section id="gallery" className="relative flex flex-col w-full h-full">
-        {/* <div className=""> */}
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {
@@ -86,10 +89,10 @@ const Gallery = () => {
               );
             }
           })}
-        {/* </div> */}
+
         {isCategoryModal && <CategoryModal />}
         {isProductModal && <ProductModal />}
-        {miniModalState.showMiniModal && <MiniModal />}
+        {isMiniModal && <MiniModal />}
       </section>
     </>
   );

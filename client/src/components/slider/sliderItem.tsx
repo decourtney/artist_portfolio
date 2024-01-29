@@ -26,7 +26,7 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const miniModalState = useAppSelector(
+  const galleryState = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const sliderItemRef = useRef<HTMLElement>(null);
@@ -58,7 +58,7 @@ const SliderItem = ({
     <section
       ref={sliderItemRef}
       id={sliderItemId}
-      className="slider-item relative px-0.5"
+      className="slider-item px-0.5"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
       onMouseOver={handleMouseEnter}
     >
@@ -73,6 +73,8 @@ const SliderItem = ({
           }
         />
       )}
+
+      {/* {galleryState.showMiniModal && <MiniModal />} */}
     </section>
   );
 };

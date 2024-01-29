@@ -48,6 +48,7 @@ const ProductModal = () => {
       id="productModal"
       className="fixed flex justify-center items-center w-full h-full z-50"
     >
+      // TODO Add key attr and check for effects
       <AnimatePresence mode="wait">
         <motion.div
           className="absolute w-full h-full bg-black opacity-75"

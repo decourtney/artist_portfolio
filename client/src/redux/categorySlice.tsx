@@ -2,20 +2,22 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Category, Product } from "../utils/customClientTypes";
 
 interface CategoryState {
-  data: Category;
+  categoryState: { data: Category; sliderIsClickable: boolean };
 }
 
 export const categorySlice = createSlice({
   name: "category",
-  initialState: { data: {} as Category },
+  initialState: {
+    categoryState: {} as { data: Category; sliderIsClickable: true },
+  },
   reducers: {
     setCategoryState: (
       state: CategoryState,
-      action: PayloadAction<Category>
+      action: PayloadAction<{ data?: Category; sliderIsClickable?: boolean }>
     ) => {
-      state.data = action.payload;
+      const { ...newState } = action.payload;
+      state.categoryState = { ...state.categoryState, ...newState };
     },
-
   },
 });
 
