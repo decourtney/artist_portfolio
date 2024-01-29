@@ -13,7 +13,7 @@ import {
   useAnimationControls,
 } from "framer-motion";
 import CreateCategory from "./createCategory";
-import Slider from "../slider1/slider";
+import Slider from "../slider/slider";
 import BackButton from "./backButton";
 import CollapsibleButton from "./collapsibleButton";
 import DragnDrop from "./dragndrop";

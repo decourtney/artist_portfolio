@@ -1,14 +1,11 @@
-import React, { useState, Dispatch, SetStateAction, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Navigate,
   useParams,
   useNavigate,
-  useLocation,
-  Link,
 } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { useAppSelector } from "../../redux/hooks";
 import { AnimatePresence, motion } from "framer-motion";
-import { Category, Product } from "../../utils/customClientTypes";
+import { Product } from "../../utils/customClientTypes";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -16,24 +13,21 @@ const baseCDN =
 
 const ProductModal = () => {
   const [loadedImageSrc, setLoadedImageSrc] = useState('');
-  const productData = useAppSelector<Product>(
-    (state) => state.product.data
+  const productState = useAppSelector<Product>(
+    (state) => state.product.productState.data
   );
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   let { username: userParam } = useParams();
-  let productImage = {};
-
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   useEffect(() => {
     const img = new Image();
-    const imgsrc = `${baseCDN}/${userParam}/${productData?.image}`;
+    const imgsrc = `${baseCDN}/${userParam}/${productState?.image}`;
     img.src = imgsrc;
     img.onload = () => {
       setLoadedImageSrc(imgsrc);
     };
-  }, [productData]);
+  }, [productState]);
 
   const handleBack = () => {
     navigate(-1);
@@ -48,6 +42,7 @@ const ProductModal = () => {
       id="productModal"
       className="fixed flex justify-center items-center w-full h-full z-50"
     >
+      // TODO Add key attr and check for effects
       <AnimatePresence mode="wait">
         <motion.div
           className="absolute w-full h-full bg-black opacity-75"
@@ -58,7 +53,6 @@ const ProductModal = () => {
       </AnimatePresence>
       {/* content */}
       <div className="fixed w-fit h-fit p-1 border-0 rounded-md outline-none focus:outline-none pointer-events-auto">
-        {/* buttons */}
         <AnimatePresence mode="wait">
           <motion.div
             className="relative w-full h-full text-center text-light"
@@ -93,7 +87,7 @@ const ProductModal = () => {
               <img
                 src={loadedImageSrc}
                 className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
-                alt={`${productData?.name}`}
+                alt={`${productState?.name}`}
                 loading="lazy"
               />
             )}

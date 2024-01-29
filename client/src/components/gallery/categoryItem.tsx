@@ -1,23 +1,30 @@
-import React, { Dispatch, SetStateAction, useEffect, useLayoutEffect } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { RootState } from "../../store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { setCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion, useScroll } from "framer-motion";
-import Slider from "../slider3/slider";
+import Slider from "../slider/slider";
 
 interface CategoryItemProps {
   category: Category;
   index: number;
+
 }
 
-const CategoryItem = ({ category }: CategoryItemProps) => {
+const CategoryItem = ({ category  }: CategoryItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const handleOnClick = () => {
-    dispatch(setCategoryState(category as Category));
+    dispatch(setCategoryState({ data: category as Category }));
     navigate(`/gallery/c/${category.name}`);
   };
 

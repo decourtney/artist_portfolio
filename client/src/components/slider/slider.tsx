@@ -1,12 +1,34 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { Product, Category } from "../../utils/customClientTypes";
+/* 
+Slider uses a combination of Redux and local state management. Redux is used to track individual slider's
+lowest visible index for slide scrolling and if the slider has moved - resulting in the display of the 
+previous button and peek card. Redux also has a global state, isSliding, to disable mouse events while
+any slider is moving.
+
+Currently, the slider adjusts the number of displayed cards relative to the window width and slides that
+many cards each iteration.
+
+Possible additions:
+- Need more window size breakpoints.
+- Currently the animation can be easily modified in code for different visuals but would
+be nice to have this a configurable option.
+- Configurable slide speed.
+- Disable/Enable looping slides.
+*/
+
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+} from "react";
+import { Category } from "../../utils/customClientTypes";
 import { useAnimate } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
-import { setSliderState } from "../../redux/sliderSlice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
+import { setSliderState } from "../../redux/sliderSlice";
 
 interface SliderProps {
   categoryToDisplay: Category;
@@ -14,28 +36,35 @@ interface SliderProps {
 
 // Try changing lowestvisibleindex to a global state
 const Slider = ({ categoryToDisplay }: SliderProps) => {
-  const [itemsPerGroup, setItemsPerGroup] = useState(1);
-  const [renderSlider, setRenderSlider] = useState(false);
-  const [previousGroup, setPreviousGroup] = useState<number[]>([]);
-  const [visibleGroup, setVisibleGroup] = useState<number[]>([]);
-  const [nextGroup, setNextGroup] = useState<number[]>([]);
-  const [previousPeek, setPreviousPeek] = useState<number>(0);
-  const [nextPeek, setNextPeek] = useState<number>(0);
+  const [itemsPerGroup, setItemsPerGroup] = useState(1); // This value is dynamically changed with window size
+  const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
+  const [visibleGroup, setVisibleGroup] = useState<number[]>([]); // Stores indexes of visible group
+  const [nextGroup, setNextGroup] = useState<number[]>([]); // Stores indexes of next group
+  const [previousPeek, setPreviousPeek] = useState<number>(0); // Stores the index of the previous peek card
+  const [nextPeek, setNextPeek] = useState<number>(0); // Stores the index of the next peek card
+  const [slideDirection, setSlideDirection] = useState<"next" | "prev" | null>(
+    null
+  );
   const [scope, animate] = useAnimate();
   const dispatch = useAppDispatch();
   const sliderState = useAppSelector(
     (state: RootState) => state.slider.sliderState
   );
+  const sliderGlobalState = useAppSelector(
+    (state: RootState) => state.slider.globalSettings
+  );
+  const previousPeekKey = uuidv4();
+  const nextPeekKey = uuidv4();
   const sliderItemWidth = useRef(0);
-  const isSlidingRef = useRef(false);
   const itemsToDisplay = categoryToDisplay.products;
-  const sliderId = `${categoryToDisplay.name}-slider`;
+  const sliderId = `${categoryToDisplay.name}-slider`; // Used to track each slider for redux state management
 
+  if (!itemsToDisplay) return null
 
   useLayoutEffect(() => {
     getSliderIndexGroups();
     sliderItemWidth.current = 100 / itemsPerGroup;
-  }, [renderSlider, itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
+  }, [itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
 
   useLayoutEffect(() => {
     handleWindowResize(window);
@@ -45,7 +74,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
-  
+
   useEffect(() => {
     if (!sliderState[sliderId]) {
       dispatch(
@@ -57,6 +86,53 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       );
     }
   }, []);
+
+  useEffect(() => {
+    if (sliderGlobalState.isSliding) {
+      let currentLowestIndex: number;
+      let xValue: string;
+
+      if (slideDirection === "next") {
+        {
+          currentLowestIndex = getPositiveModulo(
+            sliderState[sliderId].lowestVisibleIndex + itemsPerGroup
+          );
+          xValue = `-${100 * itemsPerGroup}%`;
+        }
+      } else if (slideDirection === "prev") {
+        {
+          currentLowestIndex = getPositiveModulo(
+            sliderState[sliderId].lowestVisibleIndex - itemsPerGroup
+          );
+          xValue = `${100 * itemsPerGroup}%`;
+        }
+      }
+
+      const playAnim = async () => {
+        await animate(
+          ".slider-item",
+          { x: xValue },
+          {
+            duration: 1,
+            ease: "easeInOut",
+            onComplete: () => {
+              setSlideDirection(null);
+              dispatch(
+                setSliderState({
+                  sliderId,
+                  lowestVisibleIndex: currentLowestIndex,
+                  sliderHasMoved: true,
+                })
+              );
+              dispatch(setSliderState({ globalSettings: { isSliding: false } }));
+            },
+          }
+        );
+      };
+
+      playAnim();
+    }
+  }, [sliderGlobalState.isSliding]);
 
   // handle window resize and sets items in row
   const handleWindowResize = (e: any) => {
@@ -103,82 +179,40 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handlePrev = async () => {
-    if (!isSlidingRef.current) {
-      isSlidingRef.current = true;
-
-      const currentLowestIndex = getPositiveModulo(
-        sliderState[sliderId].lowestVisibleIndex - itemsPerGroup
-      );
-
-      await animate(
-        "#slider-item",
-        { x: `${100 * itemsPerGroup}%` },
-        {
-          duration: 1,
-          ease: "easeInOut",
-          onComplete: () => {
-            isSlidingRef.current = false;
-            dispatch(
-              setSliderState({
-                sliderId,
-                lowestVisibleIndex: currentLowestIndex,
-                sliderHasMoved: true,
-                isSliding: false,
-              })
-            );
-          },
-        }
-      );
+    if (!sliderGlobalState.isSliding) {
+      setSlideDirection("prev");
+      dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
   };
 
   const handleNext = async () => {
-    if (!isSlidingRef.current) {
-      isSlidingRef.current = true;
-
-      const currentLowestIndex =
-        (sliderState[sliderId].lowestVisibleIndex + itemsPerGroup) %
-        itemsToDisplay.length;
-
-      await animate(
-        "#slider-item",
-        { x: `-${100 * itemsPerGroup}%` },
-        {
-          duration: 1,
-          ease: "easeInOut",
-          onComplete: () => {
-            isSlidingRef.current = false;
-            dispatch(
-              setSliderState({
-                sliderId,
-                lowestVisibleIndex: currentLowestIndex,
-                sliderHasMoved: true,
-                isSliding: false,
-              })
-            );
-          },
-        }
-      );
+    if (!sliderGlobalState.isSliding) {
+      setSlideDirection("next");
+      dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
   };
 
   return (
-    <div id="slider" className="group relative px-[4%] overflow-hidden">
+    <div id="slider" className="group relative px-[4vw] overflow-hidden">
       {sliderState[sliderId] && sliderState[sliderId].sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
 
       <div
         ref={scope}
-        className="slider-row relative flex flex-row items-center h-[20dvh]"
+        className={`slider-row relative flex flex-row items-center h-[20dvh] ${sliderGlobalState.isSliding
+          ? "pointer-events-none"
+          : "pointer-events-auto"
+          }`}
       >
-        <section className="slider-group absolute right-full flex h-full w-full">
+        <section className="absolute right-full flex h-full w-full">
           <div
             id="groupPeek"
             className={`absolute right-full flex justify-end h-full w-full`}
           >
             <SliderItem
-              key={uuidv4()}
+              key={previousPeekKey}
+              sliderItemId={previousPeekKey}
               itemToDisplay={itemsToDisplay[previousPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />
@@ -187,9 +221,11 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           {sliderState[sliderId] &&
             sliderState[sliderId].sliderHasMoved &&
             previousGroup.map((index) => {
+              const key = uuidv4();
               return (
                 <SliderItem
-                  key={uuidv4()}
+                  key={key}
+                  sliderItemId={key}
                   itemToDisplay={itemsToDisplay[index]}
                   sliderItemWidth={sliderItemWidth.current}
                 />
@@ -197,11 +233,13 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             })}
         </section>
 
-        <section className="slider-group absolute flex h-full w-full">
+        <section className="absolute flex h-full w-full">
           {visibleGroup.map((index) => {
+            const key = uuidv4();
             return (
               <SliderItem
-                key={uuidv4()}
+                key={key}
+                sliderItemId={key}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth.current}
               />
@@ -209,11 +247,13 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           })}
         </section>
 
-        <section className="slider-group absolute left-full flex h-full w-full">
+        <section className="absolute left-full flex h-full w-full">
           {nextGroup.map((index) => {
+            const key = uuidv4();
             return (
               <SliderItem
-                key={uuidv4()}
+                key={key}
+                sliderItemId={key}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth.current}
               />
@@ -225,7 +265,8 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             className="absolute left-full flex justify-start h-full w-full"
           >
             <SliderItem
-              key={uuidv4()}
+              key={nextPeekKey}
+              sliderItemId={nextPeekKey}
               itemToDisplay={itemsToDisplay[nextPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />
