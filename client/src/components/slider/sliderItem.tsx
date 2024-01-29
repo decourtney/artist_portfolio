@@ -34,6 +34,7 @@ const SliderItem = ({
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const handleMouseEnter = () => {
+    // TODO Check other bounding box values
     const rect = sliderItemRef.current?.getBoundingClientRect();
     if (rect) {
       const { bottom, height, left, right, top, width, x, y } = rect;

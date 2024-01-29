@@ -30,19 +30,35 @@ const MiniModal = () => {
   const { sliderItem, sliderItemRect, showMiniModal } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
+  const [loadedImageSrc, setLoadedImageSrc] = useState("");
   const [scope, animate] = useAnimate();
+  const increasePercentage = 0.1;
+  let sliderItemWidth = sliderItemRect.width;
+  let sliderItemHeight = sliderItemRect.height;
+  let { username: userParam } = useParams();
+  if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
+
+  // useEffect(() => {
+  //   sliderItemWidth = sliderItemRect.width;
+  //   sliderItemHeight = sliderItemRect.height;
+  // }, [sliderItemRect]);
 
   useEffect(() => {
-    // console.log(sliderItem);
-  }, [sliderItemRect]);
+    const img = new Image();
+    const imgsrc = `${baseCDN}/${userParam}/${sliderItem.image}`;
+    img.src = imgsrc;
+    img.onload = () => {
+      setLoadedImageSrc(imgsrc);
+    };
+  }, []);
 
   const handleMouseLeave = async () => {
-    console.log('mouse left')
     await animate(
       scope.current,
       {
         width: sliderItemRect.width,
         height: sliderItemRect.height,
+        margin: 0,
       },
       { duration: 0.2 }
     );
@@ -53,12 +69,19 @@ const MiniModal = () => {
 
   const variants = {
     initial: {
-      top: 0, left: 0, right: 0, bottom: 0,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
     },
     open: {
-      width: sliderItemRect.width + sliderItemRect.width * 0.2,
-      height: sliderItemRect.height + sliderItemRect.height * 0.2,
-      margin: "calculate margin from width and new width",
+      width: sliderItemWidth + sliderItemWidth * increasePercentage,
+      height: sliderItemHeight + sliderItemHeight * increasePercentage,
+      margin:
+        (sliderItemRect.width + sliderItemRect.height) *
+        increasePercentage *
+        0.5 *
+        -0.5,
       transition: {
         duration: 0.2,
       },
@@ -66,24 +89,33 @@ const MiniModal = () => {
   };
 
   return (
-    <div className={`absolute w-full h-full z-10`}
-    >
-      {/* <div className="relative "> */}
-      <div className="absolute flex justify-center items-center bg-green-500" style={{ ...sliderItemRect }}>
+    <div className={`absolute w-full h-full z-10`}>
+      <div
+        className="absolute flex justify-center items-center bg-green-500"
+        style={{ ...sliderItemRect }}
+      >
         <motion.div
           ref={scope}
           key={sliderItem.name}
           className="absolute bg-red-500 w-full h-full"
-          //style={{ ...sliderItemRect }}
           variants={variants}
-          initial='initial'
+          initial="initial"
           animate="open"
-          onMouseOut={handleMouseLeave}
+          onMouseLeave={handleMouseLeave}
         >
-          stuff
+          <div className="w-full h-full">
+            {loadedImageSrc && (
+              <img
+                src={loadedImageSrc}
+                className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
+                alt={`${sliderItem.name}`}
+                loading="lazy"
+              />
+            )}
+            <div className="w-full h-[50px] bg-green-500"></div>
+          </div>
         </motion.div>
       </div>
-      {/* </div> */}
     </div>
   );
 };

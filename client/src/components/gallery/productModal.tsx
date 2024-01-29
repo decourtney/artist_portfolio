@@ -1,14 +1,11 @@
-import React, { useState, Dispatch, SetStateAction, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Navigate,
   useParams,
   useNavigate,
-  useLocation,
-  Link,
 } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { useAppSelector } from "../../redux/hooks";
 import { AnimatePresence, motion } from "framer-motion";
-import { Category, Product } from "../../utils/customClientTypes";
+import { Product } from "../../utils/customClientTypes";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -20,10 +17,7 @@ const ProductModal = () => {
     (state) => state.product.productState.data
   );
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   let { username: userParam } = useParams();
-  let productImage = {};
-
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   useEffect(() => {
@@ -59,7 +53,6 @@ const ProductModal = () => {
       </AnimatePresence>
       {/* content */}
       <div className="fixed w-fit h-fit p-1 border-0 rounded-md outline-none focus:outline-none pointer-events-auto">
-        {/* buttons */}
         <AnimatePresence mode="wait">
           <motion.div
             className="relative w-full h-full text-center text-light"
