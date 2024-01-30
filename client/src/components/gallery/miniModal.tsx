@@ -30,7 +30,6 @@ const MiniModal = () => {
   const { sliderItem, sliderItemRect, showMiniModal } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
-  const [loadedImageSrc, setLoadedImageSrc] = useState("");
   const [scope, animate] = useAnimate();
   const increasePercentage = 0.1;
   let sliderItemWidth = sliderItemRect.width;
@@ -38,19 +37,16 @@ const MiniModal = () => {
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  // useEffect(() => {
-  //   sliderItemWidth = sliderItemRect.width;
-  //   sliderItemHeight = sliderItemRect.height;
-  // }, [sliderItemRect]);
+  if (!showMiniModal || !sliderItemRect) return null;
 
-  useEffect(() => {
-    const img = new Image();
-    const imgsrc = `${baseCDN}/${userParam}/${sliderItem.image}`;
-    img.src = imgsrc;
-    img.onload = () => {
-      setLoadedImageSrc(imgsrc);
-    };
-  }, []);
+  // TODO determine if theres a way to get the image object info
+  // useEffect(() => {
+  //   const img = new Image();
+  //   const imgsrc = `${baseCDN}/${userParam}/${sliderItem.image}`;
+  //   img.src = imgsrc;
+  //   img.onload=()=>{console.log(imgsrc)}
+  //   console.log(img)
+  // }, []);
 
   const handleMouseLeave = async () => {
     await animate(
@@ -65,7 +61,26 @@ const MiniModal = () => {
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
-  if (!showMiniModal || !sliderItemRect) return null;
+  // const variants = {
+  //   initial: {
+  //     top: 0,
+  //     left: 0,
+  //     right: 0,
+  //     bottom: 0,
+  //   },
+  //   open: {
+  //     width: sliderItemWidth + sliderItemWidth * increasePercentage,
+  //     height: sliderItemHeight + sliderItemHeight * increasePercentage,
+  //     margin:
+  //       (sliderItemRect.width + sliderItemRect.height) *
+  //       increasePercentage *
+  //       0.5 *
+  //       -0.5,
+  //     transition: {
+  //       duration: 0.2,
+  //     },
+  //   },
+  // };
 
   const variants = {
     initial: {
@@ -75,13 +90,13 @@ const MiniModal = () => {
       bottom: 0,
     },
     open: {
-      width: sliderItemWidth + sliderItemWidth * increasePercentage,
-      height: sliderItemHeight + sliderItemHeight * increasePercentage,
-      margin:
-        (sliderItemRect.width + sliderItemRect.height) *
-        increasePercentage *
-        0.5 *
-        -0.5,
+      width: "100%",
+      height: "100%",
+      // margin:
+      //   (sliderItemRect.width + sliderItemRect.height) *
+      //   increasePercentage *
+      //   0.5 *
+      //   -0.5,
       transition: {
         duration: 0.2,
       },
@@ -97,22 +112,22 @@ const MiniModal = () => {
         <motion.div
           ref={scope}
           key={sliderItem.name}
-          className="absolute bg-red-500 w-full h-full"
+          className="absolute"
           variants={variants}
           initial="initial"
           animate="open"
           onMouseLeave={handleMouseLeave}
         >
-          <div className="w-full h-full">
-            {loadedImageSrc && (
+          <div className="w-full h-full max-w-full max-h-full">
+            {sliderItem && (
               <img
-                src={loadedImageSrc}
-                className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
+                src={`${baseCDN}/${userParam}/${sliderItem.image}`}
+                className="inline-block w-full h-full object-cover"
                 alt={`${sliderItem.name}`}
                 loading="lazy"
               />
             )}
-            <div className="w-full h-[50px] bg-green-500"></div>
+            {/* <div className="w-full h-[50px] bg-green-500"></div> */}
           </div>
         </motion.div>
       </div>
