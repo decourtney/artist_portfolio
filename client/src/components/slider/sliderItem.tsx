@@ -26,7 +26,7 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const galleryState = useAppSelector(
+  const miniModalState = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const sliderItemRef = useRef<HTMLElement>(null);
@@ -74,8 +74,6 @@ const SliderItem = ({
           }
         />
       )}
-
-      {/* {galleryState.showMiniModal && <MiniModal />} */}
     </section>
   );
 };
