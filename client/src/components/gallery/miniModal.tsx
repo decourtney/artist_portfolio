@@ -11,7 +11,7 @@ const baseCDN =
 
 const MiniModal = () => {
   const dispatch = useAppDispatch();
-  const { sliderItem, sliderItemRect, showMiniModal } = useAppSelector(
+  const { sliderItem, sliderItemRect } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const [imgDimensions, setImgDimensions] = useState<{
@@ -19,8 +19,8 @@ const MiniModal = () => {
     height: number;
     margin: string;
   } | null>(null);
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [scope, animate] = useAnimate();
-  const increasePercentage = 0.1;
   const maxModalWidth = 300;
   const maxModalHeight = 300;
   const detailsHeight = 96;
@@ -30,16 +30,20 @@ const MiniModal = () => {
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   useEffect(() => {
+    // Construct the image URL and set it in state
+    setImgSrc(`${baseCDN}/${userParam}/${sliderItem.image}`);
+  }, [userParam, sliderItem]);
+
+  useEffect(() => {
     const img = new Image();
-    const imgsrc = `${baseCDN}/${userParam}/${sliderItem.image}`;
-    img.src = imgsrc;
+    if (imgSrc) img.src = imgSrc
 
     img.onload = () => {
       const imgWidth = img.width;
       const imgHeight = img.height;
       const aspectRatio = imgWidth / imgHeight;
 
-      // Calculate dimensions based on max width and height
+      // Calculate max width and height
       const maxWidth = Math.min(imgWidth, maxModalWidth);
       const maxHeight = Math.min(imgHeight, maxModalHeight);
 
@@ -67,7 +71,7 @@ const MiniModal = () => {
         margin: `${verticalMargin}px ${horizontalMargin}px`,
       });
     };
-  }, []);
+  }, [imgSrc]);
 
   useEffect(() => {
     if (imgDimensions) animateOpen();
@@ -85,15 +89,17 @@ const MiniModal = () => {
     );
   };
 
+  // create sequence for closing modal and details
+// test usePresence to trigger animation to see if it clears up bug where modal gets stuck open
   const animateClosed = async () => {
     await animate(
-      scope.current,
+      [[scope.current,
       {
         width: sliderItemWidth,
         height: sliderItemHeight,
         margin: 0,
       },
-      { duration: 0.2 }
+      { duration: 0.2 }]]
     );
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
@@ -112,19 +118,22 @@ const MiniModal = () => {
           left: 0,
         }}
       >
-        {sliderItem && (
-          <div className="w-full h-full">
+        {imgSrc && (
+          <div className="w-full h-full" onMouseLeave={animateClosed}
+          >
             <img
-              onMouseLeave={animateClosed}
-              src={`${baseCDN}/${userParam}/${sliderItem.image}`}
+              src={imgSrc}
               className="w-full h-full shadow-lg object-cover rounded-t-md"
               style={{ imageRendering: "auto" }}
               alt={`${sliderItem.name}`}
               loading="lazy"
             />
-            <div className="w-full h-24 shadow-lg rounded-b-md bg-plight text-center">
+            <motion.div className="w-full h-24 shadow-lg rounded-b-md bg-plight text-center"
+              initial={{ height: 0 }}
+              animate={{ height: `${detailsHeight}px` }}
+            >
               Words and stuff go here
-            </div>
+            </motion.div>
           </div>
         )}
       </motion.div>
