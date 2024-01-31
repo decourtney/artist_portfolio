@@ -9,6 +9,7 @@ interface SliderControlProps {
   onClick: () => void;
 }
 
+// TODO Mouseover the slider is not showing nav arrows but mouseover nav button works
 const SliderControl = ({ arrowDirection, onClick }: SliderControlProps) => {
   return (
     <div

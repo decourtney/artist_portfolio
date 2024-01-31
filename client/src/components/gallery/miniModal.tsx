@@ -1,25 +1,9 @@
-import React, {
-  useState,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useLayoutEffect,
-} from "react";
-import {
-  Navigate,
-  useParams,
-  useNavigate,
-  useLocation,
-  Link,
-} from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import { AnimatePresence, motion, useAnimate } from "framer-motion";
-import { Category, Product } from "../../utils/customClientTypes";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { motion, useAnimate } from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
-import { setSliderState } from "../../redux/sliderSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
-import { debounce } from "lodash";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -30,11 +14,16 @@ const MiniModal = () => {
   const { sliderItem, sliderItemRect, showMiniModal } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
-  const [imgDimensions, setImgDimensions] = useState<{ width: number, height: number, margin: string }>({ width: 0, height: 0, margin: '0' });
+  const [imgDimensions, setImgDimensions] = useState<{
+    width: number;
+    height: number;
+    margin: string;
+  } | null>(null);
   const [scope, animate] = useAnimate();
   const increasePercentage = 0.1;
-  const maxModalWidth = 200;
-  const maxModalHeight = 200;
+  const maxModalWidth = 300;
+  const maxModalHeight = 300;
+  const detailsHeight = 96;
   let sliderItemWidth = sliderItemRect.width;
   let sliderItemHeight = sliderItemRect.height;
   let { username: userParam } = useParams();
@@ -51,31 +40,57 @@ const MiniModal = () => {
       const aspectRatio = imgWidth / imgHeight;
 
       // Calculate dimensions based on max width and height
-      const calculatedWidth = Math.max(sliderItemRect.width, Math.min(sliderItemWidth, maxModalWidth));
-      const calculatedHeight = Math.max(sliderItemRect.height, calculatedWidth / aspectRatio);
+      const maxWidth = Math.min(imgWidth, maxModalWidth);
+      const maxHeight = Math.min(imgHeight, maxModalHeight);
 
-      // Ensure calculated dimensions do not exceed max height
-      const finalHeight = Math.min(calculatedHeight, maxModalHeight);
+      // Calculate final width and height based on the aspect ratio
+      let finalWidth = maxWidth;
+      let finalHeight = maxWidth / aspectRatio;
 
-      // Calculate final width based on the aspect ratio
-      const finalWidth = finalHeight * aspectRatio;
+      // If the calculated height is less than the minimum height, adjust dimensions
+      if (finalHeight < sliderItemHeight) {
+        finalHeight = sliderItemHeight;
+        finalWidth = finalHeight * aspectRatio;
+      }
 
-      // Calculate the margin to center the modal within the sliderItem
-      const horizontalMargin = (sliderItemWidth - finalWidth) / 2;
-      const verticalMargin = (sliderItemHeight - finalHeight) / 2;
+      // Ensure final dimensions do not exceed max height
+      finalHeight = Math.min(finalHeight, maxHeight);
 
-      setImgDimensions({ width: finalWidth, height: finalHeight, margin: `${verticalMargin}px ${horizontalMargin}px` });
+      // Calculate the margin to center the modal relative to sliderItem size
+      const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
+      const verticalMargin =
+        (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
+
+      setImgDimensions({
+        width: finalWidth,
+        height: finalHeight,
+        margin: `${verticalMargin}px ${horizontalMargin}px`,
+      });
     };
-  }, [])
+  }, []);
 
-  // if (!showMiniModal || !sliderItemRect) return null;
+  useEffect(() => {
+    if (imgDimensions) animateOpen();
+  }, [imgDimensions]);
 
-  const handleMouseLeave = async () => {
+  const animateOpen = async () => {
     await animate(
       scope.current,
       {
-        width: sliderItemRect.width,
-        height: sliderItemRect.height,
+        width: imgDimensions?.width,
+        height: imgDimensions?.height,
+        margin: `${imgDimensions?.margin}`,
+      },
+      { duration: 0.2 }
+    );
+  };
+
+  const animateClosed = async () => {
+    await animate(
+      scope.current,
+      {
+        width: sliderItemWidth,
+        height: sliderItemHeight,
         margin: 0,
       },
       { duration: 0.2 }
@@ -83,54 +98,37 @@ const MiniModal = () => {
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
-  const variants = {
-    initial: {
-      top: 0,
-      left: 0,
-
-      // opacity: 0
-    },
-    open: {
-      // opacity: 1,
-      width: imgDimensions.width,
-      height: imgDimensions.height,
-      margin: `${imgDimensions.margin}`,
-      transition: {
-        duration: 0.2,
-      },
-    },
-  };
-
   return (
-    <div className={`absolute w-full h-full z-10`}>
-      {/* <div
-        className="absolute"
-        style={{ ...sliderItemRect }}
-      > */}
+    <section id="miniModal" className={`absolute w-full h-full z-10`}>
       <motion.div
         ref={scope}
         key={sliderItem.name}
-        className={`absolute bg-blue-500`}
-        style={{ ...sliderItemRect, minHeight: sliderItemHeight }}
-        variants={variants}
-        initial="initial"
-        animate="open"
+        className="shadow-md w-full h-full"
+        style={{ ...sliderItemRect }}
+        initial={{
+          width: sliderItemWidth,
+          height: sliderItemHeight,
+          top: 0,
+          left: 0,
+        }}
       >
-        {/* <div className=""> */}
         {sliderItem && (
-          <img
-            onMouseLeave={handleMouseLeave}
-            src={`${baseCDN}/${userParam}/${sliderItem.image}`}
-            className=" w-full h-full object-cover"
-            alt={`${sliderItem.name}`}
-            loading="lazy"
-          />
+          <div className="w-full h-full">
+            <img
+              onMouseLeave={animateClosed}
+              src={`${baseCDN}/${userParam}/${sliderItem.image}`}
+              className="w-full h-full shadow-lg object-cover rounded-t-md"
+              style={{ imageRendering: "auto" }}
+              alt={`${sliderItem.name}`}
+              loading="lazy"
+            />
+            <div className="w-full h-24 shadow-lg rounded-b-md bg-plight text-center">
+              Words and stuff go here
+            </div>
+          </div>
         )}
-        {/* <div className="w-full h-[50px] bg-green-500"></div> */}
-        {/* </div> */}
       </motion.div>
-      {/* </div> */}
-    </div>
+    </section>
   );
 };
 

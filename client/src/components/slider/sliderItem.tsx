@@ -34,17 +34,37 @@ const SliderItem = ({
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const handleMouseEnter = () => {
-    // TODO Check other bounding box values
-    const rect = sliderItemRef.current?.getBoundingClientRect();
-    if (rect) {
-      const { bottom, height, left, right, top, width, x, y } = rect;
-      dispatch(
-        setMiniModalState({
-          sliderItem: itemToDisplay,
-          sliderItemRect: { bottom, height, left, right, top, width, x, y },
-          showMiniModal: true,
-        })
-      );
+    if (sliderItemRef.current) {
+      const rect = sliderItemRef.current?.getBoundingClientRect();
+      const computedStyles = window.getComputedStyle(sliderItemRef.current);
+
+      // Need to account for additional styles not included with getBoundingClientRect
+      if (rect) {
+        const { bottom, height, left, right, top, width, x, y } = rect;
+        const paddingTop = parseFloat(computedStyles.paddingTop);
+        const paddingLeft = parseFloat(computedStyles.paddingLeft);
+        const paddingRight = parseFloat(computedStyles.paddingRight);
+        const paddingBottom = parseFloat(computedStyles.paddingBottom);
+        const marginTop = parseFloat(computedStyles.marginTop);
+        const marginLeft = parseFloat(computedStyles.marginLeft);
+
+        dispatch(
+          setMiniModalState({
+            sliderItem: itemToDisplay,
+            sliderItemRect: {
+              bottom: bottom + paddingBottom + marginTop,
+              height: height - paddingTop - paddingBottom,
+              left: left + marginLeft,
+              right: right - paddingRight - marginLeft,
+              top: top + paddingTop,
+              width: width - paddingLeft - paddingRight,
+              x: x + marginLeft,
+              y: y + paddingTop,
+            },
+            showMiniModal: true,
+          })
+        );
+      }
     }
   };
 
@@ -59,7 +79,7 @@ const SliderItem = ({
     <section
       ref={sliderItemRef}
       id={sliderItemId}
-      className="slider-item px-0.5"
+      className="slider-item pr-2"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
       onMouseOver={handleMouseEnter}
     >
