@@ -75,7 +75,7 @@ const Gallery = () => {
   return (
     <>
       {/* <Hero /> */}
-      <section id="gallery" className="relative flex flex-col w-full h-full">
+      <section id="gallery" className="relative flex flex-col w-full h-full min-h-screen">
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {

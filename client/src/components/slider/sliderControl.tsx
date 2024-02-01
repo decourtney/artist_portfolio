@@ -10,6 +10,7 @@ interface SliderControlProps {
 }
 
 // TODO Mouseover the slider is not showing nav arrows but mouseover nav button works
+// TODO Left Control overlay mismatch
 const SliderControl = ({ arrowDirection, onClick }: SliderControlProps) => {
   return (
     <div

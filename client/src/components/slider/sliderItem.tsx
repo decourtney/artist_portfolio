@@ -1,12 +1,9 @@
-import React, { useRef, useEffect } from "react";
-import { Navigate, useParams, useNavigate } from "react-router-dom";
+import React, { useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
-import { motion } from "framer-motion";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { useAppDispatch } from "../../redux/hooks";
 import { setProductState } from "../../redux/productSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
-import MiniModal from "../gallery/miniModal";
 
 interface SliderItemProps {
   sliderItemId: string;
@@ -26,9 +23,6 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const miniModalState = useAppSelector(
-    (state: RootState) => state.miniModal.miniModalState
-  );
   const sliderItemRef = useRef<HTMLElement>(null);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;

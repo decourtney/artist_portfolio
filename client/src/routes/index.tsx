@@ -22,7 +22,7 @@ import Login from "../pages/login";
 import Profile from "../pages/profile";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { AnimatePresence, LayoutGroup } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -32,7 +32,7 @@ const AnimatedRoutes = () => {
       <Header />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* <Route path="/" element={<Profile />} />{" "} */}
+          <Route path="/" element={<Contact />} />{" "}
           {/* This is just for initial development stages. delete when necessary */}
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />

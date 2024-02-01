@@ -34,7 +34,6 @@ interface SliderProps {
   categoryToDisplay: Category;
 }
 
-// Try changing lowestvisibleindex to a global state
 const Slider = ({ categoryToDisplay }: SliderProps) => {
   const [itemsPerGroup, setItemsPerGroup] = useState(1); // This value is dynamically changed with window size
   const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
@@ -55,11 +54,12 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   );
   const previousPeekKey = uuidv4();
   const nextPeekKey = uuidv4();
-  const sliderItemWidth = useRef(0);
+  const sliderItemWidth = useRef(0); 
   const itemsToDisplay = categoryToDisplay.products;
   const sliderId = `${categoryToDisplay.name}-slider`; // Used to track each slider for redux state management
 
   if (!itemsToDisplay) return null
+
 
   useLayoutEffect(() => {
     getSliderIndexGroups();
@@ -67,7 +67,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   }, [itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
 
   useLayoutEffect(() => {
-    handleWindowResize(window);
+    handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
 
     return () => {
@@ -135,15 +135,35 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   }, [sliderGlobalState.isSliding]);
 
   // handle window resize and sets items in row
-  const handleWindowResize = (e: any) => {
-    if (window.innerWidth > 1440) {
-      setItemsPerGroup(6);
-    } else if (window.innerWidth >= 1000) {
-      setItemsPerGroup(5);
-    } else if (window.innerWidth < 1000) {
-      setItemsPerGroup(4);
-    }
-  };
+  const handleWindowResize = () => {
+      const innerWidth = window.innerWidth;
+      let newItemsPerGroup;
+
+      switch (true) {
+        case innerWidth > 1440:
+          newItemsPerGroup = 6;
+          break;
+        case innerWidth >= 1200:
+          newItemsPerGroup = 5;
+          break;
+        case innerWidth >= 992:
+          newItemsPerGroup = 4;
+          break;
+        case innerWidth >= 768:
+          newItemsPerGroup = 3;
+          break;
+        case innerWidth >= 480:
+          newItemsPerGroup = 2;
+          break;
+        case innerWidth < 480:
+          newItemsPerGroup = 1;
+          break;
+        default:
+          newItemsPerGroup = 2;
+      }
+
+      setItemsPerGroup(newItemsPerGroup);
+  }
 
   const getPositiveModulo = (n: number) => {
     const mod =

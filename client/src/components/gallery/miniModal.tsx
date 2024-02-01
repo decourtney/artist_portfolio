@@ -50,10 +50,10 @@ const MiniModal = () => {
       let finalHeight = finalWidth / aspectRatio;
 
       // If the calculated height is less than the minimum height, adjust dimensions
-      if (finalHeight < minHeight) {
-        finalHeight = minHeight;
-        finalWidth = finalHeight * aspectRatio;
-      }
+      // if (finalHeight < minHeight) {
+      //   finalHeight = minHeight;
+      //   finalWidth = finalHeight * aspectRatio;
+      // }
 
       // Calculate the margin to center the modal relative to sliderItem size
       const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
@@ -73,19 +73,19 @@ const MiniModal = () => {
   }, [imgDimensions]);
 
   const animateOpen = async () => {
-    await animate(
-      scope.current,
+    await animate([
+      [scope.current,
       {
         width: imgDimensions?.width,
         height: imgDimensions?.height,
         margin: `${imgDimensions?.margin}`,
       },
-      { duration: 0.2 }
-    );
+      { duration: 0.2 },
+      ],
+      [".details-div", { height: `${detailsHeight}px` }, { duration: 0.2, at: 0 }],
+    ]);
   };
 
-  // create sequence for closing modal and details
-  // test usePresence to trigger animation to see if it clears up bug where modal gets stuck open
   const animateClosed = async () => {
     await animate([
       [
@@ -115,9 +115,10 @@ const MiniModal = () => {
           top: 0,
           left: 0,
         }}
+        onMouseLeave={animateClosed}
       >
         {imgSrc && (
-          <div className="w-full h-full" onMouseLeave={animateClosed}>
+          <div className="w-full h-full">
             <img
               src={imgSrc}
               className="w-full h-full shadow-lg object-cover rounded-t-md"
@@ -128,7 +129,6 @@ const MiniModal = () => {
             <motion.div
               className="details-div w-full h-24 shadow-lg rounded-b-md bg-plight text-center"
               initial={{ height: 0 }}
-              animate={{ height: `${detailsHeight}px` }}
             >
               Words and stuff go here
             </motion.div>
