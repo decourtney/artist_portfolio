@@ -83,6 +83,7 @@ const SliderItem = ({
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
       onMouseOver={handleMouseEnter}
     >
+      {/* FIXME Shadow doesnt appear below image */}
       {itemToDisplay && (
         <img
           className="h-full w-full object-cover rounded-sm"

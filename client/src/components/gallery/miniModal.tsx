@@ -36,29 +36,24 @@ const MiniModal = () => {
 
   useEffect(() => {
     const img = new Image();
-    if (imgSrc) img.src = imgSrc
+    if (imgSrc) img.src = imgSrc;
 
     img.onload = () => {
-      const imgWidth = img.width;
-      const imgHeight = img.height;
-      const aspectRatio = imgWidth / imgHeight;
+      const aspectRatio = img.width / img.height;
 
-      // Calculate max width and height
-      const maxWidth = Math.min(imgWidth, maxModalWidth);
-      const maxHeight = Math.min(imgHeight, maxModalHeight);
+      // Determine minimal width and height
+      const minWidth = Math.max(sliderItemWidth, maxModalWidth);
+      const minHeight = Math.max(sliderItemHeight, maxModalHeight);
 
       // Calculate final width and height based on the aspect ratio
-      let finalWidth = maxWidth;
-      let finalHeight = maxWidth / aspectRatio;
+      let finalWidth = Math.max(minWidth, minHeight);
+      let finalHeight = finalWidth / aspectRatio;
 
       // If the calculated height is less than the minimum height, adjust dimensions
-      if (finalHeight < sliderItemHeight) {
-        finalHeight = sliderItemHeight;
+      if (finalHeight < minHeight) {
+        finalHeight = minHeight;
         finalWidth = finalHeight * aspectRatio;
       }
-
-      // Ensure final dimensions do not exceed max height
-      finalHeight = Math.min(finalHeight, maxHeight);
 
       // Calculate the margin to center the modal relative to sliderItem size
       const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
@@ -90,17 +85,20 @@ const MiniModal = () => {
   };
 
   // create sequence for closing modal and details
-// test usePresence to trigger animation to see if it clears up bug where modal gets stuck open
+  // test usePresence to trigger animation to see if it clears up bug where modal gets stuck open
   const animateClosed = async () => {
-    await animate(
-      [[scope.current,
-      {
-        width: sliderItemWidth,
-        height: sliderItemHeight,
-        margin: 0,
-      },
-      { duration: 0.2 }]]
-    );
+    await animate([
+      [
+        scope.current,
+        {
+          width: sliderItemWidth,
+          height: sliderItemHeight,
+          margin: 0,
+        },
+        { duration: 0.2 },
+      ],
+      [".details-div", { height: 0 }, { duration: 0.2, at: 0 }],
+    ]);
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
@@ -119,8 +117,7 @@ const MiniModal = () => {
         }}
       >
         {imgSrc && (
-          <div className="w-full h-full" onMouseLeave={animateClosed}
-          >
+          <div className="w-full h-full" onMouseLeave={animateClosed}>
             <img
               src={imgSrc}
               className="w-full h-full shadow-lg object-cover rounded-t-md"
@@ -128,7 +125,8 @@ const MiniModal = () => {
               alt={`${sliderItem.name}`}
               loading="lazy"
             />
-            <motion.div className="w-full h-24 shadow-lg rounded-b-md bg-plight text-center"
+            <motion.div
+              className="details-div w-full h-24 shadow-lg rounded-b-md bg-plight text-center"
               initial={{ height: 0 }}
               animate={{ height: `${detailsHeight}px` }}
             >
