@@ -24,7 +24,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
     postalCode: "",
   });
   const formRef = useRef<HTMLFormElement | null>(null);
-  const navigate = useNavigate();
   
   const [updateUser] = useMutation(UPDATE_USER);
 
@@ -39,7 +38,7 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
       )
     ) {
       try {
-        const response = await updateUser({ variables: formState });
+        await updateUser({ variables: formState });
       } catch (err) {
         console.log({ err });
       }
