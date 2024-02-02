@@ -835,8 +835,8 @@ video {
   width: 20rem;
 }
 
-.w-\[4vw\] {
-  width: 4vw;
+.w-\[3\.9vw\] {
+  width: 3.9vw;
 }
 
 .w-fit {
@@ -1236,10 +1236,6 @@ video {
 
 .pl-4 {
   padding-left: 1rem;
-}
-
-.pr-2 {
-  padding-right: 0.5rem;
 }
 
 .pt-14 {

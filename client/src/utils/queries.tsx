@@ -94,3 +94,16 @@ export const QUERY_CATEGORY = gql`
     }
   }
 `;
+
+export const QUERY_USER_PRODUCT = gql`
+  query userProduct($username: String!, $product: String!) {
+    userProduct(username: $username, product: $product) {
+      description
+      image
+      name
+      categories {
+        name
+      }
+    }
+  }
+`;

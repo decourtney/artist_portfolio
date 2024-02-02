@@ -31,7 +31,7 @@ const MiniModal = () => {
 
   useEffect(() => {
     // Construct the image URL and set it in state
-    setImgSrc(`${baseCDN}/${userParam}/${sliderItem.image}`);
+    if (sliderItem) setImgSrc(`${baseCDN}/${userParam}/${sliderItem.image}`);
   }, [userParam, sliderItem]);
 
   useEffect(() => {
@@ -74,15 +74,20 @@ const MiniModal = () => {
 
   const animateOpen = async () => {
     await animate([
-      [scope.current,
-      {
-        width: imgDimensions?.width,
-        height: imgDimensions?.height,
-        margin: `${imgDimensions?.margin}`,
-      },
-      { duration: 0.2 },
+      [
+        scope.current,
+        {
+          width: imgDimensions?.width,
+          height: imgDimensions?.height,
+          margin: `${imgDimensions?.margin}`,
+        },
+        { duration: 0.2 },
       ],
-      [".details-div", { height: `${detailsHeight}px` }, { duration: 0.2, at: 0 }],
+      [
+        ".details-div",
+        { height: `${detailsHeight}px` },
+        { duration: 0.2, at: 0 },
+      ],
     ]);
   };
 

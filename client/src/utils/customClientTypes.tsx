@@ -22,7 +22,7 @@ export type Category = {
   name: string;
   defaultCategory: boolean;
   image: string;
-  products: [Product];
+  products: [Product?];
 };
 
 export type Product = {
@@ -30,7 +30,7 @@ export type Product = {
   name: string;
   description: string;
   image: string;
-  categories: [Category];
+  categories: [Category?];
 };
 
 export type AccountData = {

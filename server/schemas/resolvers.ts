@@ -66,17 +66,17 @@ const resolvers = {
       context: any
     ) => {
       try {
-        const user = await User.findOne({username: username})
+        const user = await User.findOne({ username: username });
         const userCategories = await User.findOne(
           { username: username },
-          "categories",
+          "categories"
         ).populate({
           path: "categories",
           model: "Category",
           populate: {
             path: "products",
             model: "Product",
-            match: {user: user?._id},
+            match: { user: user?._id },
           },
         });
 
@@ -94,6 +94,56 @@ const resolvers = {
     //     products: 1,
     //   });
     // },
+    userProduct: async (
+      parent: any,
+      { username, product }: { username: String; product: String },
+      context: any
+    ) => {
+      try {
+        // Aggregate query to verify the product belongs to the username
+        const userProduct = await Product.aggregate([
+          {
+            $match: { name: product },
+          },
+          {
+            $lookup: {
+              from: "user",
+              localField: "user",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          {
+            $unwind: "$user",
+          },
+          {
+            $match: { "user.username": username },
+          },
+          {
+            $lookup: {
+              from: "category",
+              localField: "categories",
+              foreignField: "_id",
+              as: "categories",
+            },
+          },
+          {
+            $project: {
+              name: 1,
+              image: 1,
+              description: 1,
+              "categories.name": 1,
+            },
+          },
+        ]);
+
+        console.log(userProduct);
+        return userProduct;
+      } catch (err) {
+        console.log(err)
+        throw new GraphQLError("Failed to locate product");
+      }
+    },
   },
 
   Mutation: {
@@ -168,8 +218,8 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        // Destructuring file avoids issue with promise wrap in objectLoader - it works so good enough for now
-        const { createReadStream, filename, mimetype, encoding } = await file;
+        // Destructuring file avoids issue with promise wrap in objectLoader - it works, so good enough for now
+        const { createReadStream, filename, mimetype, encoding } = file;
 
         try {
           const bucketResponse = await uploadObject(
