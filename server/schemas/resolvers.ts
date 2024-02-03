@@ -101,6 +101,7 @@ const resolvers = {
     ) => {
       try {
         // Aggregate query to verify the product belongs to the username
+        // TODO Use more aggregate queries... super cool
         const userProduct = await Product.aggregate([
           {
             $match: { name: product },
@@ -128,11 +129,23 @@ const resolvers = {
             },
           },
           {
+            $unwind: "$categories",
+          },
+          {
+            $group: {
+              _id: "$_id",
+              name: { $first: "$name" },
+              image: { $first: "$image" },
+              description: { $first: "$description" },
+              categories: { $push:  "$categories"  },
+            },
+          },
+          {
             $project: {
               name: 1,
               image: 1,
               description: 1,
-              "categories.name": 1,
+              categories: 1,
             },
           },
         ]);
@@ -140,7 +153,7 @@ const resolvers = {
         console.log(userProduct);
         return userProduct;
       } catch (err) {
-        console.log(err)
+        console.log(err);
         throw new GraphQLError("Failed to locate product");
       }
     },

@@ -14,8 +14,18 @@ export const LOGIN_USER = gql`
 `;
 
 export const ADD_USER = gql`
-  mutation addUser($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
-    addUser(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
+  mutation addUser(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+  ) {
+    addUser(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+    ) {
       token
       user {
         username
@@ -78,8 +88,22 @@ export const ADD_CATEGORY = gql`
   }
 `;
 
-export const UPLOAD_FILES = gql`
+export const ADD_PRODUCT = gql`
   mutation uploadFile($file: Upload!) {
     addProduct(file: $file)
+  }
+`;
+
+export const UPDATE_PRODUCT = gql`
+  mutation updateProduct(
+    $username: String!
+    $name: String
+    $description: String
+  ) {
+    updateProduct(username: $username, name: $name, description: $description) {
+      name
+      description
+      image
+    }
   }
 `;
