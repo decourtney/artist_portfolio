@@ -101,7 +101,6 @@ const resolvers = {
     ) => {
       try {
         // Aggregate query to verify the product belongs to the username
-        // TODO Use more aggregate queries... super cool
         const userProduct = await Product.aggregate([
           {
             $match: { name: product },
@@ -150,7 +149,6 @@ const resolvers = {
           },
         ]);
 
-        console.log(userProduct);
         return userProduct;
       } catch (err) {
         console.log(err);

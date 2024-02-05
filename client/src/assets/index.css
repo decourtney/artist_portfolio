@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.3.6 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.1 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -32,9 +32,11 @@
 4. Use the user's configured `sans` font-family by default.
 5. Use the user's configured `sans` font-feature-settings by default.
 6. Use the user's configured `sans` font-variation-settings by default.
+7. Disable tap highlights on iOS
 */
 
-html {
+html,
+:host {
   line-height: 1.5;
   /* 1 */
   -webkit-text-size-adjust: 100%;
@@ -48,6 +50,8 @@ html {
   /* 5 */
   font-variation-settings: normal;
   /* 6 */
+  -webkit-tap-highlight-color: transparent;
+  /* 7 */
 }
 
 /*
@@ -1414,6 +1418,12 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-\[inset_2px_2px_2px_0px_rgba\(255\2c 255\2c 255\2c 0\.7\)\2c inset_-2px_-2px_2px_0px_rgba\(0\2c 0\2c 0\2c 0\.7\)\] {
+  --tw-shadow: inset 2px 2px 2px 0px rgba(255,255,255,0.7),inset -2px -2px 2px 0px rgba(0,0,0,0.7);
+  --tw-shadow-colored: inset 2px 2px 2px 0px var(--tw-shadow-color), inset -2px -2px 2px 0px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .shadow-lg {
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
@@ -1571,6 +1581,17 @@ html {
   background-color: #038d2e;
   width: 100%;
   height: 100%;
+}
+
+.active-category-button {
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7), 2px 2px 2px 0px,
+    inset 1px 1px 2px 0px rgba(185, 28, 28, 0.9);
+}
+
+.active-category-button span {
+  text-decoration-line: line-through;
+  text-decoration-color: rgb(185 28 28);
+  /* color: rgb(185 28 28); */
 }
 
 .checkmark::before {

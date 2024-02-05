@@ -9,7 +9,7 @@ import {
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
-import Slider from "../slider1/slider";
+import Slider from "../slider/slider";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||

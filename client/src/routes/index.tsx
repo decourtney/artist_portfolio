@@ -15,7 +15,7 @@ import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 
 import About from "../pages/about";
-import Contact from "../pages/contact";
+import Contact from "../components/gallery/editProduct";
 import Gallery from "../pages/gallery";
 import Home from "../pages/home";
 import Login from "../pages/login";
@@ -38,7 +38,10 @@ const AnimatedRoutes = () => {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/gallery/:productName" element={<Gallery />} />
           <Route path="/gallery/c/:categoryName" element={<Gallery />} />
-          <Route path="/gallery/c/:categoryName/:productName" element={<Gallery />} />
+          <Route
+            path="/gallery/c/:categoryName/:productName"
+            element={<Gallery />}
+          />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />

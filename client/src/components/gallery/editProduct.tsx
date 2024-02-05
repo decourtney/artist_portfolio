@@ -6,18 +6,19 @@ import {
   useLocation,
   Link,
 } from "react-router-dom";
-import Auth from "../utils/auth";
+import Auth from "../../utils/auth";
 import { useQuery, useMutation } from "@apollo/client";
-import { QUERY_USER_PRODUCT } from "../utils/queries";
-import { UPDATE_PRODUCT } from "../utils/mutations";
-import { Category, Product } from "../utils/customClientTypes";
+import { QUERY_USER_PRODUCT } from "../../utils/queries";
+import { UPDATE_PRODUCT } from "../../utils/mutations";
+import { Category, Product } from "../../utils/customClientTypes";
 import { v4 as uuidv4 } from "uuid";
+import TagButton from "./tagButton";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
-interface ContactProps {
+interface EditProductProps {
   itemToEdit: Product;
 }
 
@@ -29,8 +30,13 @@ const tempData: Product = {
   categories: [],
 };
 
-const Contact = ({ itemToEdit = tempData }: ContactProps) => {
-  const [formState, setFormState] = useState({ name: "", description: "" });
+const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
+  const [formState, setFormState] = useState({
+    name: "",
+    description: "",
+    categories: [""],
+  });
+  const [categoryList, setCategoryList] = useState<[String]>([""]);
   const [updateProduct] = useMutation(UPDATE_PRODUCT);
   const formRef = useRef<HTMLFormElement | null>(null);
   let { username: userParam } = useParams();
@@ -49,7 +55,7 @@ const Contact = ({ itemToEdit = tempData }: ContactProps) => {
     userProduct = data.userProduct[0];
     if (userProduct) productCategories = userProduct?.categories as Category[];
 
-    console.log(userProduct);
+    // console.log(userProduct);
   }
 
   const handleFormChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -58,6 +64,13 @@ const Contact = ({ itemToEdit = tempData }: ContactProps) => {
       ...formState,
       [name]: value,
     });
+  };
+
+  const handleCategoryChange = (categoryName: String) => {
+    console.log(categoryName);
+    if(categoryList.includes(categoryName)){
+      // FIXME finish adding categories to the formstate
+    }
   };
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -76,7 +89,7 @@ const Contact = ({ itemToEdit = tempData }: ContactProps) => {
       }
     }
 
-    setFormState({ name: "", description: "" });
+    setFormState({ name: "", description: "", categories: [""] });
   };
 
   if (loading) return null;
@@ -129,12 +142,9 @@ const Contact = ({ itemToEdit = tempData }: ContactProps) => {
                   productCategories.length > 0 &&
                   productCategories.map((category: Category, index: number) => {
                     return (
-                      <button
-                        key={uuidv4()}
-                        id="product-category"
-                        name="name"
-                        className=""
-                        // FIXME Finishing building clickable button for category tags
+                      <TagButton
+                        category={category}
+                        onClick={handleCategoryChange}
                       />
                     );
                   })}
@@ -156,4 +166,4 @@ const Contact = ({ itemToEdit = tempData }: ContactProps) => {
   );
 };
 
-export default Contact;
+export default EditProduct;

@@ -99,11 +99,22 @@ export const UPDATE_PRODUCT = gql`
     $username: String!
     $name: String
     $description: String
+    $categories: [String]
   ) {
-    updateProduct(username: $username, name: $name, description: $description) {
+    updateProduct(
+      username: $username
+      name: $name
+      description: $description
+      categories: $categories
+    ) {
       name
       description
       image
+      categories {
+        name
+        defaultCategory
+        image
+      }
     }
   }
 `;
