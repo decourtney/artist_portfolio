@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   category: Category;
-  onClick: (categoryName: String) => void;
+  onClick: (categoryName: string) => void;
 }
 
 const TagButton = ({ category, onClick }: Props) => {

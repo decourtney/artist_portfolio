@@ -66,14 +66,15 @@ export const QUERY_USER_CATEGORIES = gql`
   }
 `;
 
-export const QUERY_CATEGORY_PRODUCTS = gql`
-  query categoryProducts($category: String!) {
-    categoryProducts(category: $category) {
-      __typename
-      products {
+export const QUERY_USER_PRODUCT = gql`
+  query userProduct($username: String!, $product: String!) {
+    userProduct(username: $username, product: $product) {
+      description
+      image
+      name
+      categories {
         name
-        description
-        image
+        defaultCategory
       }
     }
   }
@@ -90,20 +91,6 @@ export const QUERY_CATEGORY = gql`
         name
         defaultCategory
         image
-      }
-    }
-  }
-`;
-
-export const QUERY_USER_PRODUCT = gql`
-  query userProduct($username: String!, $product: String!) {
-    userProduct(username: $username, product: $product) {
-      description
-      image
-      name
-      categories {
-        name
-        defaultCategory
       }
     }
   }

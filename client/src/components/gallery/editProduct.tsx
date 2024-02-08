@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import Auth from "../../utils/auth";
 import { useQuery, useMutation } from "@apollo/client";
-import { QUERY_USER_PRODUCT } from "../../utils/queries";
+import { QUERY_USER_PRODUCT, QUERY_USER_CATEGORIES } from "../../utils/queries";
 import { UPDATE_PRODUCT } from "../../utils/mutations";
 import { Category, Product } from "../../utils/customClientTypes";
 import { v4 as uuidv4 } from "uuid";
@@ -36,7 +36,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     description: "",
     categories: [""],
   });
-  const [categoryList, setCategoryList] = useState<[String]>([""]);
+  const [categoryList, setCategoryList] = useState<string[]>(['']);
   const [updateProduct] = useMutation(UPDATE_PRODUCT);
   const formRef = useRef<HTMLFormElement | null>(null);
   let { username: userParam } = useParams();
@@ -66,10 +66,12 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     });
   };
 
-  const handleCategoryChange = (categoryName: String) => {
+  // Maintain list of categories that are to be removed from the product
+  const handleCategoryChange = (categoryName: string) => {
     console.log(categoryName);
-    if(categoryList.includes(categoryName)){
+    if(!categoryList.includes(categoryName)){
       // FIXME finish adding categories to the formstate
+      setCategoryList([...categoryList, categoryName]);
     }
   };
 
@@ -118,10 +120,10 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
           >
             <div className="flex flex-col space-y-2">
               <div className="">
-                <textarea
+                <input
                   id="product-name"
                   name="name"
-                  className="w-full h-10 px-1 text-3xl font-bold rounded-md bg-light bg-opacity-50"
+                  className="w-full px-1 text-3xl font-bold rounded-md bg-light bg-opacity-50"
                   placeholder={userProduct?.name}
                   onChange={handleFormChange}
                 />
@@ -143,6 +145,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
                   productCategories.map((category: Category, index: number) => {
                     return (
                       <TagButton
+                        key={uuidv4()}
                         category={category}
                         onClick={handleCategoryChange}
                       />

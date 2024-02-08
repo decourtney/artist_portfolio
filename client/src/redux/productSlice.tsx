@@ -2,16 +2,57 @@ import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Category, Product } from "../utils/customClientTypes";
 
 interface ProductState {
-  productState: { data: Product }
+  productState: {
+    product: Product,
+    productRect: {
+      bottom: number;
+      height: number;
+      left: number;
+      right: number;
+      top: number;
+      width: number;
+      x: number;
+      y: number;
+    };
+    showProductModal: boolean
+  };
 }
 
 export const productSlice = createSlice({
   name: "product",
-  initialState: { productState: { data: {} as Product } },
+  initialState: {
+    productState: {} as {
+      product: Product;
+      productRect: {
+        bottom: number;
+        height: number;
+        left: number;
+        right: number;
+        top: number;
+        width: number;
+        x: number;
+        y: number;
+      };
+      showProductModal: boolean
+    }
+  },
   reducers: {
     setProductState: (
       state: ProductState,
-      action: PayloadAction<Product>
+      action: PayloadAction<{
+        product?: Product;
+        productRect?: {
+          bottom: number;
+          height: number;
+          left: number;
+          right: number;
+          top: number;
+          width: number;
+          x: number;
+          y: number;
+        };
+        showProductModal: boolean
+      }>
     ) => {
       const { ...newState } = action.payload;
       state.productState = { ...state.productState, ...newState };

@@ -38,14 +38,14 @@ const SliderItem = ({
           setMiniModalState({
             sliderItem: itemToDisplay,
             sliderItemRect: {
-              bottom: bottom ,
-              height: height ,
-              left: left ,
+              bottom: bottom,
+              height: height,
+              left: left,
               right: right,
-              top: top ,
-              width: width ,
-              x: x ,
-              y: y ,
+              top: top,
+              width: width,
+              x: x,
+              y: y,
             },
             showMiniModal: true,
           })
@@ -55,7 +55,7 @@ const SliderItem = ({
   };
 
   const handleOnClick = () => {
-    dispatch(setProductState(itemToDisplay as Product));
+    dispatch(setProductState({ product: itemToDisplay as Product, showProductModal: true }));;
     navigate(`/gallery/${itemToDisplay.name}`);
   };
 

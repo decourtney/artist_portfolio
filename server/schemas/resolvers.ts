@@ -292,7 +292,9 @@ const resolvers = {
       }
       throw new GraphQLError("You need to be logged in");
     },
-    updateProduct: async () => {},
+    updateProduct: async () => {
+      // Update will need to update the product info as well as its list of categories
+    },
     deleteProduct: async () => {},
 
     // COMMENT Category Mutations

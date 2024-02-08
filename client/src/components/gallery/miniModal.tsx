@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion, useAnimate } from "framer-motion";
+import { Category, Product } from "../../utils/customClientTypes";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
+import { setProductState } from "../../redux/productSlice";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 const MiniModal = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { sliderItem, sliderItemRect } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
@@ -23,9 +26,9 @@ const MiniModal = () => {
   const [scope, animate] = useAnimate();
   const maxModalWidth = 300;
   const maxModalHeight = 300;
+  const sliderItemWidth = sliderItemRect.width;
+  const sliderItemHeight = sliderItemRect.height;
   const detailsHeight = 96;
-  let sliderItemWidth = sliderItemRect.width;
-  let sliderItemHeight = sliderItemRect.height;
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
@@ -35,37 +38,39 @@ const MiniModal = () => {
   }, [userParam, sliderItem]);
 
   useEffect(() => {
-    const img = new Image();
-    if (imgSrc) img.src = imgSrc;
+    if (imgSrc) {
+      const img = new Image();
+      img.src = imgSrc;
 
-    img.onload = () => {
-      const aspectRatio = img.width / img.height;
+      img.onload = () => {
+        const aspectRatio = img.width / img.height;
 
-      // Determine minimal width and height
-      const minWidth = Math.max(sliderItemWidth, maxModalWidth);
-      const minHeight = Math.max(sliderItemHeight, maxModalHeight);
+        // Determine minimal width and height
+        const minWidth = Math.max(sliderItemWidth, maxModalWidth);
+        const minHeight = Math.max(sliderItemHeight, maxModalHeight);
 
-      // Calculate final width and height based on the aspect ratio
-      let finalWidth = Math.max(minWidth, minHeight);
-      let finalHeight = finalWidth / aspectRatio;
+        // Calculate final width and height based on the aspect ratio
+        let finalWidth = Math.max(minWidth, minHeight);
+        let finalHeight = finalWidth / aspectRatio;
 
-      // If the calculated height is less than the minimum height, adjust dimensions
-      // if (finalHeight < minHeight) {
-      //   finalHeight = minHeight;
-      //   finalWidth = finalHeight * aspectRatio;
-      // }
+        // TODO This will affect how horizontal images are displayed = smaller if not used. Will Probably keep this code.
+        // If the calculated height is less than the minimum height, adjust dimensions
+        // if (finalHeight < minHeight) {
+        //   finalHeight = minHeight;
+        //   finalWidth = finalHeight * aspectRatio;
+        // }
 
-      // Calculate the margin to center the modal relative to sliderItem size
-      const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
-      const verticalMargin =
-        (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
+        // Calculate the margin to center the modal relative to sliderItem size
+        const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
+        const verticalMargin = (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
 
-      setImgDimensions({
-        width: finalWidth,
-        height: finalHeight,
-        margin: `${verticalMargin}px ${horizontalMargin}px`,
-      });
-    };
+        setImgDimensions({
+          width: finalWidth,
+          height: finalHeight,
+          margin: `${verticalMargin}px ${horizontalMargin}px`,
+        });
+      };
+    }
   }, [imgSrc]);
 
   useEffect(() => {
@@ -107,6 +112,13 @@ const MiniModal = () => {
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
+  // productModal should appear to expand from the miniModal by passing current size and having productmodal animate out just like the miniModal
+  const handleOnClick = () => {
+    const { bottom, height, left, right, top, width, x, y } = scope.current.getBoundingClientRect();
+    dispatch(setProductState({ product: sliderItem as Product, productRect: { bottom, height, left, right, top, width, x, y }, showProductModal: true }));;
+    navigate(`/gallery/${sliderItem.name}`);
+  };
+
   return (
     <section id="miniModal" className={`absolute w-full h-full z-10`}>
       <motion.div
@@ -121,6 +133,7 @@ const MiniModal = () => {
           left: 0,
         }}
         onMouseLeave={animateClosed}
+        onClick={handleOnClick}
       >
         {imgSrc && (
           <div className="w-full h-full">
