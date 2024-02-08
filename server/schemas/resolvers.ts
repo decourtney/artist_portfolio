@@ -66,17 +66,17 @@ const resolvers = {
       context: any
     ) => {
       try {
-        const user = await User.findOne({username: username})
+        const user = await User.findOne({ username: username });
         const userCategories = await User.findOne(
           { username: username },
-          "categories",
+          "categories"
         ).populate({
           path: "categories",
           model: "Category",
           populate: {
             path: "products",
             model: "Product",
-            match: {user: user?._id},
+            match: { user: user?._id },
           },
         });
 
@@ -94,6 +94,67 @@ const resolvers = {
     //     products: 1,
     //   });
     // },
+    userProduct: async (
+      parent: any,
+      { username, product }: { username: String; product: String },
+      context: any
+    ) => {
+      try {
+        // Aggregate query to verify the product belongs to the username
+        const userProduct = await Product.aggregate([
+          {
+            $match: { name: product },
+          },
+          {
+            $lookup: {
+              from: "user",
+              localField: "user",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          {
+            $unwind: "$user",
+          },
+          {
+            $match: { "user.username": username },
+          },
+          {
+            $lookup: {
+              from: "category",
+              localField: "categories",
+              foreignField: "_id",
+              as: "categories",
+            },
+          },
+          {
+            $unwind: "$categories",
+          },
+          {
+            $group: {
+              _id: "$_id",
+              name: { $first: "$name" },
+              image: { $first: "$image" },
+              description: { $first: "$description" },
+              categories: { $push:  "$categories"  },
+            },
+          },
+          {
+            $project: {
+              name: 1,
+              image: 1,
+              description: 1,
+              categories: 1,
+            },
+          },
+        ]);
+
+        return userProduct;
+      } catch (err) {
+        console.log(err);
+        throw new GraphQLError("Failed to locate product");
+      }
+    },
   },
 
   Mutation: {
@@ -168,8 +229,8 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        // Destructuring file avoids issue with promise wrap in objectLoader - it works so good enough for now
-        const { createReadStream, filename, mimetype, encoding } = await file;
+        // Destructuring file avoids issue with promise wrap in objectLoader - it works, so good enough for now
+        const { createReadStream, filename, mimetype, encoding } = file;
 
         try {
           const bucketResponse = await uploadObject(
@@ -231,7 +292,9 @@ const resolvers = {
       }
       throw new GraphQLError("You need to be logged in");
     },
-    updateProduct: async () => {},
+    updateProduct: async () => {
+      // Update will need to update the product info as well as its list of categories
+    },
     deleteProduct: async () => {},
 
     // COMMENT Category Mutations

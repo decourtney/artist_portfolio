@@ -24,10 +24,18 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
     postalCode: "",
   });
   const formRef = useRef<HTMLFormElement | null>(null);
-  const navigate = useNavigate();
-  
+
   const [updateUser] = useMutation(UPDATE_USER);
 
+  // Form Changes
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormState({
+      ...formState,
+      [name]: value,
+    });
+  };
+  
   // Form Submit
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,7 +47,7 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
       )
     ) {
       try {
-        const response = await updateUser({ variables: formState });
+        await updateUser({ variables: formState });
       } catch (err) {
         console.log({ err });
       }
@@ -58,15 +66,6 @@ const EditProfile = ({ userData, setIsEditForm }: EditProfileProps) => {
     });
     if (formRef.current) formRef.current.reset();
     setIsEditForm(false);
-  };
-
-  // Form Changes
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
   };
 
   return (

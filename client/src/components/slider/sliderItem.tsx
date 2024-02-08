@@ -1,12 +1,9 @@
-import React, { useRef, useEffect } from "react";
-import { Navigate, useParams, useNavigate } from "react-router-dom";
+import React, { useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
-import { motion } from "framer-motion";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { useAppDispatch } from "../../redux/hooks";
 import { setProductState } from "../../redux/productSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
-import MiniModal from "../gallery/miniModal";
 
 interface SliderItemProps {
   sliderItemId: string;
@@ -26,30 +23,39 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const galleryState = useAppSelector(
-    (state: RootState) => state.miniModal.miniModalState
-  );
   const sliderItemRef = useRef<HTMLElement>(null);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const handleMouseEnter = () => {
-    // TODO Check other bounding box values
-    const rect = sliderItemRef.current?.getBoundingClientRect();
-    if (rect) {
-      const { bottom, height, left, right, top, width, x, y } = rect;
-      dispatch(
-        setMiniModalState({
-          sliderItem: itemToDisplay,
-          sliderItemRect: { bottom, height, left, right, top, width, x, y },
-          showMiniModal: true,
-        })
-      );
+    if (sliderItemRef.current) {
+      const rect = sliderItemRef.current?.getBoundingClientRect();
+
+      if (rect) {
+        const { bottom, height, left, right, top, width, x, y } = rect;
+
+        dispatch(
+          setMiniModalState({
+            sliderItem: itemToDisplay,
+            sliderItemRect: {
+              bottom: bottom,
+              height: height,
+              left: left,
+              right: right,
+              top: top,
+              width: width,
+              x: x,
+              y: y,
+            },
+            showMiniModal: true,
+          })
+        );
+      }
     }
   };
 
   const handleOnClick = () => {
-    dispatch(setProductState(itemToDisplay as Product));
+    dispatch(setProductState({ product: itemToDisplay as Product, showProductModal: true }));;
     navigate(`/gallery/${itemToDisplay.name}`);
   };
 
@@ -59,10 +65,11 @@ const SliderItem = ({
     <section
       ref={sliderItemRef}
       id={sliderItemId}
-      className="slider-item px-0.5"
+      className="slider-item px-1 shadow-md"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
       onMouseOver={handleMouseEnter}
     >
+      {/* FIXME Shadow doesnt appear below image */}
       {itemToDisplay && (
         <img
           className="h-full w-full object-cover rounded-sm"
@@ -74,8 +81,6 @@ const SliderItem = ({
           }
         />
       )}
-
-      {/* {galleryState.showMiniModal && <MiniModal />} */}
     </section>
   );
 };

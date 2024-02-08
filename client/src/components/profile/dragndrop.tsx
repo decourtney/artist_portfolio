@@ -1,6 +1,6 @@
 import { useCallback, Dispatch, SetStateAction } from "react";
 import { useDropzone } from "react-dropzone";
-import { UPLOAD_FILES } from "../../utils/mutations";
+import { ADD_PRODUCT } from "../../utils/mutations";
 import { useMutation } from "@apollo/client";
 
 interface DragnProp {
@@ -8,12 +8,12 @@ interface DragnProp {
 }
 
 const DragnDrop = ({ isDisplayWindow }: DragnProp) => {
-  const [upload] = useMutation(UPLOAD_FILES);
+  const [addProduct] = useMutation(ADD_PRODUCT);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     for (const file of acceptedFiles) {
       try {
-        const response = await upload({ variables: { file: file } });
+        const response = await addProduct({ variables: { file: file } });
         console.log(response);
         isDisplayWindow(false);
       } catch (err) {

@@ -30,11 +30,11 @@ import MiniModal from "../components/gallery/miniModal";
 import Hero from "../components/home/hero";
 
 const Gallery = () => {
-  const miniModalState = useAppSelector(
+  const { showMiniModal } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
-  const productState = useAppSelector(
-    (state: RootState) => state.product.productState
+  const { showProductModal } = useAppSelector(
+    (state) => state.product.productState
   );
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
@@ -54,28 +54,31 @@ const Gallery = () => {
     ({ categories } = data.userCategories);
   }
 
-  useEffect(() => {
-    if (data) {
-      if (productName) {
-        setIsProductModal(true);
-        // setIsCategoryModal(false);
-      } else if (categoryName) {
-        setIsCategoryModal(true);
-        // setIsProductModal(false);
-      }
-    }
-  }, [data]);
+  // TODO Change this over to using global redux state similar to miniModal
+  // useEffect(() => {
+  //   if (data) {
+  //     if (productName) {
+  //       setIsProductModal(true);
+  //       // setIsCategoryModal(false);
+  //     } else if (categoryName) {
+  //       setIsCategoryModal(true);
+  //       // setIsProductModal(false);
+  //     }
+  //   }
+  // }, [data]);
 
-  useLayoutEffect(() => {
-    setIsMiniModal(miniModalState.showMiniModal);
-  }, [miniModalState.showMiniModal]);
+  // TODO Currently this uselayouteffect doesnt seem to be necessary if not using the commented out miniModal render
+  // TODO Continue monitoring for unintended effects
+  // useLayoutEffect(() => {
+  //   setIsMiniModal(miniModalState.showMiniModal);
+  // }, [miniModalState.showMiniModal]);
 
   if (loading) return null;
 
   return (
     <>
       {/* <Hero /> */}
-      <section id="gallery" className="relative flex flex-col w-full h-full">
+      <section id="gallery" className="relative flex flex-col w-full h-full min-h-screen">
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {
@@ -91,8 +94,10 @@ const Gallery = () => {
           })}
 
         {isCategoryModal && <CategoryModal />}
-        {isProductModal && <ProductModal />}
-        {isMiniModal && <MiniModal />}
+        {showProductModal && <ProductModal />}
+        {/* TODO Need to double check the method of opening the miniModal  */}
+        {/* {isMiniModal && <MiniModal />} */}
+        {showMiniModal && <MiniModal />}
       </section>
     </>
   );

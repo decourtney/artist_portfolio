@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   useParams,
   useNavigate,
 } from "react-router-dom";
-import { useAppSelector } from "../../redux/hooks";
-import { AnimatePresence, motion } from "framer-motion";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { RootState } from "../../store";
+import { setProductState } from "../../redux/productSlice";
+import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { Product } from "../../utils/customClientTypes";
 
 const baseCDN =
@@ -12,37 +14,106 @@ const baseCDN =
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 const ProductModal = () => {
-  const [loadedImageSrc, setLoadedImageSrc] = useState('');
-  const productState = useAppSelector<Product>(
-    (state) => state.product.productState.data
-  );
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { product, productRect, showProductModal } = useAppSelector(
+    (state: RootState) => state.product.productState
+  );
+  const [imgDimensions, setImgDimensions] = useState<{
+    width: number;
+    height: number;
+    margin: string;
+  } | null>(null);
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
+  const [imageIsLoaded, setImageIsLoaded] = useState<boolean>(false);
+  const [scope, animate] = useAnimate();
+  const maxModalWidth = window.innerWidth; // I think im getting the scrollbar in this value which is screwing with the modal
+  const maxModalHeight = window.innerHeight;
+  const productWidth = productRect.width
+  const productHeight = productRect.height
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
+  let imageWidth, imageHeight = 0
+
+  useLayoutEffect(() => {
+    // Construct the image URL and set it in state
+    if (product) setImgSrc(`${baseCDN}/${userParam}/${product.image}`);
+  }, [userParam, product]);
 
   useEffect(() => {
-    const img = new Image();
-    const imgsrc = `${baseCDN}/${userParam}/${productState?.image}`;
-    img.src = imgsrc;
-    img.onload = () => {
-      setLoadedImageSrc(imgsrc);
-    };
-  }, [productState]);
+    if (imgSrc) {
+      const img = new Image();
+      img.src = imgSrc;
+      imageWidth = img.width;
+      imageHeight = img.height;
+      
+      img.onload = () => {
+        const aspectRatio = img.width / img.height;
+        
+
+        // Determine minimal width and height
+        const minWidth = Math.max(imageWidth, maxModalWidth);
+        const minHeight = Math.max(imageHeight, maxModalHeight);
+
+        // Calculate final width and height based on the aspect ratio
+        let finalWidth = Math.max(minWidth, minHeight);
+        let finalHeight = finalWidth / aspectRatio;
+
+        // TODO This will affect how horizontal images are displayed = smaller if not used. Will Probably keep this code.
+        // If the calculated height is less than the minimum height, adjust dimensions
+        // if (finalHeight < minHeight) {
+        //   finalHeight = minHeight;
+        //   finalWidth = finalHeight * aspectRatio;
+        // }
+
+        // Calculate the margin to center the modal relative to sliderItem size
+        const horizontalMargin = (imageWidth - finalWidth) * 0.5;
+        const verticalMargin = (imageHeight - finalHeight) * 0.5;
+
+        setImgDimensions({
+          width: finalWidth,
+          height: finalHeight,
+          margin: `${verticalMargin}px ${horizontalMargin}px`,
+        });
+      };
+    }
+  }, [imgSrc]);
+
+  useEffect(() => {
+    if (imgDimensions) animateOpen()
+  }, [imgDimensions])
 
   const handleBack = () => {
+    dispatch(setProductState({ showProductModal: false }));
     navigate(-1);
   };
 
   const handleClose = () => {
+    dispatch(setProductState({ showProductModal: false }));
     navigate("/gallery/");
   };
 
+  const animateOpen = async () => {
+    await animate([
+      [
+        scope.current,
+        {
+          width: imgDimensions.width,
+          height: imgDimensions.height,
+          margin: 0,
+          x:0,
+          y:0,
+        },
+        { duration: 0.2 },
+      ],
+    ]);
+  };
+
   return (
-    <div
+    <section
       id="productModal"
-      className="fixed flex justify-center items-center w-full h-full z-50"
+      className="absolute w-full h-full z-50"
     >
-      // TODO Add key attr and check for effects
       <AnimatePresence mode="wait">
         <motion.div
           className="absolute w-full h-full bg-black opacity-75"
@@ -52,13 +123,16 @@ const ProductModal = () => {
         />
       </AnimatePresence>
       {/* content */}
-      <div className="fixed w-fit h-fit p-1 border-0 rounded-md outline-none focus:outline-none pointer-events-auto">
-        <AnimatePresence mode="wait">
-          <motion.div
-            className="relative w-full h-full text-center text-light"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5 }}
+      {/* create anim here using the dimesions state */}
+      <motion.div
+        ref={scope}
+        className="w-full h-full max-h-screen"
+        style={{...productRect}}
+        initial={{ width: productWidth, height:productHeight, top:0, left:0 }}
+      >
+        {/* <AnimatePresence mode="wait"> */}
+          <div
+            className="relative w-full h-full"
           >
 
             {/* back button */}
@@ -83,19 +157,19 @@ const ProductModal = () => {
 
             {/* image */}
             {/* <div className="flex justify-center items-center h-min w-min max-h-[96dvh] max-w-[96dvw] min-h-[96dvh] min-w-[96dvw]"> */}
-            {loadedImageSrc && (
+            {imgSrc && (
               <img
-                src={loadedImageSrc}
-                className="inline-block w-full h-full max-h-[96dvh] max-w-[96dvw] object-contain"
-                alt={`${productState?.name}`}
+                src={imgSrc}
+                className="inline-block w-full h-full object-contain"
+                alt={`${product.name}`}
                 loading="lazy"
               />
             )}
             {/* </div> */}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </div >
+          </div>
+        {/* </AnimatePresence> */}
+      </motion.div>
+    </section >
   );
 };
 

@@ -15,14 +15,14 @@ import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 
 import About from "../pages/about";
-import Contact from "../pages/contact";
+import Contact from "../components/gallery/editProduct";
 import Gallery from "../pages/gallery";
 import Home from "../pages/home";
 import Login from "../pages/login";
 import Profile from "../pages/profile";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { AnimatePresence, LayoutGroup } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -32,13 +32,16 @@ const AnimatedRoutes = () => {
       <Header />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* <Route path="/" element={<Profile />} />{" "} */}
+          <Route path="/" element={<Contact />} />{" "}
           {/* This is just for initial development stages. delete when necessary */}
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/gallery/:productName" element={<Gallery />} />
           <Route path="/gallery/c/:categoryName" element={<Gallery />} />
-          <Route path="/gallery/c/:categoryName/:productName" element={<Gallery />} />
+          <Route
+            path="/gallery/c/:categoryName/:productName"
+            element={<Gallery />}
+          />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />

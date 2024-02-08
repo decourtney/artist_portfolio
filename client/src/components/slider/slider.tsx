@@ -15,26 +15,20 @@ be nice to have this a configurable option.
 - Disable/Enable looping slides.
 */
 
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useLayoutEffect,
-} from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Category } from "../../utils/customClientTypes";
 import { useAnimate } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
-import SliderItem from "./sliderItem";
-import SliderControl from "./sliderControl";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
 import { setSliderState } from "../../redux/sliderSlice";
+import SliderItem from "./sliderItem";
+import SliderControl from "./sliderControl";
 
 interface SliderProps {
   categoryToDisplay: Category;
 }
 
-// Try changing lowestvisibleindex to a global state
 const Slider = ({ categoryToDisplay }: SliderProps) => {
   const [itemsPerGroup, setItemsPerGroup] = useState(1); // This value is dynamically changed with window size
   const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
@@ -59,7 +53,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const itemsToDisplay = categoryToDisplay.products;
   const sliderId = `${categoryToDisplay.name}-slider`; // Used to track each slider for redux state management
 
-  if (!itemsToDisplay) return null
+  if (!itemsToDisplay) return null;
 
   useLayoutEffect(() => {
     getSliderIndexGroups();
@@ -67,7 +61,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   }, [itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
 
   useLayoutEffect(() => {
-    handleWindowResize(window);
+    handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
 
     return () => {
@@ -124,7 +118,9 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
                   sliderHasMoved: true,
                 })
               );
-              dispatch(setSliderState({ globalSettings: { isSliding: false } }));
+              dispatch(
+                setSliderState({ globalSettings: { isSliding: false } })
+              );
             },
           }
         );
@@ -135,14 +131,37 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   }, [sliderGlobalState.isSliding]);
 
   // handle window resize and sets items in row
-  const handleWindowResize = (e: any) => {
-    if (window.innerWidth > 1440) {
-      setItemsPerGroup(6);
-    } else if (window.innerWidth >= 1000) {
-      setItemsPerGroup(5);
-    } else if (window.innerWidth < 1000) {
-      setItemsPerGroup(4);
+  const handleWindowResize = () => {
+    const innerWidth = window.innerWidth;
+    let newItemsPerGroup;
+
+    switch (true) {
+      case innerWidth > 1920:
+        newItemsPerGroup = 7
+        break;
+      case innerWidth > 1440:
+        newItemsPerGroup = 6;
+        break;
+      case innerWidth >= 1200:
+        newItemsPerGroup = 5;
+        break;
+      case innerWidth >= 992:
+        newItemsPerGroup = 4;
+        break;
+      case innerWidth >= 768:
+        newItemsPerGroup = 4;
+        break;
+      case innerWidth >= 480:
+        newItemsPerGroup = 3;
+        break;
+      case innerWidth < 480:
+        newItemsPerGroup = 2;
+        break;
+      default:
+        newItemsPerGroup = 2;
     }
+
+    setItemsPerGroup(newItemsPerGroup);
   };
 
   const getPositiveModulo = (n: number) => {
@@ -200,15 +219,16 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
       <div
         ref={scope}
-        className={`slider-row relative flex flex-row items-center h-[20dvh] ${sliderGlobalState.isSliding
-          ? "pointer-events-none"
-          : "pointer-events-auto"
-          }`}
+        className={`slider-row relative flex flex-row items-center h-[20dvh] ${
+          sliderGlobalState.isSliding
+            ? "pointer-events-none"
+            : "pointer-events-auto"
+        }`}
       >
-        <section className="absolute right-full flex h-full w-full">
+        <section className="absolute right-full flex h-full w-full pointer-events-none">
           <div
             id="groupPeek"
-            className={`absolute right-full flex justify-end h-full w-full`}
+            className="absolute right-full flex h-full w-full"
           >
             <SliderItem
               key={previousPeekKey}
@@ -247,7 +267,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           })}
         </section>
 
-        <section className="absolute left-full flex h-full w-full">
+        <section className="absolute left-full flex h-full w-full pointer-events-none">
           {nextGroup.map((index) => {
             const key = uuidv4();
             return (
@@ -260,10 +280,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             );
           })}
 
-          <div
-            id="groupPeek"
-            className="absolute left-full flex justify-start h-full w-full"
-          >
+          <div id="groupPeek" className="absolute left-full flex h-full w-full">
             <SliderItem
               key={nextPeekKey}
               sliderItemId={nextPeekKey}

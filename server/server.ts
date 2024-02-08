@@ -35,7 +35,6 @@ const startApolloServer = async (typeDefs: any, resolvers: any, app: any) => {
     "/graphql",
     cors<cors.CorsRequest>({
       origin: [
-        // "https://www.your-app.example",
         "https://studio.apollographql.com",
       ],
     }),

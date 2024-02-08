@@ -51,6 +51,7 @@ const typeDefs = gql`
     userCategories(username: String!): User
     categoryProducts(category: String!): [Product]
     category(category: String!): [Product]
+    userProduct(username: String!, product: String!): [Product]
   }
 
   type Mutation {
