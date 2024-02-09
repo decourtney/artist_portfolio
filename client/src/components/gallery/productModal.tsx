@@ -123,9 +123,11 @@ const ProductModal = () => {
         [
           scope.current,
           {
-            ...modalItemRect,
+            // ...modalItemRect,
             width: modalItemRect.width,
             height: modalItemRect.height,
+            x: modalItemRect.left,
+            y: modalItemRect.top,
             margin: 0,
           },
           { duration: 0.2 },
