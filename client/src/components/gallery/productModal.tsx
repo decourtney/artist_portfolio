@@ -115,7 +115,8 @@ const ProductModal = () => {
 
   const animateClose = async () => {
     const rect = scope.current.getBoundingClientRect();
-
+    console.log("miniModalRect", modalItemRect);
+    console.log("productRect", rect);
     if (rect) {
       const { bottom, height, left, right, top, width, x, y } = rect;
 
@@ -126,8 +127,8 @@ const ProductModal = () => {
             // ...modalItemRect,
             width: modalItemRect.width,
             height: modalItemRect.height,
-            x: modalItemRect.left,
-            y: modalItemRect.top,
+            x: modalItemRect.x,
+            y: modalItemRect.y,
             margin: 0,
           },
           { duration: 0.2 },
@@ -140,21 +141,13 @@ const ProductModal = () => {
 
   return (
     <section id="productModal" className="absolute w-full h-full z-50">
-      {/* Background */}
-      <AnimatePresence mode="wait">
+      <motion.div ref={scope} className="" style={{ ...productRect }}>
         <motion.div
-          className="absolute w-full h-full bg-black opacity-75"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          id="product-background"
+          className="absolute top-0 left-0 w-full h-full bg-black -z-10"
           onClick={handleClose}
         />
-      </AnimatePresence>
-      {/* content */}
-      <motion.div ref={scope} className="" style={{ ...productRect }}>
-        <div className="relative">
-          {/* back button */}
+        <div id="product-buttons" className="relative">
           <button
             className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none bg-blue-500"
             onClick={handleBack}
@@ -164,7 +157,6 @@ const ProductModal = () => {
             </span>
           </button>
 
-          {/* close button */}
           <button
             className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
             onClick={handleClose}
@@ -173,17 +165,16 @@ const ProductModal = () => {
               close
             </span>
           </button>
-
-          {/* image */}
-          {imgSrc && (
-            <img
-              src={imgSrc}
-              className="inline-block w-full h-full object-cover"
-              alt={`${product.name}`}
-              loading="lazy"
-            />
-          )}
         </div>
+
+        {imgSrc && (
+          <img
+            src={imgSrc}
+            className="w-full h-full object-cover rounded-sm"
+            alt={`${product.name}`}
+            loading="lazy"
+          />
+        )}
       </motion.div>
     </section>
   );
