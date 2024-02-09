@@ -62,7 +62,8 @@ const MiniModal = () => {
 
         // Calculate the margin to center the modal relative to sliderItem size
         const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
-        const verticalMargin = (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
+        const verticalMargin =
+          (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
 
         setImgDimensions({
           width: finalWidth,
@@ -112,10 +113,17 @@ const MiniModal = () => {
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
-  // productModal should appear to expand from the miniModal by passing current size and having productmodal animate out just like the miniModal
+  // On click miniModal's bounding rect and set as product rect ensuring productModal starts as same size
   const handleOnClick = () => {
-    const { bottom, height, left, right, top, width, x, y } = scope.current.getBoundingClientRect();
-    dispatch(setProductState({ product: sliderItem as Product, productRect: { bottom, height, left, right, top, width, x, y }, showProductModal: true }));;
+    const { bottom, height, left, right, top, width, x, y } =
+      scope.current.getBoundingClientRect();
+    dispatch(
+      setProductState({
+        product: sliderItem as Product,
+        productRect: { bottom, height, left, right, top, width, x, y },
+        showProductModal: true,
+      })
+    );
     navigate(`/gallery/${sliderItem.name}`);
   };
 

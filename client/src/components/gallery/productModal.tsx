@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import {
-  useParams,
-  useNavigate,
-} from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
 import { setProductState } from "../../redux/productSlice";
@@ -27,13 +24,14 @@ const ProductModal = () => {
   const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [imageIsLoaded, setImageIsLoaded] = useState<boolean>(false);
   const [scope, animate] = useAnimate();
-  const maxModalWidth = window.innerWidth; // I think im getting the scrollbar in this value which is screwing with the modal
+  const maxModalWidth = window.innerWidth;
   const maxModalHeight = window.innerHeight;
-  const productWidth = productRect.width
-  const productHeight = productRect.height
+  const productWidth = productRect.width;
+  const productHeight = productRect.height;
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
-  let imageWidth, imageHeight = 0
+  let imageWidth = 0,
+    imageHeight = 0;
 
   useLayoutEffect(() => {
     // Construct the image URL and set it in state
@@ -44,31 +42,25 @@ const ProductModal = () => {
     if (imgSrc) {
       const img = new Image();
       img.src = imgSrc;
-      imageWidth = img.width;
-      imageHeight = img.height;
-      
+
       img.onload = () => {
         const aspectRatio = img.width / img.height;
-        
 
-        // Determine minimal width and height
-        const minWidth = Math.max(imageWidth, maxModalWidth);
-        const minHeight = Math.max(imageHeight, maxModalHeight);
+        let finalWidth = maxModalWidth;
+        let finalHeight = maxModalHeight;
 
-        // Calculate final width and height based on the aspect ratio
-        let finalWidth = Math.max(minWidth, minHeight);
-        let finalHeight = finalWidth / aspectRatio;
+        // Check if width should be constrained by height or vice versa
+        if (aspectRatio > 1) {
+          finalHeight = maxModalHeight;
+          finalWidth = maxModalHeight * aspectRatio;
+        } else {
+          finalWidth = maxModalWidth;
+          finalHeight = maxModalWidth / aspectRatio;
+        }
 
-        // TODO This will affect how horizontal images are displayed = smaller if not used. Will Probably keep this code.
-        // If the calculated height is less than the minimum height, adjust dimensions
-        // if (finalHeight < minHeight) {
-        //   finalHeight = minHeight;
-        //   finalWidth = finalHeight * aspectRatio;
-        // }
-
-        // Calculate the margin to center the modal relative to sliderItem size
-        const horizontalMargin = (imageWidth - finalWidth) * 0.5;
-        const verticalMargin = (imageHeight - finalHeight) * 0.5;
+        // Calculate margins to center the modal
+        const horizontalMargin = (maxModalWidth - finalWidth) / 2;
+        const verticalMargin = (maxModalHeight - finalHeight) / 2;
 
         setImgDimensions({
           width: finalWidth,
@@ -77,11 +69,11 @@ const ProductModal = () => {
         });
       };
     }
-  }, [imgSrc]);
+  }, [imgSrc, maxModalWidth, maxModalHeight]);
 
   useEffect(() => {
-    if (imgDimensions) animateOpen()
-  }, [imgDimensions])
+    if (imgDimensions) animateOpen();
+  }, [imgDimensions]);
 
   const handleBack = () => {
     dispatch(setProductState({ showProductModal: false }));
@@ -98,9 +90,9 @@ const ProductModal = () => {
       [
         scope.current,
         {
-          width: imgDimensions.width,
-          height: imgDimensions.height,
-          margin: 0,
+          width: imgDimensions?.width,
+          height: imgDimensions?.height,
+          // margin: `${imgDimensions?.margin}`,
           x:0,
           y:0,
         },
@@ -110,10 +102,7 @@ const ProductModal = () => {
   };
 
   return (
-    <section
-      id="productModal"
-      className="absolute w-full h-full z-50"
-    >
+    <section id="productModal" className="absolute w-full h-full z-50">
       <AnimatePresence mode="wait">
         <motion.div
           className="absolute w-full h-full bg-black opacity-75"
@@ -126,50 +115,53 @@ const ProductModal = () => {
       {/* create anim here using the dimesions state */}
       <motion.div
         ref={scope}
-        className="w-full h-full max-h-screen"
-        style={{...productRect}}
-        initial={{ width: productWidth, height:productHeight, top:0, left:0 }}
+        className=" bg-orange-400"
+        // style={{ ...productRect }}
+        initial={{
+          // width: productWidth,
+          // height: productHeight,
+          // top: 0,
+          // left: 0,
+          ...productRect,
+        }}
       >
         {/* <AnimatePresence mode="wait"> */}
-          <div
-            className="relative w-full h-full"
+        <div className="relative w-full h-full">
+          {/* back button */}
+          <button
+            className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
+            onClick={handleBack}
           >
+            <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
+              arrow_back
+            </span>
+          </button>
 
-            {/* back button */}
-            <button
-              className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
-              onClick={handleBack}
-            >
-              <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
-                arrow_back
-              </span>
-            </button>
+          {/* close button */}
+          <button
+            className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
+            onClick={handleClose}
+          >
+            <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
+              close
+            </span>
+          </button>
 
-            {/* close button */}
-            <button
-              className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
-              onClick={handleClose}
-            >
-              <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
-                close
-              </span>
-            </button>
-
-            {/* image */}
-            {/* <div className="flex justify-center items-center h-min w-min max-h-[96dvh] max-w-[96dvw] min-h-[96dvh] min-w-[96dvw]"> */}
-            {imgSrc && (
-              <img
-                src={imgSrc}
-                className="inline-block w-full h-full object-contain"
-                alt={`${product.name}`}
-                loading="lazy"
-              />
-            )}
-            {/* </div> */}
-          </div>
+          {/* image */}
+          {/* <div className="flex justify-center items-center h-min w-min max-h-[96dvh] max-w-[96dvw] min-h-[96dvh] min-w-[96dvw]"> */}
+          {imgSrc && (
+            <img
+              src={imgSrc}
+              className="inline-block w-full h-full object-contain"
+              alt={`${product.name}`}
+              loading="lazy"
+            />
+          )}
+          {/* </div> */}
+        </div>
         {/* </AnimatePresence> */}
       </motion.div>
-    </section >
+    </section>
   );
 };
 
