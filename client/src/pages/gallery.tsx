@@ -93,11 +93,11 @@ const Gallery = () => {
             }
           })}
 
-        {isCategoryModal && <CategoryModal />}
-        {showProductModal && <ProductModal />}
-        {/* TODO Need to double check the method of opening the miniModal  */}
-        {/* {isMiniModal && <MiniModal />} */}
-        {showMiniModal && <MiniModal />}
+          {isCategoryModal && <CategoryModal />}
+          {showProductModal && <ProductModal />}
+          {/* TODO Need to double check the method of opening the miniModal  */}
+          {/* {isMiniModal && <MiniModal />} */}
+          {showMiniModal && <MiniModal />}
       </section>
     </>
   );

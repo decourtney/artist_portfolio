@@ -30,8 +30,6 @@ const ProductModal = () => {
   const productHeight = productRect.height;
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
-  let imageWidth = 0,
-    imageHeight = 0;
 
   useLayoutEffect(() => {
     // Construct the image URL and set it in state
@@ -45,17 +43,29 @@ const ProductModal = () => {
 
       img.onload = () => {
         const aspectRatio = img.width / img.height;
+        let finalWidth;
+        let finalHeight;
 
-        let finalWidth = maxModalWidth;
-        let finalHeight = maxModalHeight;
-
-        // Check if width should be constrained by height or vice versa
         if (aspectRatio > 1) {
-          finalHeight = maxModalHeight;
-          finalWidth = maxModalHeight * aspectRatio;
-        } else {
+          // Horizontal aspect image
           finalWidth = maxModalWidth;
-          finalHeight = maxModalWidth / aspectRatio;
+          finalHeight = finalWidth / aspectRatio;
+
+          // Check if finalHeight exceeds maxModalHeight
+          if (finalHeight > maxModalHeight) {
+            finalHeight = maxModalHeight;
+            finalWidth = finalHeight * aspectRatio;
+          }
+        } else {
+          // Vertical aspect image
+          finalHeight = maxModalHeight;
+          finalWidth = finalHeight * aspectRatio;
+
+          // Check if finalWidth exceeds maxModalWidth
+          if (finalWidth > maxModalWidth) {
+            finalWidth = maxModalWidth;
+            finalHeight = finalWidth / aspectRatio;
+          }
         }
 
         // Calculate margins to center the modal
@@ -81,8 +91,8 @@ const ProductModal = () => {
   };
 
   const handleClose = () => {
-    dispatch(setProductState({ showProductModal: false }));
-    navigate("/gallery/");
+    animateClose()
+   
   };
 
   const animateOpen = async () => {
@@ -92,44 +102,56 @@ const ProductModal = () => {
         {
           width: imgDimensions?.width,
           height: imgDimensions?.height,
-          // margin: `${imgDimensions?.margin}`,
-          x:0,
-          y:0,
+          margin: `${imgDimensions?.margin}`,
+          x: 0,
+          y: 0,
         },
         { duration: 0.2 },
       ],
     ]);
   };
 
+  const animateClose = async () => {
+    await animate([
+      [
+        scope.current, {
+          ...productRect,
+          margin: 0        
+        },
+        { duration: 0.2 }
+      ]
+    ])
+    dispatch(setProductState({ showProductModal: false }));
+    navigate("/gallery/");
+  }
+
   return (
     <section id="productModal" className="absolute w-full h-full z-50">
+      {/* Background */}
       <AnimatePresence mode="wait">
         <motion.div
           className="absolute w-full h-full bg-black opacity-75"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.75 }}
+          animate={{ opacity: 0.50 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
           onClick={handleClose}
         />
       </AnimatePresence>
       {/* content */}
-      {/* create anim here using the dimesions state */}
       <motion.div
         ref={scope}
-        className=" bg-orange-400"
-        // style={{ ...productRect }}
-        initial={{
-          // width: productWidth,
-          // height: productHeight,
-          // top: 0,
-          // left: 0,
-          ...productRect,
-        }}
+        className=""
+        style={{ ...productRect }}
+        //initial={{
+        //  width: productWidth,
+        //  height: productHeight,
+        //}}
       >
-        {/* <AnimatePresence mode="wait"> */}
-        <div className="relative w-full h-full">
+        <div className="relative">
           {/* back button */}
           <button
-            className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
+            className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none bg-blue-500"
             onClick={handleBack}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
@@ -148,7 +170,6 @@ const ProductModal = () => {
           </button>
 
           {/* image */}
-          {/* <div className="flex justify-center items-center h-min w-min max-h-[96dvh] max-w-[96dvw] min-h-[96dvh] min-w-[96dvw]"> */}
           {imgSrc && (
             <img
               src={imgSrc}
@@ -157,9 +178,7 @@ const ProductModal = () => {
               loading="lazy"
             />
           )}
-          {/* </div> */}
         </div>
-        {/* </AnimatePresence> */}
       </motion.div>
     </section>
   );

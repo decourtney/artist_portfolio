@@ -97,7 +97,7 @@ const MiniModal = () => {
     ]);
   };
 
-  const animateClosed = async () => {
+  const animateClose = async () => {
     await animate([
       [
         scope.current,
@@ -124,6 +124,8 @@ const MiniModal = () => {
         showProductModal: true,
       })
     );
+    // dispatch(setMiniModalState({ showMiniModal: false }));
+
     navigate(`/gallery/${sliderItem.name}`);
   };
 
@@ -140,7 +142,7 @@ const MiniModal = () => {
           top: 0,
           left: 0,
         }}
-        onMouseLeave={animateClosed}
+        onMouseLeave={animateClose}
         onClick={handleOnClick}
       >
         {imgSrc && (
