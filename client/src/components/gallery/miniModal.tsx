@@ -14,7 +14,7 @@ const baseCDN =
 const MiniModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { sliderItem, sliderItemRect } = useAppSelector(
+  const { modalItem, modalItemRect } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const [imgDimensions, setImgDimensions] = useState<{
@@ -26,16 +26,16 @@ const MiniModal = () => {
   const [scope, animate] = useAnimate();
   const maxModalWidth = 300;
   const maxModalHeight = 300;
-  const sliderItemWidth = sliderItemRect.width;
-  const sliderItemHeight = sliderItemRect.height;
+  const sliderItemWidth = modalItemRect.width;
+  const sliderItemHeight = modalItemRect.height;
   const detailsHeight = 96;
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   useEffect(() => {
     // Construct the image URL and set it in state
-    if (sliderItem) setImgSrc(`${baseCDN}/${userParam}/${sliderItem.image}`);
-  }, [userParam, sliderItem]);
+    if (modalItem) setImgSrc(`${baseCDN}/${userParam}/${modalItem.image}`);
+  }, [userParam, modalItem]);
 
   useEffect(() => {
     if (imgSrc) {
@@ -60,7 +60,7 @@ const MiniModal = () => {
         //   finalWidth = finalHeight * aspectRatio;
         // }
 
-        // Calculate the margin to center the modal relative to sliderItem size
+        // Calculate the margin to center the modal relative to modalItem size
         const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
         const verticalMargin =
           (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
@@ -119,29 +119,23 @@ const MiniModal = () => {
       scope.current.getBoundingClientRect();
     dispatch(
       setProductState({
-        product: sliderItem as Product,
+        product: modalItem as Product,
         productRect: { bottom, height, left, right, top, width, x, y },
         showProductModal: true,
       })
     );
     // dispatch(setMiniModalState({ showMiniModal: false }));
 
-    navigate(`/gallery/${sliderItem.name}`);
+    navigate(`/gallery/${modalItem.name}`);
   };
 
   return (
     <section id="miniModal" className={`absolute w-full h-full z-10`}>
       <motion.div
         ref={scope}
-        key={sliderItem.name}
+        key={modalItem.name}
         className="shadow-md w-full h-full"
-        style={{ ...sliderItemRect }}
-        initial={{
-          width: sliderItemWidth,
-          height: sliderItemHeight,
-          top: 0,
-          left: 0,
-        }}
+        style={{ ...modalItemRect }}
         onMouseLeave={animateClose}
         onClick={handleOnClick}
       >
@@ -151,7 +145,7 @@ const MiniModal = () => {
               src={imgSrc}
               className="w-full h-full shadow-lg object-cover rounded-t-md"
               style={{ imageRendering: "auto" }}
-              alt={`${sliderItem.name}`}
+              alt={`${modalItem.name}`}
               loading="lazy"
             />
             <motion.div

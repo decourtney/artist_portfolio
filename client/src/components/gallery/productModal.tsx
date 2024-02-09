@@ -13,6 +13,9 @@ const baseCDN =
 const ProductModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { modalItem, modalItemRect } = useAppSelector(
+    (state: RootState) => state.miniModal.miniModalState
+  );
   const { product, productRect, showProductModal } = useAppSelector(
     (state: RootState) => state.product.productState
   );
@@ -91,8 +94,7 @@ const ProductModal = () => {
   };
 
   const handleClose = () => {
-    animateClose()
-   
+    animateClose();
   };
 
   const animateOpen = async () => {
@@ -112,18 +114,27 @@ const ProductModal = () => {
   };
 
   const animateClose = async () => {
-    await animate([
-      [
-        scope.current, {
-          ...productRect,
-          margin: 0        
-        },
-        { duration: 0.2 }
-      ]
-    ])
+    const rect = scope.current.getBoundingClientRect();
+
+    if (rect) {
+      const { bottom, height, left, right, top, width, x, y } = rect;
+
+      await animate([
+        [
+          scope.current,
+          {
+            ...modalItemRect,
+            width: modalItemRect.width,
+            height: modalItemRect.height,
+            margin: 0,
+          },
+          { duration: 0.2 },
+        ],
+      ]);
+    }
     dispatch(setProductState({ showProductModal: false }));
     navigate("/gallery/");
-  }
+  };
 
   return (
     <section id="productModal" className="absolute w-full h-full z-50">
@@ -132,22 +143,14 @@ const ProductModal = () => {
         <motion.div
           className="absolute w-full h-full bg-black opacity-75"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.50 }}
+          animate={{ opacity: 0.5 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
           onClick={handleClose}
         />
       </AnimatePresence>
       {/* content */}
-      <motion.div
-        ref={scope}
-        className=""
-        style={{ ...productRect }}
-        //initial={{
-        //  width: productWidth,
-        //  height: productHeight,
-        //}}
-      >
+      <motion.div ref={scope} className="" style={{ ...productRect }}>
         <div className="relative">
           {/* back button */}
           <button
@@ -173,7 +176,7 @@ const ProductModal = () => {
           {imgSrc && (
             <img
               src={imgSrc}
-              className="inline-block w-full h-full object-contain"
+              className="inline-block w-full h-full object-cover"
               alt={`${product.name}`}
               loading="lazy"
             />

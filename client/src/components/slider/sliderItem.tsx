@@ -36,8 +36,8 @@ const SliderItem = ({
 
         dispatch(
           setMiniModalState({
-            sliderItem: itemToDisplay,
-            sliderItemRect: {
+            modalItem: itemToDisplay,
+            modalItemRect: {
               bottom: bottom,
               height: height,
               left: left,
@@ -76,9 +76,6 @@ const SliderItem = ({
           src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
           alt={itemToDisplay.name}
           loading="lazy"
-          onError={() =>
-            console.log("Error fetching image:", itemToDisplay.name)
-          }
         />
       )}
     </section>
