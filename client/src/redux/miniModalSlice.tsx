@@ -3,6 +3,7 @@ import { Category, Product } from "../utils/customClientTypes";
 
 interface MiniModalState {
   miniModalState: {
+    modalId: string;
     modalItem: Category | Product;
     modalItemRect: {
       bottom: number;
@@ -22,6 +23,7 @@ export const miniModalSlice = createSlice({
   name: "miniModal",
   initialState: {
     miniModalState: {} as {
+      modalId: string;
       modalItem: Category | Product;
       modalItemRect: {
         bottom: number;
@@ -40,7 +42,8 @@ export const miniModalSlice = createSlice({
     setMiniModalState: (
       state: MiniModalState,
       action: PayloadAction<{
-        modalItem?: Category | Product
+        modalId: string;
+        modalItem?: Category | Product;
         modalItemRect?: {
           bottom: number;
           height: number;

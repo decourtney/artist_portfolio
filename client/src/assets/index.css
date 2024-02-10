@@ -1372,6 +1372,10 @@ video {
   opacity: 0.75;
 }
 
+.opacity-50 {
+  opacity: 0.5;
+}
+
 .shadow-\[0px_0px_2px_\#5B8FB9\] {
   --tw-shadow: 0px 0px 2px #5B8FB9;
   --tw-shadow-colored: 0px 0px 2px var(--tw-shadow-color);

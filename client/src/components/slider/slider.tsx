@@ -24,6 +24,7 @@ import { RootState } from "../../store";
 import { setSliderState } from "../../redux/sliderSlice";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
+import { Product } from "../../utils/customClientTypes";
 
 interface SliderProps {
   categoryToDisplay: Category;
@@ -50,7 +51,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const previousPeekKey = uuidv4();
   const nextPeekKey = uuidv4();
   const sliderItemWidth = useRef(0);
-  const itemsToDisplay = categoryToDisplay.products;
+  const itemsToDisplay:Product[] = categoryToDisplay.products;
   const sliderId = `${categoryToDisplay.name}-slider`; // Used to track each slider for redux state management
 
   if (!itemsToDisplay) return null;
@@ -132,6 +133,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
   // handle window resize and sets items in row
   const handleWindowResize = () => {
+    
     const innerWidth = window.innerWidth;
     let newItemsPerGroup;
 

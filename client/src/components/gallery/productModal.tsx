@@ -5,6 +5,7 @@ import { RootState } from "../../store";
 import { setProductState } from "../../redux/productSlice";
 import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { Product } from "../../utils/customClientTypes";
+import { current } from "@reduxjs/toolkit";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -13,7 +14,7 @@ const baseCDN =
 const ProductModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { modalItem, modalItemRect } = useAppSelector(
+  const { modalId, modalItemRect } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const { product, productRect, showProductModal } = useAppSelector(
@@ -26,13 +27,31 @@ const ProductModal = () => {
   } | null>(null);
   const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [imageIsLoaded, setImageIsLoaded] = useState<boolean>(false);
+  const [currentWindowSize, setCurrentWindowSize] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
   const [scope, animate] = useAnimate();
-  const maxModalWidth = window.innerWidth;
-  const maxModalHeight = window.innerHeight;
   const productWidth = productRect.width;
   const productHeight = productRect.height;
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
+
+  useLayoutEffect(() => {
+    handleWindowResize();
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, []);
+
+  const handleWindowResize = () => {
+    setCurrentWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
 
   useLayoutEffect(() => {
     // Construct the image URL and set it in state
@@ -51,29 +70,29 @@ const ProductModal = () => {
 
         if (aspectRatio > 1) {
           // Horizontal aspect image
-          finalWidth = maxModalWidth;
+          finalWidth = currentWindowSize.width;
           finalHeight = finalWidth / aspectRatio;
 
-          // Check if finalHeight exceeds maxModalHeight
-          if (finalHeight > maxModalHeight) {
-            finalHeight = maxModalHeight;
+          // Check if finalHeight exceeds currentWindowSize.height
+          if (finalHeight > currentWindowSize.height) {
+            finalHeight = currentWindowSize.height;
             finalWidth = finalHeight * aspectRatio;
           }
         } else {
           // Vertical aspect image
-          finalHeight = maxModalHeight;
+          finalHeight = currentWindowSize.height;
           finalWidth = finalHeight * aspectRatio;
 
-          // Check if finalWidth exceeds maxModalWidth
-          if (finalWidth > maxModalWidth) {
-            finalWidth = maxModalWidth;
+          // Check if finalWidth exceeds currentWindowSize.width
+          if (finalWidth > currentWindowSize.width) {
+            finalWidth = currentWindowSize.width;
             finalHeight = finalWidth / aspectRatio;
           }
         }
 
         // Calculate margins to center the modal
-        const horizontalMargin = (maxModalWidth - finalWidth) / 2;
-        const verticalMargin = (maxModalHeight - finalHeight) / 2;
+        const horizontalMargin = (currentWindowSize.width - finalWidth) / 2;
+        const verticalMargin = (currentWindowSize.height - finalHeight) / 2;
 
         setImgDimensions({
           width: finalWidth,
@@ -82,7 +101,7 @@ const ProductModal = () => {
         });
       };
     }
-  }, [imgSrc, maxModalWidth, maxModalHeight]);
+  }, [imgSrc, currentWindowSize.width, currentWindowSize.height]);
 
   useEffect(() => {
     if (imgDimensions) animateOpen();
@@ -114,29 +133,28 @@ const ProductModal = () => {
   };
 
   const animateClose = async () => {
-    const rect = scope.current.getBoundingClientRect();
-    console.log("miniModalRect", modalItemRect);
-    console.log("productRect", rect);
-    if (rect) {
-      const { bottom, height, left, right, top, width, x, y } = rect;
+    await animate([
+      [
+        scope.current,
+        {
+          // ...modalItemRect,
+          width: modalItemRect.width,
+          height: modalItemRect.height,
+          x: modalItemRect.x,
+          y: modalItemRect.y,
+          margin: 0,
+        },
+        { duration: 0.2 },
+      ],
+    ]);
 
-      await animate([
-        [
-          scope.current,
-          {
-            // ...modalItemRect,
-            width: modalItemRect.width,
-            height: modalItemRect.height,
-            x: modalItemRect.x,
-            y: modalItemRect.y,
-            margin: 0,
-          },
-          { duration: 0.2 },
-        ],
-      ]);
-    }
     dispatch(setProductState({ showProductModal: false }));
     navigate("/gallery/");
+  };
+
+  const closestSliderItem = (element: HTMLElement | null): HTMLElement | null => {
+    if (!element) return null;
+    return element.closest(".slider-item");
   };
 
   return (
@@ -144,7 +162,7 @@ const ProductModal = () => {
       <motion.div ref={scope} className="" style={{ ...productRect }}>
         <motion.div
           id="product-background"
-          className="absolute top-0 left-0 w-full h-full bg-black -z-10"
+          className="absolute top-0 left-0 w-full h-full opacity-50 bg-black -z-10"
           onClick={handleClose}
         />
         <div id="product-buttons" className="relative">

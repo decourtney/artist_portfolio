@@ -27,6 +27,7 @@ const SliderItem = ({
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
+
   const handleMouseEnter = () => {
     if (sliderItemRef.current) {
       const rect = sliderItemRef.current?.getBoundingClientRect();
@@ -36,6 +37,7 @@ const SliderItem = ({
 
         dispatch(
           setMiniModalState({
+            modalId: sliderItemId,
             modalItem: itemToDisplay,
             modalItemRect: {
               bottom: bottom,
