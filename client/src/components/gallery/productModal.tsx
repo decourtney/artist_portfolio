@@ -133,26 +133,34 @@ const ProductModal = () => {
   };
 
   const animateClose = async () => {
-    await animate([
-      [
-        scope.current,
-        {
-          // ...modalItemRect,
-          width: modalItemRect.width,
-          height: modalItemRect.height,
-          x: modalItemRect.x,
-          y: modalItemRect.y,
-          margin: 0,
-        },
-        { duration: 0.2 },
-      ],
-    ]);
+    const sliderItemRect = document
+      .getElementById(modalId)
+      ?.getBoundingClientRect();
+      
+    if (sliderItemRect) {
+      await animate([
+        [
+          scope.current,
+          {
+            // ...modalItemRect,
+            width: sliderItemRect.width,
+            height: sliderItemRect.height,
+            x: sliderItemRect.x,
+            y: sliderItemRect.y,
+            margin: 0,
+          },
+          { duration: 0.2 },
+        ],
+      ]);
+    }
 
     dispatch(setProductState({ showProductModal: false }));
     navigate("/gallery/");
   };
 
-  const closestSliderItem = (element: HTMLElement | null): HTMLElement | null => {
+  const closestSliderItem = (
+    element: HTMLElement | null
+  ): HTMLElement | null => {
     if (!element) return null;
     return element.closest(".slider-item");
   };

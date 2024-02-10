@@ -51,7 +51,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const previousPeekKey = uuidv4();
   const nextPeekKey = uuidv4();
   const sliderItemWidth = useRef(0);
-  const itemsToDisplay:Product[] = categoryToDisplay.products;
+  const itemsToDisplay: Product[] = categoryToDisplay.products;
   const sliderId = `${categoryToDisplay.name}-slider`; // Used to track each slider for redux state management
 
   if (!itemsToDisplay) return null;
@@ -133,13 +133,12 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
   // handle window resize and sets items in row
   const handleWindowResize = () => {
-    
     const innerWidth = window.innerWidth;
     let newItemsPerGroup;
 
     switch (true) {
       case innerWidth > 1920:
-        newItemsPerGroup = 7
+        newItemsPerGroup = 7;
         break;
       case innerWidth > 1440:
         newItemsPerGroup = 6;
@@ -227,6 +226,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             : "pointer-events-auto"
         }`}
       >
+        {/* Previous Group */}
         <section className="absolute right-full flex h-full w-full pointer-events-none">
           <div
             id="groupPeek"
@@ -247,7 +247,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
               return (
                 <SliderItem
                   key={key}
-                  sliderItemId={key}
+                  sliderItemId={`${index}-previous-${categoryToDisplay.name}`}
                   itemToDisplay={itemsToDisplay[index]}
                   sliderItemWidth={sliderItemWidth.current}
                 />
@@ -255,27 +255,30 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             })}
         </section>
 
+        {/* Visible Group */}
         <section className="absolute flex h-full w-full">
-          {visibleGroup.map((index) => {
+          {visibleGroup.map((item, index) => {
             const key = uuidv4();
+            // console.log(visibleGroup);
             return (
               <SliderItem
                 key={key}
-                sliderItemId={key}
-                itemToDisplay={itemsToDisplay[index]}
+                sliderItemId={`${index}-visible-${categoryToDisplay.name}`}
+                itemToDisplay={itemsToDisplay[item]}
                 sliderItemWidth={sliderItemWidth.current}
               />
             );
           })}
         </section>
 
+        {/* Next Group */}
         <section className="absolute left-full flex h-full w-full pointer-events-none">
           {nextGroup.map((index) => {
             const key = uuidv4();
             return (
               <SliderItem
                 key={key}
-                sliderItemId={key}
+                sliderItemId={`${index}-next-${categoryToDisplay.name}`}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth.current}
               />

@@ -42,7 +42,7 @@ export const miniModalSlice = createSlice({
     setMiniModalState: (
       state: MiniModalState,
       action: PayloadAction<{
-        modalId: string;
+        modalId?: string;
         modalItem?: Category | Product;
         modalItemRect?: {
           bottom: number;

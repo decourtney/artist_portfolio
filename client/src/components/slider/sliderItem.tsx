@@ -27,6 +27,8 @@ const SliderItem = ({
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
+  if (!itemToDisplay) return null;
+  const modalId = `${sliderItemId}-${itemToDisplay.name}`;
 
   const handleMouseEnter = () => {
     if (sliderItemRef.current) {
@@ -37,7 +39,7 @@ const SliderItem = ({
 
         dispatch(
           setMiniModalState({
-            modalId: sliderItemId,
+            modalId: modalId,
             modalItem: itemToDisplay,
             modalItemRect: {
               bottom: bottom,
@@ -57,16 +59,19 @@ const SliderItem = ({
   };
 
   const handleOnClick = () => {
-    dispatch(setProductState({ product: itemToDisplay as Product, showProductModal: true }));;
+    dispatch(
+      setProductState({
+        product: itemToDisplay as Product,
+        showProductModal: true,
+      })
+    );
     navigate(`/gallery/${itemToDisplay.name}`);
   };
-
-  if (!itemToDisplay) return null;
 
   return (
     <section
       ref={sliderItemRef}
-      id={sliderItemId}
+      id={modalId}
       className="slider-item px-1 shadow-md"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
       onMouseOver={handleMouseEnter}
