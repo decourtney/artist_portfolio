@@ -59,6 +59,7 @@ const MiniModal = () => {
         //   finalHeight = minHeight;
         //   finalWidth = finalHeight * aspectRatio;
         // }
+        console.log(window.innerWidth, window.innerHeight)
 
         // Calculate the margin to center the modal relative to modalItem size
         const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
@@ -68,7 +69,8 @@ const MiniModal = () => {
         setImgDimensions({
           width: finalWidth,
           height: finalHeight,
-          margin: `${verticalMargin}px ${horizontalMargin}px`,
+          margin: `${verticalMargin} ${horizontalMargin}`
+          // margin: `${verticalMargin}px ${horizontalMargin}px`,
         });
       };
     }
@@ -83,9 +85,7 @@ const MiniModal = () => {
       [
         scope.current,
         {
-          width: imgDimensions?.width,
-          height: imgDimensions?.height,
-          margin: `${imgDimensions?.margin}`,
+          ...imgDimensions,
         },
         { duration: 0.2 },
       ],
@@ -130,17 +130,16 @@ const MiniModal = () => {
   };
 
   return (
-    <section id="miniModal" className={`absolute w-full h-full z-10`}>
+    <section id="miniModal" className="absolute w-full h-full z-10">
       <motion.div
         ref={scope}
         key={modalItem.name}
-        className="shadow-md w-full h-full"
         style={{ ...modalItemRect }}
         onMouseLeave={animateClose}
         onClick={handleOnClick}
       >
         {imgSrc && (
-          <div className="w-full h-full">
+          <>
             <img
               src={imgSrc}
               className="w-full h-full shadow-lg object-cover rounded-t-md"
@@ -154,7 +153,7 @@ const MiniModal = () => {
             >
               Words and stuff go here
             </motion.div>
-          </div>
+          </>
         )}
       </motion.div>
     </section>

@@ -6,7 +6,7 @@ import { setProductState } from "../../redux/productSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 
 interface SliderItemProps {
-  sliderItemId: string;
+  partialSliderItemId: string;
   itemToDisplay: Category | Product;
   sliderItemWidth: number;
   // onClick: (item: Category | Product) => void;
@@ -17,7 +17,7 @@ const baseCDN =
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 const SliderItem = ({
-  sliderItemId,
+  partialSliderItemId,
   itemToDisplay,
   sliderItemWidth,
 }: SliderItemProps) => {
@@ -28,7 +28,7 @@ const SliderItem = ({
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   if (!itemToDisplay) return null;
-  const modalId = `${sliderItemId}-${itemToDisplay.name}`;
+  const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
 
   const handleMouseEnter = () => {
     if (sliderItemRef.current) {
@@ -39,7 +39,7 @@ const SliderItem = ({
 
         dispatch(
           setMiniModalState({
-            modalId: modalId,
+            modalId: sliderItemId,
             modalItem: itemToDisplay,
             modalItemRect: {
               bottom: bottom,
@@ -58,20 +58,10 @@ const SliderItem = ({
     }
   };
 
-  const handleOnClick = () => {
-    dispatch(
-      setProductState({
-        product: itemToDisplay as Product,
-        showProductModal: true,
-      })
-    );
-    navigate(`/gallery/${itemToDisplay.name}`);
-  };
-
   return (
     <section
       ref={sliderItemRef}
-      id={modalId}
+      id={sliderItemId}
       className="slider-item px-1 shadow-md"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
       onMouseOver={handleMouseEnter}
@@ -79,7 +69,7 @@ const SliderItem = ({
       {/* FIXME Shadow doesnt appear below image */}
       {itemToDisplay && (
         <img
-          className="h-full w-full object-cover rounded-sm"
+          className="w-full h-full object-cover rounded-sm "
           src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
           alt={itemToDisplay.name}
           loading="lazy"

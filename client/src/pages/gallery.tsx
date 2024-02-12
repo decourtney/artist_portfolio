@@ -78,7 +78,7 @@ const Gallery = () => {
   return (
     <>
       {/* <Hero /> */}
-      <section id="gallery" className="relative flex flex-col w-full h-full min-h-screen">
+      <section id="gallery" className="relative flex flex-col h-full min-h-screen">
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {
@@ -93,11 +93,9 @@ const Gallery = () => {
             }
           })}
 
-          {isCategoryModal && <CategoryModal />}
-          {showProductModal && <ProductModal />}
-          {/* TODO Need to double check the method of opening the miniModal  */}
-          {/* {isMiniModal && <MiniModal />} */}
-          {showMiniModal && <MiniModal />}
+        {isCategoryModal && <CategoryModal />}
+        {showProductModal && <ProductModal />}
+        {showMiniModal && <MiniModal />}
       </section>
     </>
   );

@@ -112,11 +112,10 @@ const ProductModal = () => {
     navigate(-1);
   };
 
-  const handleClose = () => {
-    animateClose();
-  };
-
   const animateOpen = async () => {
+    const sliderItem = document.getElementById(modalId);
+    if (sliderItem) sliderItem.style.visibility = 'hidden';
+    
     await animate([
       [
         scope.current,
@@ -136,7 +135,7 @@ const ProductModal = () => {
     const sliderItemRect = document
       .getElementById(modalId)
       ?.getBoundingClientRect();
-      
+
     if (sliderItemRect) {
       await animate([
         [
@@ -167,11 +166,11 @@ const ProductModal = () => {
 
   return (
     <section id="productModal" className="absolute w-full h-full z-50">
-      <motion.div ref={scope} className="" style={{ ...productRect }}>
+      <motion.div ref={scope} style={{ ...productRect }}>
         <motion.div
           id="product-background"
           className="absolute top-0 left-0 w-full h-full opacity-50 bg-black -z-10"
-          onClick={handleClose}
+          onClick={animateClose}
         />
         <div id="product-buttons" className="relative">
           <button
@@ -185,7 +184,7 @@ const ProductModal = () => {
 
           <button
             className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
-            onClick={handleClose}
+            onClick={animateClose}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
               close

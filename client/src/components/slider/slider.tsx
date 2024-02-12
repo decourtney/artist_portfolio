@@ -213,7 +213,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   return (
-    <div id="slider" className="group relative px-[4vw] overflow-hidden">
+    <div id="slider" className="group relative px-[4dvw] overflow-hidden">
       {sliderState[sliderId] && sliderState[sliderId].sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
@@ -234,7 +234,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           >
             <SliderItem
               key={previousPeekKey}
-              sliderItemId={previousPeekKey}
+              partialSliderItemId={previousPeekKey}
               itemToDisplay={itemsToDisplay[previousPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />
@@ -247,7 +247,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
               return (
                 <SliderItem
                   key={key}
-                  sliderItemId={`${index}-previous-${categoryToDisplay.name}`}
+                  partialSliderItemId={`${index}-previous-${categoryToDisplay.name}`}
                   itemToDisplay={itemsToDisplay[index]}
                   sliderItemWidth={sliderItemWidth.current}
                 />
@@ -263,7 +263,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             return (
               <SliderItem
                 key={key}
-                sliderItemId={`${index}-visible-${categoryToDisplay.name}`}
+                partialSliderItemId={`${index}-visible-${categoryToDisplay.name}`}
                 itemToDisplay={itemsToDisplay[item]}
                 sliderItemWidth={sliderItemWidth.current}
               />
@@ -278,7 +278,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             return (
               <SliderItem
                 key={key}
-                sliderItemId={`${index}-next-${categoryToDisplay.name}`}
+                partialSliderItemId={`${index}-next-${categoryToDisplay.name}`}
                 itemToDisplay={itemsToDisplay[index]}
                 sliderItemWidth={sliderItemWidth.current}
               />
@@ -288,7 +288,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           <div id="groupPeek" className="absolute left-full flex h-full w-full">
             <SliderItem
               key={nextPeekKey}
-              sliderItemId={nextPeekKey}
+              partialSliderItemId={nextPeekKey}
               itemToDisplay={itemsToDisplay[nextPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />
