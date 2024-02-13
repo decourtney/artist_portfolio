@@ -212,6 +212,16 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     }
   };
 
+  const getMarginPosition = (index: number, arrLength: number) => {
+    if (index === 0) {
+      return "left";
+    } else if (index === arrLength - 1) {
+      return "right";
+    } else {
+      return null;
+    }
+  };
+
   return (
     <div id="slider" className="group relative px-[4dvw] overflow-hidden">
       {sliderState[sliderId] && sliderState[sliderId].sliderHasMoved && (
@@ -242,14 +252,17 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
           {sliderState[sliderId] &&
             sliderState[sliderId].sliderHasMoved &&
-            previousGroup.map((index) => {
+            previousGroup.map((item, index) => {
               const key = uuidv4();
+              const marginPosition = getMarginPosition(index, previousGroup.length);
+
               return (
                 <SliderItem
                   key={key}
                   partialSliderItemId={`${index}-previous-${categoryToDisplay.name}`}
-                  itemToDisplay={itemsToDisplay[index]}
+                  itemToDisplay={itemsToDisplay[item]}
                   sliderItemWidth={sliderItemWidth.current}
+                  // marginPosition={marginPosition}
                 />
               );
             })}
@@ -259,13 +272,18 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         <section className="absolute flex h-full w-full">
           {visibleGroup.map((item, index) => {
             const key = uuidv4();
-            // console.log(visibleGroup);
+            const marginPosition = getMarginPosition(
+              index,
+              visibleGroup.length
+            );
+
             return (
               <SliderItem
                 key={key}
                 partialSliderItemId={`${index}-visible-${categoryToDisplay.name}`}
                 itemToDisplay={itemsToDisplay[item]}
                 sliderItemWidth={sliderItemWidth.current}
+                marginPosition={marginPosition}
               />
             );
           })}
@@ -273,14 +291,20 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
         {/* Next Group */}
         <section className="absolute left-full flex h-full w-full pointer-events-none">
-          {nextGroup.map((index) => {
+          {nextGroup.map((item, index) => {
             const key = uuidv4();
+               const marginPosition = getMarginPosition(
+                 index,
+                 nextGroup.length
+               );
+
             return (
               <SliderItem
                 key={key}
                 partialSliderItemId={`${index}-next-${categoryToDisplay.name}`}
-                itemToDisplay={itemsToDisplay[index]}
+                itemToDisplay={itemsToDisplay[item]}
                 sliderItemWidth={sliderItemWidth.current}
+                // marginPosition={marginPosition}
               />
             );
           })}

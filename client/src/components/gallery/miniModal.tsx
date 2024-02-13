@@ -14,7 +14,7 @@ const baseCDN =
 const MiniModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { modalItem, modalItemRect } = useAppSelector(
+  const { modalItem, modalItemRect, marginPosition } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const [imgDimensions, setImgDimensions] = useState<{
@@ -59,18 +59,23 @@ const MiniModal = () => {
         //   finalHeight = minHeight;
         //   finalWidth = finalHeight * aspectRatio;
         // }
-        console.log(window.innerWidth, window.innerHeight)
 
         // Calculate the margin to center the modal relative to modalItem size
-        const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
+        let horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
         const verticalMargin =
           (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
+
+        // Adjust margin for first and last item
+        if (marginPosition === "left") {
+          horizontalMargin = 0;
+        } else if (marginPosition === "right") {
+          horizontalMargin = horizontalMargin * 2;
+        }
 
         setImgDimensions({
           width: finalWidth,
           height: finalHeight,
-          margin: `${verticalMargin} ${horizontalMargin}`
-          // margin: `${verticalMargin}px ${horizontalMargin}px`,
+          margin: `${verticalMargin}px ${horizontalMargin}px`,
         });
       };
     }

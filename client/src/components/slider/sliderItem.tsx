@@ -9,6 +9,8 @@ interface SliderItemProps {
   partialSliderItemId: string;
   itemToDisplay: Category | Product;
   sliderItemWidth: number;
+  marginPosition?: string | null;
+
   // onClick: (item: Category | Product) => void;
 }
 
@@ -20,6 +22,7 @@ const SliderItem = ({
   partialSliderItemId,
   itemToDisplay,
   sliderItemWidth,
+  marginPosition,
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -36,6 +39,7 @@ const SliderItem = ({
 
       if (rect) {
         const { bottom, height, left, right, top, width, x, y } = rect;
+        if (!marginPosition) marginPosition = null; // Default null
 
         dispatch(
           setMiniModalState({
@@ -52,6 +56,7 @@ const SliderItem = ({
               y: y,
             },
             showMiniModal: true,
+            marginPosition: marginPosition,
           })
         );
       }
