@@ -18,7 +18,7 @@ const baseCDN =
 // need this modal to redirect to /gallery/:productName - need to test how it looks when the back button is clicked
 const GalleryModal = () => {
   const categoryData = useAppSelector<Category>(
-    (state) => state.category.data
+    (state) => state.category.categoryState.data
   );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

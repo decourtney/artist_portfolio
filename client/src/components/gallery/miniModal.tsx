@@ -129,13 +129,21 @@ const MiniModal = () => {
         showProductModal: true,
       })
     );
-    // dispatch(setMiniModalState({ showMiniModal: false }));
+    dispatch(setMiniModalState({ showMiniModal: false }));
 
     navigate(`/gallery/${modalItem.name}`);
   };
 
   return (
-    <section id="miniModal" className="absolute w-full h-full z-10">
+    <section
+      id="miniModal"
+      className="absolute w-full h-full z-10"
+      onClick={() => {
+        // This works fine but also need it to close when touchmove is detected
+        console.log("onTouchStart")
+        animateClose();
+      }}
+    >
       <motion.div
         ref={scope}
         key={modalItem.name}

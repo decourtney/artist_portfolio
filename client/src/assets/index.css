@@ -1188,9 +1188,9 @@ video {
   padding-right: 1rem;
 }
 
-.px-\[4vw\] {
-  padding-left: 4vw;
-  padding-right: 4vw;
+.px-\[4dvw\] {
+  padding-left: 4dvw;
+  padding-right: 4dvw;
 }
 
 .py-1 {
@@ -1211,11 +1211,6 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
-}
-
-.px-\[4dvw\] {
-  padding-left: 4dvw;
-  padding-right: 4dvw;
 }
 
 .pb-3 {

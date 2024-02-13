@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppDispatch } from "../../redux/hooks";
 import { setProductState } from "../../redux/productSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
+import DetectMobile from "../../utils/detectMobile";
 
 interface SliderItemProps {
   partialSliderItemId: string;
@@ -26,6 +27,7 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [isMobile, setIsMobile] = useState(DetectMobile())
   const sliderItemRef = useRef<HTMLElement>(null);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
@@ -33,7 +35,7 @@ const SliderItem = ({
   if (!itemToDisplay) return null;
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
 
-  const handleMouseEnter = () => {
+  const handleMouseOrTouchEvent = () => {
     if (sliderItemRef.current) {
       const rect = sliderItemRef.current?.getBoundingClientRect();
 
@@ -63,13 +65,17 @@ const SliderItem = ({
     }
   };
 
+const eventHandler = isMobile ? "onClick" : "onMouseEnter";
+
   return (
     <section
       ref={sliderItemRef}
       id={sliderItemId}
       className="slider-item px-1 shadow-md"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
-      onMouseOver={handleMouseEnter}
+      // onMouseOver={handleMouseEnter}
+      // onClick={handleMouseOrTouchEvent}
+      {...{ [eventHandler]: handleMouseOrTouchEvent }}
     >
       {/* FIXME Shadow doesnt appear below image */}
       {itemToDisplay && (
