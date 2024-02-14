@@ -14,7 +14,7 @@ const baseCDN =
 const ProductModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { modalId, modalItemRect } = useAppSelector(
+  const { miniModalContainerId, modalItemRect } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const { product, productRect, showProductModal } = useAppSelector(
@@ -38,20 +38,21 @@ const ProductModal = () => {
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   useLayoutEffect(() => {
+    const handleWindowResize = () => {
+      setCurrentWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
     handleWindowResize();
+
     window.addEventListener("resize", handleWindowResize);
 
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
-
-  const handleWindowResize = () => {
-    setCurrentWindowSize({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  };
 
   useLayoutEffect(() => {
     // Construct the image URL and set it in state
@@ -113,16 +114,14 @@ const ProductModal = () => {
   };
 
   const animateOpen = async () => {
-    const sliderItem = document.getElementById(modalId);
-    if (sliderItem) sliderItem.style.visibility = 'hidden';
-    
+    const sliderItem = document.getElementById(miniModalContainerId);
+    if (sliderItem) sliderItem.style.visibility = "hidden";
+
     await animate([
       [
         scope.current,
         {
-          width: imgDimensions?.width,
-          height: imgDimensions?.height,
-          margin: `${imgDimensions?.margin}`,
+          ...imgDimensions,
           x: 0,
           y: 0,
         },
@@ -133,7 +132,7 @@ const ProductModal = () => {
 
   const animateClose = async () => {
     const sliderItemRect = document
-      .getElementById(modalId)
+      .getElementById(miniModalContainerId)
       ?.getBoundingClientRect();
 
     if (sliderItemRect) {

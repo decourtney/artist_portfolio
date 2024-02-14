@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useLayoutEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { RootState } from "../../store";
 import { setProductState } from "../../redux/productSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import DetectMobile from "../../utils/detectMobile";
@@ -27,8 +28,9 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [isMobile, setIsMobile] = useState(DetectMobile())
+  const [isMobile, setIsMobile] = useState(DetectMobile());
   const sliderItemRef = useRef<HTMLElement>(null);
+
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
@@ -45,7 +47,7 @@ const SliderItem = ({
 
         dispatch(
           setMiniModalState({
-            modalId: sliderItemId,
+            miniModalContainerId: sliderItemId,
             modalItem: itemToDisplay,
             modalItemRect: {
               bottom: bottom,
@@ -65,7 +67,7 @@ const SliderItem = ({
     }
   };
 
-const eventHandler = isMobile ? "onClick" : "onMouseEnter";
+  const eventHandler = isMobile ? "onClick" : "onMouseEnter";
 
   return (
     <section
@@ -73,8 +75,6 @@ const eventHandler = isMobile ? "onClick" : "onMouseEnter";
       id={sliderItemId}
       className="slider-item px-1 shadow-md"
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
-      // onMouseOver={handleMouseEnter}
-      // onClick={handleMouseOrTouchEvent}
       {...{ [eventHandler]: handleMouseOrTouchEvent }}
     >
       {/* FIXME Shadow doesnt appear below image */}

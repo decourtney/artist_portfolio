@@ -14,9 +14,8 @@ const baseCDN =
 const MiniModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { modalItem, modalItemRect, marginPosition } = useAppSelector(
-    (state: RootState) => state.miniModal.miniModalState
-  );
+  const { miniModalContainerId, modalItem, modalItemRect, marginPosition } =
+    useAppSelector((state: RootState) => state.miniModal.miniModalState);
   const [imgDimensions, setImgDimensions] = useState<{
     width: number;
     height: number;
@@ -107,6 +106,7 @@ const MiniModal = () => {
       [
         scope.current,
         {
+          ...modalItemRect,
           width: sliderItemWidth,
           height: sliderItemHeight,
           margin: 0,
@@ -120,6 +120,7 @@ const MiniModal = () => {
 
   // On click miniModal's bounding rect and set as product rect ensuring productModal starts as same size
   const handleOnClick = () => {
+    console.log("clicked");
     const { bottom, height, left, right, top, width, x, y } =
       scope.current.getBoundingClientRect();
     dispatch(
@@ -138,18 +139,18 @@ const MiniModal = () => {
     <section
       id="miniModal"
       className="absolute w-full h-full z-10"
-      onClick={() => {
-        // This works fine but also need it to close when touchmove is detected
-        console.log("onTouchStart")
-        animateClose();
-      }}
+      onClick={animateClose}
     >
       <motion.div
         ref={scope}
         key={modalItem.name}
+        className="z-20"
         style={{ ...modalItemRect }}
         onMouseLeave={animateClose}
-        onClick={handleOnClick}
+        onClick={(event) => {
+          event.stopPropagation();
+          handleOnClick();
+        }}
       >
         {imgSrc && (
           <>
