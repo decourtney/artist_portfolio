@@ -13,6 +13,7 @@ interface SliderItemState {
         x: number;
         y: number;
       };
+      sliderItemVisibility: string,
     };
   };
 }
@@ -32,6 +33,7 @@ export const sliderItemSlice = createSlice({
           x: number;
           y: number;
         };
+        sliderItemVisibility: string,
       };
     },
   },
@@ -40,7 +42,7 @@ export const sliderItemSlice = createSlice({
       state: SliderItemState,
       action: PayloadAction<{
         sliderItemId?: string;
-        sliderItemRect: {
+        sliderItemRect?: {
           bottom: number;
           height: number;
           left: number;
@@ -50,6 +52,7 @@ export const sliderItemSlice = createSlice({
           x: number;
           y: number;
         };
+        sliderItemVisibility?: string
       }>
     ) => {
       const { sliderItemId, ...newState } = action.payload;

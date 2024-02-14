@@ -6,6 +6,7 @@ import { setProductState } from "../../redux/productSlice";
 import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { Product } from "../../utils/customClientTypes";
 import { current } from "@reduxjs/toolkit";
+import { setSliderItemState } from "../../redux/sliderItemSlice";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -14,12 +15,11 @@ const baseCDN =
 const ProductModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { miniModalContainerId, modalItemRect } = useAppSelector(
-    (state: RootState) => state.miniModal.miniModalState
-  );
-  const { product, productRect, showProductModal } = useAppSelector(
+  const { productContainerId, product, productRect, showProductModal } = useAppSelector(
     (state: RootState) => state.product.productState
   );
+  const { sliderItemRect, sliderItemVisibility } = useAppSelector(
+    (state: RootState) => state.sliderItem.sliderItemState[productContainerId]);
   const [imgDimensions, setImgDimensions] = useState<{
     width: number;
     height: number;
@@ -32,8 +32,7 @@ const ProductModal = () => {
     height: number;
   }>({ width: 0, height: 0 });
   const [scope, animate] = useAnimate();
-  const productWidth = productRect.width;
-  const productHeight = productRect.height;
+
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
@@ -109,14 +108,15 @@ const ProductModal = () => {
   }, [imgDimensions]);
 
   const handleBack = () => {
-    dispatch(setProductState({ showProductModal: false }));
+    dispatch(
+      setProductState({
+        showProductModal: false
+      })
+    );
     navigate(-1);
   };
 
   const animateOpen = async () => {
-    const sliderItem = document.getElementById(miniModalContainerId);
-    if (sliderItem) sliderItem.style.visibility = "hidden";
-
     await animate([
       [
         scope.current,
@@ -131,26 +131,16 @@ const ProductModal = () => {
   };
 
   const animateClose = async () => {
-    const sliderItemRect = document
-      .getElementById(miniModalContainerId)
-      ?.getBoundingClientRect();
-
-    if (sliderItemRect) {
-      await animate([
-        [
-          scope.current,
-          {
-            // ...modalItemRect,
-            width: sliderItemRect.width,
-            height: sliderItemRect.height,
-            x: sliderItemRect.x,
-            y: sliderItemRect.y,
-            margin: 0,
-          },
-          { duration: 0.2 },
-        ],
-      ]);
-    }
+    await animate([
+      [
+        scope.current,
+        {
+          ...sliderItemRect,
+          margin: 0,
+        },
+        { duration: 0.2 },
+      ],
+    ]);
 
     dispatch(setProductState({ showProductModal: false }));
     navigate("/gallery/");
@@ -164,16 +154,18 @@ const ProductModal = () => {
   };
 
   return (
-    <section id="productModal" className="absolute w-full h-full z-50">
-      <motion.div ref={scope} style={{ ...productRect }}>
-        <motion.div
+    <section id="productModal"
+      className="absolute w-full h-full z-50"
+    >
+      <motion.div ref={scope} style={{ ...productRect}}>
+        <div
           id="product-background"
           className="absolute top-0 left-0 w-full h-full opacity-50 bg-black -z-10"
           onClick={animateClose}
         />
         <div id="product-buttons" className="relative">
           <button
-            className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none bg-blue-500"
+            className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
             onClick={handleBack}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">

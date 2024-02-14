@@ -6,6 +6,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import { setProductState } from "../../redux/productSlice";
+import { setSliderItemState } from "../../redux/sliderItemSlice"
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -34,12 +35,15 @@ const MiniModal = () => {
   const sliderItemHeight =
     sliderItemState[miniModalContainerId].sliderItemRect.height;
   const detailsHeight = 96;
-  
+
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
+  // responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
+  // the modal stays open and lost = need to close when sliderItem leaves.
+
   useEffect(() => {
-    // Construct the image URL and set it in state
+    // Construct image URL
     if (modalItem) setImgSrc(`${baseCDN}/${userParam}/${modalItem.image}`);
   }, [userParam, modalItem]);
 
@@ -127,17 +131,30 @@ const MiniModal = () => {
 
   // On click miniModal's bounding rect and set as product rect ensuring productModal starts as same size
   const handleOnClick = () => {
-    console.log("clicked");
     const { bottom, height, left, right, top, width, x, y } =
       scope.current.getBoundingClientRect();
+
+    dispatch(
+      setMiniModalState({
+        showMiniModal: false
+      })
+    );
+
     dispatch(
       setProductState({
+        productContainerId: miniModalContainerId,
         product: modalItem as Product,
         productRect: { bottom, height, left, right, top, width, x, y },
         showProductModal: true,
       })
     );
-    dispatch(setMiniModalState({ showMiniModal: false }));
+
+    dispatch(
+      setSliderItemState({
+        sliderItemId: miniModalContainerId,
+        sliderItemVisibility: 'hidden',
+      })
+    );
 
     navigate(`/gallery/${modalItem.name}`);
   };

@@ -5,7 +5,7 @@ interface MiniModalState {
   miniModalState: {
     miniModalContainerId: string;
     modalItem: Category | Product;
-    modalItemRect: {
+    miniModalRect: {
       bottom: number;
       height: number;
       left: number;
@@ -26,7 +26,7 @@ export const miniModalSlice = createSlice({
     miniModalState: {} as {
       miniModalContainerId: string;
       modalItem: Category | Product;
-      modalItemRect: {
+      miniModalRect: {
         bottom: number;
         height: number;
         left: number;
@@ -46,7 +46,7 @@ export const miniModalSlice = createSlice({
       action: PayloadAction<{
         miniModalContainerId?: string;
         modalItem?: Category | Product;
-        modalItemRect?: {
+        miniModalRect?: {
           bottom: number;
           height: number;
           left: number;

@@ -254,7 +254,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             sliderState[sliderId].sliderHasMoved &&
             previousGroup.map((item, index) => {
               const key = uuidv4();
-              const marginPosition = getMarginPosition(index, previousGroup.length);
 
               return (
                 <SliderItem
@@ -262,7 +261,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
                   partialSliderItemId={`${index}-previous-${categoryToDisplay.name}`}
                   itemToDisplay={itemsToDisplay[item]}
                   sliderItemWidth={sliderItemWidth.current}
-                  // marginPosition={marginPosition}
                 />
               );
             })}
@@ -293,10 +291,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         <section className="absolute left-full flex h-full w-full pointer-events-none">
           {nextGroup.map((item, index) => {
             const key = uuidv4();
-               const marginPosition = getMarginPosition(
-                 index,
-                 nextGroup.length
-               );
 
             return (
               <SliderItem
@@ -304,7 +298,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
                 partialSliderItemId={`${index}-next-${categoryToDisplay.name}`}
                 itemToDisplay={itemsToDisplay[item]}
                 sliderItemWidth={sliderItemWidth.current}
-                // marginPosition={marginPosition}
               />
             );
           })}
