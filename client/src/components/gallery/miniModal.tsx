@@ -14,8 +14,12 @@ const baseCDN =
 const MiniModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { miniModalContainerId, modalItem, modalItemRect, marginPosition } =
-    useAppSelector((state: RootState) => state.miniModal.miniModalState);
+  const { miniModalContainerId, modalItem, marginPosition } = useAppSelector(
+    (state: RootState) => state.miniModal.miniModalState
+  );
+  const sliderItemState = useAppSelector(
+    (state: RootState) => state.sliderItem.sliderItemState
+  );
   const [imgDimensions, setImgDimensions] = useState<{
     width: number;
     height: number;
@@ -25,9 +29,12 @@ const MiniModal = () => {
   const [scope, animate] = useAnimate();
   const maxModalWidth = 300;
   const maxModalHeight = 300;
-  const sliderItemWidth = modalItemRect.width;
-  const sliderItemHeight = modalItemRect.height;
+  const sliderItemWidth =
+    sliderItemState[miniModalContainerId].sliderItemRect.width;
+  const sliderItemHeight =
+    sliderItemState[miniModalContainerId].sliderItemRect.height;
   const detailsHeight = 96;
+  
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
@@ -78,7 +85,7 @@ const MiniModal = () => {
         });
       };
     }
-  }, [imgSrc]);
+  }, [imgSrc, sliderItemState]);
 
   useEffect(() => {
     if (imgDimensions) animateOpen();
@@ -106,7 +113,7 @@ const MiniModal = () => {
       [
         scope.current,
         {
-          ...modalItemRect,
+          ...sliderItemState[miniModalContainerId].sliderItemRect,
           width: sliderItemWidth,
           height: sliderItemHeight,
           margin: 0,
@@ -145,7 +152,7 @@ const MiniModal = () => {
         ref={scope}
         key={modalItem.name}
         className="z-20"
-        style={{ ...modalItemRect }}
+        style={{ ...sliderItemState[miniModalContainerId].sliderItemRect }}
         onMouseLeave={animateClose}
         onClick={(event) => {
           event.stopPropagation();

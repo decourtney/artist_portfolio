@@ -3,6 +3,7 @@ import categoryReducer from "./redux/categorySlice";
 import productReducer from "./redux/productSlice";
 import sliderReducer from "./redux/sliderSlice";
 import miniModalReducer from "./redux/miniModalSlice";
+import sliderItemReducer from "./redux/sliderItemSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     product: productReducer,
     slider: sliderReducer,
     miniModal: miniModalReducer,
+    sliderItem: sliderItemReducer,
   },
 });
 

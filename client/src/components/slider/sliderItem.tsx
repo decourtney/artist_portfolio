@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { RootState } from "../../store";
-import { setProductState } from "../../redux/productSlice";
+import { setSliderItemState } from "../../redux/sliderItemSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import DetectMobile from "../../utils/detectMobile";
 
@@ -37,6 +37,43 @@ const SliderItem = ({
   if (!itemToDisplay) return null;
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
 
+  useLayoutEffect(() => {
+    const handleWindowResize = () => {
+      if (sliderItemRef.current) {
+        const rect = sliderItemRef.current?.getBoundingClientRect();
+
+        if (rect) {
+          const { bottom, height, left, right, top, width, x, y } = rect;
+          if (!marginPosition) marginPosition = null; // Default null
+
+          dispatch(
+            setSliderItemState({
+              sliderItemId: sliderItemId,
+              sliderItemRect: {
+                bottom: bottom,
+                height: height,
+                left: left,
+                right: right,
+                top: top,
+                width: width,
+                x: x,
+                y: y,
+              },
+            })
+          );
+        }
+      }
+    };
+
+    handleWindowResize();
+
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, []);
+
   const handleMouseOrTouchEvent = () => {
     if (sliderItemRef.current) {
       const rect = sliderItemRef.current?.getBoundingClientRect();
@@ -49,16 +86,16 @@ const SliderItem = ({
           setMiniModalState({
             miniModalContainerId: sliderItemId,
             modalItem: itemToDisplay,
-            modalItemRect: {
-              bottom: bottom,
-              height: height,
-              left: left,
-              right: right,
-              top: top,
-              width: width,
-              x: x,
-              y: y,
-            },
+            // modalItemRect: {
+            //   bottom: bottom,
+            //   height: height,
+            //   left: left,
+            //   right: right,
+            //   top: top,
+            //   width: width,
+            //   x: x,
+            //   y: y,
+            // },
             showMiniModal: true,
             marginPosition: marginPosition,
           })
