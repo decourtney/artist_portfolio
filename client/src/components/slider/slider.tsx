@@ -31,15 +31,6 @@ interface SliderProps {
 }
 
 const Slider = ({ categoryToDisplay }: SliderProps) => {
-  const [itemsPerGroup, setItemsPerGroup] = useState<number>(1); // This value is dynamically changed with window size
-  const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
-  const [visibleGroup, setVisibleGroup] = useState<number[]>([]); // Stores indexes of visible group
-  const [nextGroup, setNextGroup] = useState<number[]>([]); // Stores indexes of next group
-  const [previousPeek, setPreviousPeek] = useState<number>(0); // Stores the index of the previous peek card
-  const [nextPeek, setNextPeek] = useState<number>(0); // Stores the index of the next peek card
-  const [slideDirection, setSlideDirection] = useState<"next" | "prev" | null>(
-    null
-  );
   const [scope, animate] = useAnimate();
   const dispatch = useAppDispatch();
   const sliderState = useAppSelector(
@@ -47,6 +38,16 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   );
   const sliderGlobalState = useAppSelector(
     (state: RootState) => state.slider.globalSettings
+  );
+  const [itemsPerGroup, setItemsPerGroup] = useState<number>(1); // This value is dynamically changed with window size
+  const [scrollAmount, setScrollAmount] = useState<number>(4)
+  const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
+  const [visibleGroup, setVisibleGroup] = useState<number[]>([]); // Stores indexes of visible group
+  const [nextGroup, setNextGroup] = useState<number[]>([]); // Stores indexes of next group
+  const [previousPeek, setPreviousPeek] = useState<number>(0); // Stores the index of the previous peek card
+  const [nextPeek, setNextPeek] = useState<number>(0); // Stores the index of the next peek card
+  const [slideDirection, setSlideDirection] = useState<"next" | "prev" | null>(
+    null
   );
   const previousPeekKey = uuidv4();
   const nextPeekKey = uuidv4();
@@ -56,13 +57,21 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
   // Scroll amount may be user adjusted later - targetScrollAmount will be the selected scroll amount
   // but actual scroll amount is bound between target amount and itemsPerGroup so not to scroll more than visible
-  const targetScrollAmount = 4;
-  const scrollAmount = useRef(targetScrollAmount);
+  const targetScrollAmount = 1;
+  // const scrollAmount = useRef(targetScrollAmount);
+  
+  // if (scrollAmount.current > itemsPerGroup) {
+  //   scrollAmount.current = itemsPerGroup;
+  // } else {
+  //   scrollAmount.current = targetScrollAmount;
+  // }
 
   if (!itemsToDisplay) return null;
+  console.log(itemsToDisplay)
 
   useLayoutEffect(() => {
     handleWindowResize();
+   
     window.addEventListener("resize", handleWindowResize);
 
     return () => {
@@ -82,19 +91,14 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     }
   }, []);
 
-  useLayoutEffect(() => {
-    // Bind scroll amount between target amount and the number of visible items
-    if (scrollAmount.current > itemsPerGroup) {
-      scrollAmount.current = itemsPerGroup;
-    } else {
-      scrollAmount.current = targetScrollAmount;
-    }
-
+  // Set the number of items to display based on window size
+  useLayoutEffect(() => {  
     getSliderIndexGroups();
 
     sliderItemWidth.current = 100 / itemsPerGroup;
   }, [itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
 
+  // Get the indexes of the previous, visible and next groups
   useEffect(() => {
     if (sliderGlobalState.isSliding) {
       let currentLowestIndex: number;
@@ -103,16 +107,16 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       if (slideDirection === "next") {
         {
           currentLowestIndex = getPositiveModulo(
-            sliderState[sliderId].lowestVisibleIndex + scrollAmount.current
+            sliderState[sliderId].lowestVisibleIndex + scrollAmount
           );
-          xValue = `-${100 * scrollAmount.current}%`;
+          xValue = `-${100 * scrollAmount}%`;
         }
       } else if (slideDirection === "prev") {
         {
           currentLowestIndex = getPositiveModulo(
-            sliderState[sliderId].lowestVisibleIndex - scrollAmount.current
+            sliderState[sliderId].lowestVisibleIndex - scrollAmount
           );
-          xValue = `${100 * scrollAmount.current}%`;
+          xValue = `${100 * scrollAmount}%`;
         }
       }
 
@@ -175,6 +179,12 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         newItemsPerGroup = 2;
     }
 
+    if (scrollAmount > newItemsPerGroup) {
+      setScrollAmount(newItemsPerGroup);
+    } else {
+        setScrollAmount(targetScrollAmount);
+    }
+
     setItemsPerGroup(newItemsPerGroup);
   };
 
@@ -203,14 +213,24 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     }
 
     setPreviousPeek(
-      getPositiveModulo(lowestVisibleIndex - scrollAmount.current - 1)
+      getPositiveModulo(lowestVisibleIndex - scrollAmount - 1)
     );
     setPreviousGroup(previous);
     setVisibleGroup(visible);
     setNextGroup(next);
     setNextPeek(
-      (lowestVisibleIndex + scrollAmount.current * 2) % itemsToDisplay.length
+      (lowestVisibleIndex + scrollAmount * 2) % itemsToDisplay.length
     );
+  };
+
+  const getMarginPosition = (index: number, arrLength: number) => {
+    if (index === 0) {
+      return "left";
+    } else if (index === arrLength - 1) {
+      return "right";
+    } else {
+      return null;
+    }
   };
 
   const handlePrev = async () => {
@@ -224,16 +244,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     if (!sliderGlobalState.isSliding) {
       setSlideDirection("next");
       dispatch(setSliderState({ globalSettings: { isSliding: true } }));
-    }
-  };
-
-  const getMarginPosition = (index: number, arrLength: number) => {
-    if (index === 0) {
-      return "left";
-    } else if (index === arrLength - 1) {
-      return "right";
-    } else {
-      return null;
     }
   };
 
@@ -252,7 +262,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         }`}
       >
         {/* Previous Group */}
-        <section className="absolute right-full flex h-full w-full pointer-events-none">
+        <section className={`absolute right-full flex h-full w-full pointer-events-none`}>
           <div
             id="groupPeek"
             className="absolute right-full flex h-full w-full"
