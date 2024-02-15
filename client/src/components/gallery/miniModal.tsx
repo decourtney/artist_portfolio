@@ -6,7 +6,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import { setProductState } from "../../redux/productSlice";
-import { setSliderItemState } from "../../redux/sliderItemSlice"
+import { setSliderItemState } from "../../redux/sliderItemSlice";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -129,16 +129,13 @@ const MiniModal = () => {
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
-  // On click miniModal's bounding rect and set as product rect ensuring productModal starts as same size
+  /* 
+  On click get the current rect for the miniModal, dispatch and prime productState with current rect values,
+  
+  */ 
   const handleOnClick = () => {
     const { bottom, height, left, right, top, width, x, y } =
       scope.current.getBoundingClientRect();
-
-    dispatch(
-      setMiniModalState({
-        showMiniModal: false
-      })
-    );
 
     dispatch(
       setProductState({
@@ -152,7 +149,13 @@ const MiniModal = () => {
     dispatch(
       setSliderItemState({
         sliderItemId: miniModalContainerId,
-        sliderItemVisibility: 'hidden',
+        sliderItemVisibility: "hidden",
+      })
+    );
+
+    dispatch(
+      setMiniModalState({
+        showMiniModal: false,
       })
     );
 

@@ -28,20 +28,22 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const sliderItemState = useAppSelector((state: RootState) => state.sliderItem.sliderItemState);
-  const { productContainerId, product, productRect, showProductModal } = useAppSelector(
-    (state: RootState) => state.product.productState
+  const sliderItemState = useAppSelector(
+    (state: RootState) => state.sliderItem.sliderItemState
   );
+  const { productContainerId, product, productRect, showProductModal } =
+    useAppSelector((state: RootState) => state.product.productState);
   const sliderItemRef = useRef<HTMLElement>(null);
-
-  // const [isMobile, setIsMobile] = useState(DetectMobile());
   const isMobile = DetectMobile();
+  const eventHandler = isMobile ? "onClick" : "onMouseEnter";
+  const modalOpenDelay = isMobile ? 100 : 450;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   if (!itemToDisplay) return null;
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
-
 
   useLayoutEffect(() => {
     const handleWindowResize = () => {
@@ -84,25 +86,38 @@ const SliderItem = ({
     if (showProductModal) {
       if (sliderItemRef.current && sliderItemId === productContainerId) {
         // This is being called 4 times
-        sliderItemRef.current.style.visibility = sliderItemState[productContainerId].sliderItemVisibility
+        sliderItemRef.current.style.visibility =
+          sliderItemState[productContainerId].sliderItemVisibility;
       }
     }
-  }, [showProductModal])
+  }, [showProductModal]);
 
   const handleMouseOrTouchEvent = () => {
-    if (!marginPosition) marginPosition = null; // Default null
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
 
-    dispatch(
-      setMiniModalState({
-        miniModalContainerId: sliderItemId,
-        modalItem: itemToDisplay,
-        showMiniModal: true,
-        marginPosition: marginPosition,
-      })
-    );
+    timeoutId = setTimeout(() => {
+      if (!marginPosition) marginPosition = null; // Default null
+
+      dispatch(
+        setMiniModalState({
+          miniModalContainerId: sliderItemId,
+          modalItem: itemToDisplay,
+          showMiniModal: true,
+          marginPosition: marginPosition,
+        })
+      );
+    }, modalOpenDelay);
   };
 
-  const eventHandler = isMobile ? "onClick" : "onMouseEnter";
+  const handleMouseLeave = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
 
   return (
     <section
@@ -111,6 +126,7 @@ const SliderItem = ({
       className={`slider-item px-1 shadow-md`}
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
       {...{ [eventHandler]: handleMouseOrTouchEvent }}
+      onMouseLeave={handleMouseLeave}
     >
       {/* FIXME Shadow doesnt appear below image */}
       {itemToDisplay && (

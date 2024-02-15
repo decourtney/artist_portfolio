@@ -31,7 +31,7 @@ interface SliderProps {
 }
 
 const Slider = ({ categoryToDisplay }: SliderProps) => {
-  const [itemsPerGroup, setItemsPerGroup] = useState(1); // This value is dynamically changed with window size
+  const [itemsPerGroup, setItemsPerGroup] = useState<number>(1); // This value is dynamically changed with window size
   const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
   const [visibleGroup, setVisibleGroup] = useState<number[]>([]); // Stores indexes of visible group
   const [nextGroup, setNextGroup] = useState<number[]>([]); // Stores indexes of next group
@@ -54,12 +54,12 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const itemsToDisplay: Product[] = categoryToDisplay.products;
   const sliderId = `${categoryToDisplay.name}-slider`; // Used to track each slider for redux state management
 
-  if (!itemsToDisplay) return null;
+  // Scroll amount may be user adjusted later - targetScrollAmount will be the selected scroll amount
+  // but actual scroll amount is bound between target amount and itemsPerGroup so not to scroll more than visible
+  const targetScrollAmount = 4;
+  const scrollAmount = useRef(targetScrollAmount);
 
-  useLayoutEffect(() => {
-    getSliderIndexGroups();
-    sliderItemWidth.current = 100 / itemsPerGroup;
-  }, [itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
+  if (!itemsToDisplay) return null;
 
   useLayoutEffect(() => {
     handleWindowResize();
@@ -82,6 +82,19 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     }
   }, []);
 
+  useLayoutEffect(() => {
+    // Bind scroll amount between target amount and the number of visible items
+    if (scrollAmount.current > itemsPerGroup) {
+      scrollAmount.current = itemsPerGroup;
+    } else {
+      scrollAmount.current = targetScrollAmount;
+    }
+
+    getSliderIndexGroups();
+
+    sliderItemWidth.current = 100 / itemsPerGroup;
+  }, [itemsPerGroup, sliderState[sliderId]?.lowestVisibleIndex]);
+
   useEffect(() => {
     if (sliderGlobalState.isSliding) {
       let currentLowestIndex: number;
@@ -90,16 +103,16 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       if (slideDirection === "next") {
         {
           currentLowestIndex = getPositiveModulo(
-            sliderState[sliderId].lowestVisibleIndex + itemsPerGroup
+            sliderState[sliderId].lowestVisibleIndex + scrollAmount.current
           );
-          xValue = `-${100 * itemsPerGroup}%`;
+          xValue = `-${100 * scrollAmount.current}%`;
         }
       } else if (slideDirection === "prev") {
         {
           currentLowestIndex = getPositiveModulo(
-            sliderState[sliderId].lowestVisibleIndex - itemsPerGroup
+            sliderState[sliderId].lowestVisibleIndex - scrollAmount.current
           );
-          xValue = `${100 * itemsPerGroup}%`;
+          xValue = `${100 * scrollAmount.current}%`;
         }
       }
 
@@ -175,11 +188,11 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
   /* Returns an array of indexes. Starting index is relative to the lowestVisibleIndex and position requested */
   const getSliderIndexGroups = () => {
+    const lowestVisibleIndex = sliderState[sliderId]?.lowestVisibleIndex;
+    let currentIndex = lowestVisibleIndex;
     let previous = [];
     let visible = [];
     let next = [];
-    const lowestVisibleIndex = sliderState[sliderId]?.lowestVisibleIndex;
-    let currentIndex = lowestVisibleIndex;
 
     for (let i = 0; i < itemsPerGroup; i++) {
       previous.push(getPositiveModulo(currentIndex - itemsPerGroup));
@@ -189,12 +202,14 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
       currentIndex = (currentIndex + 1) % itemsToDisplay.length;
     }
 
-    setPreviousPeek(getPositiveModulo(lowestVisibleIndex - itemsPerGroup - 1));
+    setPreviousPeek(
+      getPositiveModulo(lowestVisibleIndex - scrollAmount.current - 1)
+    );
     setPreviousGroup(previous);
     setVisibleGroup(visible);
     setNextGroup(next);
     setNextPeek(
-      (lowestVisibleIndex + itemsPerGroup * 2) % itemsToDisplay.length
+      (lowestVisibleIndex + scrollAmount.current * 2) % itemsToDisplay.length
     );
   };
 
