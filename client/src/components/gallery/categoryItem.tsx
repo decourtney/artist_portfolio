@@ -16,10 +16,9 @@ import Slider from "../slider/slider";
 interface CategoryItemProps {
   category: Category;
   index: number;
-
 }
 
-const CategoryItem = ({ category  }: CategoryItemProps) => {
+const CategoryItem = ({ category }: CategoryItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -41,9 +40,7 @@ const CategoryItem = ({ category  }: CategoryItemProps) => {
       >
         <h2 className="text-light pointer-events-none">{category.name}</h2>
       </button>
-      <Slider
-        categoryToDisplay={category}
-      />
+      <Slider categoryToDisplay={category} />
     </motion.div>
   );
 };

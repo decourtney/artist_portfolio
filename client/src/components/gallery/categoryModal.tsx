@@ -9,7 +9,7 @@ import {
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
-import Slider from "../slider/slider";
+import Slider from "../slider/Slider.1";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -40,7 +40,7 @@ const GalleryModal = () => {
     if (categoryData) console.log(categoryData);
   }, [categoryData]);
 
-  if (!categoryData) return null
+  if (!categoryData) return null;
 
   return (
     <div

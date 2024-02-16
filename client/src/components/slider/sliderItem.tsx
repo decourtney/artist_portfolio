@@ -7,6 +7,8 @@ import { setSliderItemState } from "../../redux/sliderItemSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import DetectMobile from "../../utils/detectMobile";
 
+// FIXME occasionally throwing errors while working on slider scroll amount. err serializableStateInvariantMiddleware taking too long
+
 interface SliderItemProps {
   partialSliderItemId: string;
   itemToDisplay: Category | Product;
