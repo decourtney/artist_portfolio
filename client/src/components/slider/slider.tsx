@@ -40,7 +40,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     (state: RootState) => state.slider.globalSettings
   );
   const [itemsPerGroup, setItemsPerGroup] = useState<number>(8); // This value is dynamically changed with window size
-  const [scrollAmount, setScrollAmount] = useState<number>(1); // For now this state is redundant but allows variable slide amount
+  const [scrollAmount, setScrollAmount] = useState<number>(1); // Controls how many items are scrolled through
   const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
   const [visibleGroup, setVisibleGroup] = useState<number[]>([]); // Stores indexes of visible group
   const [nextGroup, setNextGroup] = useState<number[]>([]); // Stores indexes of next group
@@ -181,6 +181,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         newItemsPerGroup = 2;
     }
 
+    setScrollAmount(newItemsPerGroup); // For now the scroll amount matches number of items displayed
     setItemsPerGroup(newItemsPerGroup);
   };
 
@@ -241,59 +242,35 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     }
   };
 
-  const dragStartX = useRef(0);
-  const dragEndX = useRef(0);
-
-  const handleDragStart = (event: MouseEvent | PointerEvent) => {
-    console.log("drag start");
-    dragStartX.current = event.clientX;
-  };
-
-  const handleDragMove = (event: MouseEvent | PointerEvent) => {
-    console.log("drag move");
-    dragEndX.current = event.clientX;
-  };
-
-  const handleDragEnd = () => {
-    console.log("drag end");
-    const deltaX = dragEndX.current - dragStartX.current;
-
-    if (deltaX > 0) {
-      // Dragged right
-      console.log("Dragged right");
-      // Trigger animation for moving slider to the right
-      handlePrev();
-    } else if (deltaX < 0) {
-      // Dragged left
-      console.log("Dragged left");
-      // Trigger animation for moving slider to the left
-      handleNext();
-    }
-  };
+  // Touch Event Handlers
+  //-------------------------------------------------------------------------
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number | null>(null);
+  const deltaXThreshold = 40
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    dragStartX.current = event.touches[0].clientX;
+    touchStartX.current = event.touches[0].clientX;
   };
 
   const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
-    dragEndX.current = event.touches[0].clientX;
+    touchEndX.current = event.touches[0].clientX;
   };
 
   const handleTouchEnd = () => {
-    const deltaX = dragEndX.current - dragStartX.current;
+    const deltaX = touchEndX.current ? touchEndX.current - touchStartX.current : 0;
 
-    if (deltaX > 0) {
+    if (deltaX > deltaXThreshold) {
       // Swipe right
-      console.log("Swipe right");
-      // Trigger animation for moving slider to the right
       handlePrev();
-    } else if (deltaX < 0) {
+    } else if (deltaX < -deltaXThreshold) {
       // Swipe left
-      console.log("Swipe left");
-      // Trigger animation for moving slider to the left
       handleNext();
     }
+
+    touchStartX.current = 0;
+    touchEndX.current = null;
   };
+  //-------------------------------------------------------------------------
 
   return (
     <div id="slider" className="group relative px-[4dvw] overflow-hidden">
@@ -303,19 +280,14 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
       <motion.div
         ref={scope}
-        className={`slider-row relative flex flex-row items-center h-[20dvh] bg-blue-400`}
+        className="slider-row relative flex flex-row items-center h-[20dvh]"
         draggable="true"
-        onDragStart={handleDragStart}
-        onDrag={handleDragMove}
-        onDragEnd={handleDragEnd}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         {/* Previous Group */}
-        <section
-          className={`absolute right-full flex h-full w-full pointer-events-none`}
-        >
+        <section className="absolute right-full flex h-full w-full pointer-events-none">
           <div
             id="groupPeek"
             className="absolute right-full flex h-full w-full"
