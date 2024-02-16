@@ -3,6 +3,7 @@ import { Category, Product } from "../utils/customClientTypes";
 
 interface ProductState {
   productState: {
+    productContainerId: string;
     product: Product,
     productRect: {
       bottom: number;
@@ -22,6 +23,7 @@ export const productSlice = createSlice({
   name: "product",
   initialState: {
     productState: {} as {
+      productContainerId: string;
       product: Product;
       productRect: {
         bottom: number;
@@ -40,6 +42,7 @@ export const productSlice = createSlice({
     setProductState: (
       state: ProductState,
       action: PayloadAction<{
+        productContainerId?: string;
         product?: Product;
         productRect?: {
           bottom: number;

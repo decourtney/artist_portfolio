@@ -36,7 +36,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     description: "",
     categories: [""],
   });
-  const [categoryList, setCategoryList] = useState<string[]>(['']);
+  const [categoryList, setCategoryList] = useState<string[]>([""]);
   const [updateProduct] = useMutation(UPDATE_PRODUCT);
   const formRef = useRef<HTMLFormElement | null>(null);
   let { username: userParam } = useParams();
@@ -58,7 +58,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     // console.log(userProduct);
   }
 
-  const handleFormChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
     const { name, value } = event.target;
     setFormState({
       ...formState,
@@ -69,7 +69,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
   // Maintain list of categories that are to be removed from the product
   const handleCategoryChange = (categoryName: string) => {
     console.log(categoryName);
-    if(!categoryList.includes(categoryName)){
+    if (!categoryList.includes(categoryName)) {
       // FIXME finish adding categories to the formstate
       setCategoryList([...categoryList, categoryName]);
     }

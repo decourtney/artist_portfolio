@@ -6,6 +6,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import { setProductState } from "../../redux/productSlice";
+import { setSliderItemState } from "../../redux/sliderItemSlice";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -14,8 +15,11 @@ const baseCDN =
 const MiniModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { sliderItem, sliderItemRect } = useAppSelector(
+  const { miniModalContainerId, modalItem, marginPosition } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
+  );
+  const sliderItemState = useAppSelector(
+    (state: RootState) => state.sliderItem.sliderItemState
   );
   const [imgDimensions, setImgDimensions] = useState<{
     width: number;
@@ -26,16 +30,22 @@ const MiniModal = () => {
   const [scope, animate] = useAnimate();
   const maxModalWidth = 300;
   const maxModalHeight = 300;
-  const sliderItemWidth = sliderItemRect.width;
-  const sliderItemHeight = sliderItemRect.height;
+  const sliderItemWidth =
+    sliderItemState[miniModalContainerId].sliderItemRect.width;
+  const sliderItemHeight =
+    sliderItemState[miniModalContainerId].sliderItemRect.height;
   const detailsHeight = 96;
+
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
+  // responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
+  // the modal stays open and lost = need to close when sliderItem leaves.
+
   useEffect(() => {
-    // Construct the image URL and set it in state
-    if (sliderItem) setImgSrc(`${baseCDN}/${userParam}/${sliderItem.image}`);
-  }, [userParam, sliderItem]);
+    // Construct image URL
+    if (modalItem) setImgSrc(`${baseCDN}/${userParam}/${modalItem.image}`);
+  }, [userParam, modalItem]);
 
   useEffect(() => {
     if (imgSrc) {
@@ -60,9 +70,17 @@ const MiniModal = () => {
         //   finalWidth = finalHeight * aspectRatio;
         // }
 
-        // Calculate the margin to center the modal relative to sliderItem size
-        const horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
-        const verticalMargin = (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
+        // Calculate the margin to center the modal relative to modalItem size
+        let horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
+        const verticalMargin =
+          (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
+
+        // Adjust margin for first and last item
+        if (marginPosition === "left") {
+          horizontalMargin = 0;
+        } else if (marginPosition === "right") {
+          horizontalMargin = horizontalMargin * 2;
+        }
 
         setImgDimensions({
           width: finalWidth,
@@ -71,7 +89,7 @@ const MiniModal = () => {
         });
       };
     }
-  }, [imgSrc]);
+  }, [imgSrc, sliderItemState]);
 
   useEffect(() => {
     if (imgDimensions) animateOpen();
@@ -82,9 +100,7 @@ const MiniModal = () => {
       [
         scope.current,
         {
-          width: imgDimensions?.width,
-          height: imgDimensions?.height,
-          margin: `${imgDimensions?.margin}`,
+          ...imgDimensions,
         },
         { duration: 0.2 },
       ],
@@ -96,11 +112,12 @@ const MiniModal = () => {
     ]);
   };
 
-  const animateClosed = async () => {
+  const animateClose = async () => {
     await animate([
       [
         scope.current,
         {
+          ...sliderItemState[miniModalContainerId].sliderItemRect,
           width: sliderItemWidth,
           height: sliderItemHeight,
           margin: 0,
@@ -112,36 +129,63 @@ const MiniModal = () => {
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
-  // productModal should appear to expand from the miniModal by passing current size and having productmodal animate out just like the miniModal
+  /* 
+  On click get the current rect for the miniModal, dispatch and prime productState with current rect values,
+  
+  */ 
   const handleOnClick = () => {
-    const { bottom, height, left, right, top, width, x, y } = scope.current.getBoundingClientRect();
-    dispatch(setProductState({ product: sliderItem as Product, productRect: { bottom, height, left, right, top, width, x, y }, showProductModal: true }));;
-    navigate(`/gallery/${sliderItem.name}`);
+    const { bottom, height, left, right, top, width, x, y } =
+      scope.current.getBoundingClientRect();
+
+    dispatch(
+      setProductState({
+        productContainerId: miniModalContainerId,
+        product: modalItem as Product,
+        productRect: { bottom, height, left, right, top, width, x, y },
+        showProductModal: true,
+      })
+    );
+
+    dispatch(
+      setSliderItemState({
+        sliderItemId: miniModalContainerId,
+        sliderItemVisibility: "hidden",
+      })
+    );
+
+    dispatch(
+      setMiniModalState({
+        showMiniModal: false,
+      })
+    );
+
+    navigate(`/gallery/${modalItem.name}`);
   };
 
   return (
-    <section id="miniModal" className={`absolute w-full h-full z-10`}>
+    <section
+      id="miniModal"
+      className="absolute w-full h-full z-10"
+      onClick={animateClose}
+    >
       <motion.div
         ref={scope}
-        key={sliderItem.name}
-        className="shadow-md w-full h-full"
-        style={{ ...sliderItemRect }}
-        initial={{
-          width: sliderItemWidth,
-          height: sliderItemHeight,
-          top: 0,
-          left: 0,
+        key={modalItem.name}
+        className="z-20"
+        style={{ ...sliderItemState[miniModalContainerId].sliderItemRect }}
+        onMouseLeave={animateClose}
+        onClick={(event) => {
+          event.stopPropagation();
+          handleOnClick();
         }}
-        onMouseLeave={animateClosed}
-        onClick={handleOnClick}
       >
         {imgSrc && (
-          <div className="w-full h-full">
+          <>
             <img
               src={imgSrc}
               className="w-full h-full shadow-lg object-cover rounded-t-md"
               style={{ imageRendering: "auto" }}
-              alt={`${sliderItem.name}`}
+              alt={`${modalItem.name}`}
               loading="lazy"
             />
             <motion.div
@@ -150,7 +194,7 @@ const MiniModal = () => {
             >
               Words and stuff go here
             </motion.div>
-          </div>
+          </>
         )}
       </motion.div>
     </section>

@@ -18,7 +18,7 @@ export const sliderSlice = createSlice({
     sliderState: {} as {
       [sliderId: string]: {
         lowestVisibleIndex: number;
-        sliderHasMoved: false;
+        sliderHasMoved: boolean;
       };
     },
     globalSettings: {

@@ -3,8 +3,9 @@ import { Category, Product } from "../utils/customClientTypes";
 
 interface MiniModalState {
   miniModalState: {
-    sliderItem: Category | Product;
-    sliderItemRect: {
+    miniModalContainerId: string;
+    modalItem: Category | Product;
+    miniModalRect: {
       bottom: number;
       height: number;
       left: number;
@@ -15,6 +16,7 @@ interface MiniModalState {
       y: number;
     };
     showMiniModal: boolean;
+    marginPosition: string | null;
   };
 }
 
@@ -22,8 +24,9 @@ export const miniModalSlice = createSlice({
   name: "miniModal",
   initialState: {
     miniModalState: {} as {
-      sliderItem: Category | Product;
-      sliderItemRect: {
+      miniModalContainerId: string;
+      modalItem: Category | Product;
+      miniModalRect: {
         bottom: number;
         height: number;
         left: number;
@@ -34,14 +37,16 @@ export const miniModalSlice = createSlice({
         y: number;
       };
       showMiniModal: false;
+      marginPosition: string | null;
     },
   },
   reducers: {
     setMiniModalState: (
       state: MiniModalState,
       action: PayloadAction<{
-        sliderItem?: Category | Product
-        sliderItemRect?: {
+        miniModalContainerId?: string;
+        modalItem?: Category | Product;
+        miniModalRect?: {
           bottom: number;
           height: number;
           left: number;
@@ -52,6 +57,7 @@ export const miniModalSlice = createSlice({
           y: number;
         };
         showMiniModal: boolean;
+        marginPosition?: string | null;
       }>
     ) => {
       const { ...newState } = action.payload;

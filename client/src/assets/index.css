@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.3.6 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.1 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -32,9 +32,11 @@
 4. Use the user's configured `sans` font-family by default.
 5. Use the user's configured `sans` font-feature-settings by default.
 6. Use the user's configured `sans` font-variation-settings by default.
+7. Disable tap highlights on iOS
 */
 
-html {
+html,
+:host {
   line-height: 1.5;
   /* 1 */
   -webkit-text-size-adjust: 100%;
@@ -48,6 +50,8 @@ html {
   /* 5 */
   font-variation-settings: normal;
   /* 6 */
+  -webkit-tap-highlight-color: transparent;
+  /* 7 */
 }
 
 /*
@@ -619,6 +623,10 @@ video {
   z-index: 10;
 }
 
+.z-20 {
+  z-index: 20;
+}
+
 .z-50 {
   z-index: 50;
 }
@@ -720,10 +728,6 @@ video {
   margin-top: 1.25rem;
 }
 
-.inline-block {
-  display: inline-block;
-}
-
 .flex {
   display: flex;
 }
@@ -734,6 +738,10 @@ video {
 
 .grid {
   display: grid;
+}
+
+.hidden {
+  display: none;
 }
 
 .h-10 {
@@ -790,25 +798,12 @@ video {
   height: 100%;
 }
 
-.h-min {
-  height: -webkit-min-content;
-  height: min-content;
-}
-
 .h-screen {
   height: 100vh;
 }
 
-.max-h-\[96dvh\] {
-  max-height: 96dvh;
-}
-
 .max-h-screen {
   max-height: 100vh;
-}
-
-.min-h-\[96dvh\] {
-  min-height: 96dvh;
 }
 
 .min-h-full {
@@ -849,33 +844,8 @@ video {
   width: 100%;
 }
 
-.w-min {
-  width: -webkit-min-content;
-  width: min-content;
-}
-
-.min-w-\[96dvw\] {
-  min-width: 96dvw;
-}
-
 .max-w-\[90vw\] {
   max-width: 90vw;
-}
-
-.max-w-\[96dvw\] {
-  max-width: 96dvw;
-}
-
-.max-w-prose {
-  max-width: 65ch;
-}
-
-.max-w-screen-2xl {
-  max-width: 1281px;
-}
-
-.max-w-screen-lg {
-  max-width: 801px;
 }
 
 .flex-grow {
@@ -1151,21 +1121,6 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
-.bg-orange-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 115 22 / var(--tw-bg-opacity));
-}
-
-.bg-orange-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 247 237 / var(--tw-bg-opacity));
-}
-
-.bg-orange-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(251 146 60 / var(--tw-bg-opacity));
-}
-
 .bg-opacity-25 {
   --tw-bg-opacity: 0.25;
 }
@@ -1193,16 +1148,8 @@ video {
   --tw-gradient-to: transparent var(--tw-gradient-to-position);
 }
 
-.object-contain {
-  object-fit: contain;
-}
-
 .object-cover {
   object-fit: cover;
-}
-
-.object-fill {
-  object-fit: fill;
 }
 
 .object-top {
@@ -1245,9 +1192,9 @@ video {
   padding-right: 1rem;
 }
 
-.px-\[4vw\] {
-  padding-left: 4vw;
-  padding-right: 4vw;
+.px-\[4dvw\] {
+  padding-left: 4dvw;
+  padding-right: 4dvw;
 }
 
 .py-1 {
@@ -1429,6 +1376,10 @@ video {
   opacity: 0;
 }
 
+.opacity-50 {
+  opacity: 0.5;
+}
+
 .opacity-75 {
   opacity: 0.75;
 }
@@ -1468,11 +1419,6 @@ video {
   outline-offset: 2px;
 }
 
-.blur-sm {
-  --tw-blur: blur(4px);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
 .drop-shadow {
   --tw-drop-shadow: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -1505,18 +1451,14 @@ video {
   transition-duration: 150ms;
 }
 
-/* For IE, Edge and Firefox */
-
-body {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
+/* body {
+   -ms-overflow-style: none; 
+    scrollbar-width: none;
 }
 
 body::-webkit-scrollbar {
   display: none;
-}
+} */
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -1524,6 +1466,12 @@ body::-webkit-scrollbar {
 
 html {
   background-color: rgb(24 61 61);
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar{
+  display: none;
 }
 
 .profile_hero_image::before {
