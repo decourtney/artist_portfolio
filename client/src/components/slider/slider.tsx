@@ -17,7 +17,7 @@ be nice to have this a configurable option.
 
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Category } from "../../utils/customClientTypes";
-import { useAnimate } from "framer-motion";
+import { useAnimate, motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../store";
@@ -241,19 +241,76 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     }
   };
 
+  const dragStartX = useRef(0);
+  const dragEndX = useRef(0);
+
+  const handleDragStart = (event: MouseEvent | PointerEvent) => {
+    console.log("drag start");
+    dragStartX.current = event.clientX;
+  };
+
+  const handleDragMove = (event: MouseEvent | PointerEvent) => {
+    console.log("drag move");
+    dragEndX.current = event.clientX;
+  };
+
+  const handleDragEnd = () => {
+    console.log("drag end");
+    const deltaX = dragEndX.current - dragStartX.current;
+
+    if (deltaX > 0) {
+      // Dragged right
+      console.log("Dragged right");
+      // Trigger animation for moving slider to the right
+      handlePrev();
+    } else if (deltaX < 0) {
+      // Dragged left
+      console.log("Dragged left");
+      // Trigger animation for moving slider to the left
+      handleNext();
+    }
+  };
+
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    dragStartX.current = event.touches[0].clientX;
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    dragEndX.current = event.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const deltaX = dragEndX.current - dragStartX.current;
+
+    if (deltaX > 0) {
+      // Swipe right
+      console.log("Swipe right");
+      // Trigger animation for moving slider to the right
+      handlePrev();
+    } else if (deltaX < 0) {
+      // Swipe left
+      console.log("Swipe left");
+      // Trigger animation for moving slider to the left
+      handleNext();
+    }
+  };
+
   return (
     <div id="slider" className="group relative px-[4dvw] overflow-hidden">
       {sliderHasMoved && (
         <SliderControl arrowDirection={"left"} onClick={handlePrev} />
       )}
 
-      <div
+      <motion.div
         ref={scope}
-        className={`slider-row relative flex flex-row items-center h-[20dvh] ${
-          sliderGlobalState.isSliding
-            ? "pointer-events-none"
-            : "pointer-events-auto"
-        }`}
+        className={`slider-row relative flex flex-row items-center h-[20dvh] bg-blue-400`}
+        draggable="true"
+        onDragStart={handleDragStart}
+        onDrag={handleDragMove}
+        onDragEnd={handleDragEnd}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Previous Group */}
         <section
@@ -287,7 +344,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         </section>
 
         {/* Visible Group */}
-        <section className="absolute flex h-full w-full">
+        <section className={`absolute flex h-full w-full `}>
           {visibleGroup.map((item, index) => {
             const key = uuidv4();
             const marginPosition = getMarginPosition(
@@ -331,7 +388,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
             />
           </div>
         </section>
-      </div>
+      </motion.div>
 
       <SliderControl arrowDirection={"right"} onClick={handleNext} />
     </div>

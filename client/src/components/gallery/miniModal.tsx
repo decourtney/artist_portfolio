@@ -175,7 +175,7 @@ const MiniModal = () => {
         style={{ ...sliderItemState[miniModalContainerId].sliderItemRect }}
         onMouseLeave={animateClose}
         onClick={(event) => {
-          event.stopPropagation();
+          // event.stopPropagation();
           handleOnClick();
         }}
       >

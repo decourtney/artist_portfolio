@@ -33,6 +33,9 @@ const SliderItem = ({
   const sliderItemState = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState
   );
+  const {isSliding} = useAppSelector(
+    (state: RootState) => state.slider.globalSettings
+  );
   const { productContainerId, product, productRect, showProductModal } =
     useAppSelector((state: RootState) => state.product.productState);
   const sliderItemRef = useRef<HTMLElement>(null);
@@ -121,13 +124,14 @@ const SliderItem = ({
     }
   };
 
+  const istrue = true;
   return (
     <section
       ref={sliderItemRef}
       id={sliderItemId}
       className={`slider-item px-1 shadow-md`}
       style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
-      {...{ [eventHandler]: handleMouseOrTouchEvent }}
+      {...(!isSliding && { [eventHandler]: handleMouseOrTouchEvent })}
       onMouseLeave={handleMouseLeave}
     >
       {/* FIXME Shadow doesnt appear below image */}
