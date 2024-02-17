@@ -13,6 +13,7 @@ import { UPDATE_PRODUCT } from "../../utils/mutations";
 import { Category, Product } from "../../utils/customClientTypes";
 import { v4 as uuidv4 } from "uuid";
 import TagButton from "./tagButton";
+import data from "@iconify/icons-mdi/chevron-left";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -36,29 +37,59 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     description: "",
     categories: [""],
   });
-  const [categoryList, setCategoryList] = useState<string[]>([""]);
+  const [userProduct, setUserProduct] = useState<Product | null>(null);
+  const [userCategories, setUserCategories] = useState<Category[] | null>(null);
+  // const [categoryList, setCategoryList] = useState<string[]>([""]);
   const [updateProduct] = useMutation(UPDATE_PRODUCT);
   const formRef = useRef<HTMLFormElement | null>(null);
+  const selectedCategories = useRef<string[]>([]);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  const { loading, data } = useQuery(QUERY_USER_PRODUCT, {
+  const {
+    loading: loadingProduct,
+    data: dataProduct,
+    error: errorProduct,
+  } = useQuery(QUERY_USER_PRODUCT, {
     variables: {
       username: import.meta.env.VITE_BASE_USER,
       product: itemToEdit.name,
     },
+    onCompleted: (data) => {
+      setUserProduct(data?.userProduct[0]);
+      selectedCategories.current = data.userProduct[0].categories.map(
+        (category: Category) => {
+          return category.name;
+        }
+      );
+    },
   });
 
-  let userProduct: Product | null = null;
-  let productCategories: Category[] | null = null;
-  if (data) {
-    userProduct = data.userProduct[0];
-    if (userProduct) productCategories = userProduct?.categories as Category[];
+  const {
+    loading: loadingCategoies,
+    data: dataCategories,
+    error: errorCategories,
+  } = useQuery(QUERY_USER_CATEGORIES, {
+    variables: {
+      username: import.meta.env.VITE_BASE_USER,
+    },
+    onCompleted: (data) => {
+      setUserCategories(data?.userCategories.categories);
+    },
+  });
 
-    // console.log(userProduct);
+  // Error handling
+  if (errorProduct) {
+    // do stuff
+  }
+  if (errorCategories) {
+    // do stuff
   }
 
-  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+  const handleFormChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    console.log("form changed");
     const { name, value } = event.target;
     setFormState({
       ...formState,
@@ -66,13 +97,26 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     });
   };
 
-  // Maintain list of categories that are to be removed from the product
+  // Update list of selected categories
   const handleCategoryChange = (categoryName: string) => {
     console.log(categoryName);
-    if (!categoryList.includes(categoryName)) {
-      // FIXME finish adding categories to the formstate
-      setCategoryList([...categoryList, categoryName]);
+    if (categoryName !== "All Artwork") {
+      if (!isCategorySelected(categoryName)) {
+        selectedCategories.current = [
+          ...selectedCategories.current,
+          categoryName,
+        ];
+      } else {
+        selectedCategories.current = selectedCategories.current.filter(
+          (category) => category !== categoryName
+        );
+      }
     }
+
+    setFormState({
+      ...formState,
+      categories: selectedCategories.current,
+    });
   };
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -85,6 +129,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
       )
     ) {
       try {
+        console.log(formState);
         await updateProduct({ variables: formState });
       } catch (err) {
         console.log({ err });
@@ -94,7 +139,11 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     setFormState({ name: "", description: "", categories: [""] });
   };
 
-  if (loading) return null;
+  const isCategorySelected = (name: string) => {
+    return selectedCategories.current.includes(name);
+  };
+
+  if (loadingProduct) return null;
 
   return (
     <>
@@ -111,13 +160,22 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
           )}
         </div>
 
-        <section className="flex flex-col flex-grow w-full my-2 text-plight rounded-2xl bg-dark">
+        <section className="flex flex-col flex-grow w-full my-2 text-plight rounded-t-3xl bg-dark">
           <form
             id="edit-product-form"
             ref={formRef}
-            className="flex flex-col flex-grow justify-between w-full h-full p-2"
+            className="flex flex-col w-full h-full p-2 space-y-3"
             onSubmit={handleFormSubmit}
           >
+            <div className="flex justify-center w-full mt-1">
+              <button
+                className="w-full py-2 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
+                type="submit"
+              >
+                SAVE
+              </button>
+            </div>
+
             <div className="flex flex-col space-y-2">
               <div className="">
                 <input
@@ -138,31 +196,22 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
                   onChange={handleFormChange}
                 />
               </div>
-
-              <div>
-                {productCategories &&
-                  productCategories.length > 0 &&
-                  productCategories.map((category: Category, index: number) => {
-                    return (
-                      <TagButton
-                        key={uuidv4()}
-                        category={category}
-                        onClick={handleCategoryChange}
-                      />
-                    );
-                  })}
-              </div>
-            </div>
-
-            <div className="flex justify-center w-full">
-              <button
-                className="w-full py-2 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
-                type="submit"
-              >
-                SAVE
-              </button>
             </div>
           </form>
+          <div className="">
+            {userCategories &&
+              userCategories.length > 0 &&
+              userCategories.map((category: Category, index: number) => {
+                return (
+                  <TagButton
+                    key={uuidv4()}
+                    category={category}
+                    onClick={handleCategoryChange}
+                    isToggled={isCategorySelected(category.name)}
+                  />
+                );
+              })}
+          </div>
         </section>
       </section>
     </>
