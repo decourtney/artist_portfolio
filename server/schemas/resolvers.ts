@@ -310,23 +310,56 @@ const resolvers = {
         try {
           let categoryIds = [];
 
-          // if (categories && categories.length > 0) {
-          //   categoryIds = await Category.find(
-          //     {
-          //       name: { $in: categories },
-          //     },
-          //     { _id: 1 }
-          //   );
-          // }
+          // Get old list of categories
+          const oldProductCategories = await Product.findById(id)
+            .populate({
+              path: "categories",
+              model: "Category",
+              select: "name",
+            })
+            .select("categories");
 
-          // const updatedCategories = await Category.updateMany(
-          //   { _id: categoryIds },
-          //   { $addToSet: { products: id } },
-          //   { new: true }
-          // );
+          // Need to update any Categories that are to be removed
+          if (oldProductCategories) {
+            const oldCategoryNames = oldProductCategories.categories.map(
+              (category) => category.name
+            );
 
-          /* FIXME Need to remove product Id from categories no longer selected - need to compare old product categories list 
-          with inbound categories list - find difference and update those categories */
+            // Find the categories that are in the old list but not in the new list
+            const removedCategories = oldCategoryNames.filter(
+              (categoryName) => !categories.includes(categoryName)
+            );
+
+            console.log("categories to remove", removedCategories);
+
+            if (removedCategories.length > 0) {
+              for (const categoryName of removedCategories) {
+                try {
+                  const category = await Category.findOne({
+                    name: categoryName,
+                  });
+
+                  if (category) {
+                    category.products = category.products.filter(
+                      (productId) => productId.toString() !== id
+                    );
+
+                    await category.save();
+
+                    console.log(
+                      `Product removed from category: ${categoryName}`
+                    );
+                  }
+                } catch (err) {
+                  // console.error(err);
+                  console.error(
+                    `Failed to remove product from category: ${categoryName}`
+                  );
+                }
+              }
+            }
+          }
+
           if (categories && categories.length > 0) {
             for (const categoryName of categories) {
               const category = await Category.findOne({ name: categoryName });
