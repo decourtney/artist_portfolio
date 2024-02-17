@@ -20,23 +20,13 @@ const baseCDN =
   "https://chumbucket.donovancourtney.dev/artist_portfolio";
 
 interface EditProductProps {
-  itemToEdit: Product;
+  itemToEdit: string;
 }
 
-const tempData: Product = {
-  __typename: "typename",
-  name: "Flag-of-the-USA - Copy",
-  image: "Flag-of-the-USA - Copy.jpg",
-  description: "Empty Description",
-  categories: [],
-};
+const tempData = 'US Flag'
 
 const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
-  const [formState, setFormState] = useState({
-    name: "",
-    description: "",
-    categories: [""],
-  });
+  const [formState, setFormState] = useState({});
   const [userProduct, setUserProduct] = useState<Product | null>(null);
   const [userCategories, setUserCategories] = useState<Category[] | null>(null);
   // const [categoryList, setCategoryList] = useState<string[]>([""]);
@@ -46,39 +36,38 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  const {
-    loading: loadingProduct,
-    data: dataProduct,
-    error: errorProduct,
-  } = useQuery(QUERY_USER_PRODUCT, {
-    variables: {
-      username: import.meta.env.VITE_BASE_USER,
-      product: itemToEdit.name,
-    },
-    onCompleted: (data) => {
-      setUserProduct(data?.userProduct[0]);
-      selectedCategories.current = data.userProduct[0].categories.map(
-        (category: Category) => {
-          return category.name;
-        }
-      );
-    },
-  });
+  const { loading: loadingProduct, error: errorProduct } = useQuery(
+    QUERY_USER_PRODUCT,
+    {
+      variables: {
+        username: import.meta.env.VITE_BASE_USER,
+        product: itemToEdit,
+      },
+      onCompleted: (data) => {
+        // NOTE Aggregate query returns an array
+        setUserProduct(data?.userProduct[0]);
+        selectedCategories.current = data.userProduct[0].categories.map(
+          (category: Category) => {
+            return category.name;
+          }
+        );
+      },
+    }
+  );
 
-  const {
-    loading: loadingCategoies,
-    data: dataCategories,
-    error: errorCategories,
-  } = useQuery(QUERY_USER_CATEGORIES, {
-    variables: {
-      username: import.meta.env.VITE_BASE_USER,
-    },
-    onCompleted: (data) => {
-      setUserCategories(data?.userCategories.categories);
-    },
-  });
+  const { loading: loadingCategoies, error: errorCategories } = useQuery(
+    QUERY_USER_CATEGORIES,
+    {
+      variables: {
+        username: import.meta.env.VITE_BASE_USER,
+      },
+      onCompleted: (data) => {
+        setUserCategories(data?.userCategories.categories);
+      },
+    }
+  );
 
-  // Error handling
+  // Error handling for graphql queries
   if (errorProduct) {
     // do stuff
   }
@@ -89,7 +78,6 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
   const handleFormChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    console.log("form changed");
     const { name, value } = event.target;
     setFormState({
       ...formState,
@@ -99,7 +87,6 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
 
   // Update list of selected categories
   const handleCategoryChange = (categoryName: string) => {
-    console.log(categoryName);
     if (categoryName !== "All Artwork") {
       if (!isCategorySelected(categoryName)) {
         selectedCategories.current = [
@@ -111,32 +98,33 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
           (category) => category !== categoryName
         );
       }
-    }
 
-    setFormState({
-      ...formState,
-      categories: selectedCategories.current,
-    });
+      // TODO may need to make adjustment here - once backend is fully connected and mutated check for accuracy
+      setFormState({
+        ...formState,
+        categories: selectedCategories.current,
+      });
+    }
   };
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // First verify at least one field has a value
-    if (
-      Object.values(formState).some(
-        (value) => value !== "" || null || undefined
-      )
-    ) {
+    // First verify formState is not an empty object
+    if (Object.keys(formState).length > 0) {
       try {
-        console.log(formState);
-        await updateProduct({ variables: formState });
+        const { data } = await updateProduct({
+          variables: { id: userProduct?._id, ...formState },
+        });
+
+        setUserProduct(data.updateProduct);
       } catch (err) {
         console.log({ err });
       }
     }
 
-    setFormState({ name: "", description: "", categories: [""] });
+    // Reset form state
+    setFormState({});
   };
 
   const isCategorySelected = (name: string) => {
@@ -147,7 +135,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
 
   return (
     <>
-      <section className="flex flex-col justify-start items-center min-h-screen pt-24 mx-2 bg-secondary">
+      <section className="flex flex-col justify-start items-center min-h-screen pt-24 mx-2 mb-1 bg-secondary">
         <div className="">
           {userProduct && (
             <img
@@ -160,22 +148,14 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
           )}
         </div>
 
-        <section className="flex flex-col flex-grow w-full my-2 text-plight rounded-t-3xl bg-dark">
+        <section className="flex flex-col flex-grow w-full text-plight rounded-b-3xl bg-dark">
           <form
             id="edit-product-form"
             ref={formRef}
-            className="flex flex-col w-full h-full p-2 space-y-3"
+            className="flex flex-col flex-grow justify-between w-full h-full p-2"
             onSubmit={handleFormSubmit}
           >
-            <div className="flex justify-center w-full mt-1">
-              <button
-                className="w-full py-2 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
-                type="submit"
-              >
-                SAVE
-              </button>
-            </div>
-
+            {/* Form Fields */}
             <div className="flex flex-col space-y-2">
               <div className="">
                 <input
@@ -196,22 +176,34 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
                   onChange={handleFormChange}
                 />
               </div>
+
+              {/* Category Buttons */}
+              <div className="flex flex-wrap w-full">
+                {userCategories &&
+                  userCategories.length > 0 &&
+                  userCategories.map((category: Category, index: number) => {
+                    return (
+                      <TagButton
+                        key={uuidv4()}
+                        category={category}
+                        onClick={handleCategoryChange}
+                        isToggled={isCategorySelected(category.name)}
+                      />
+                    );
+                  })}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex w-full">
+              <button
+                className="w-full py-2 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
+                type="submit"
+              >
+                SAVE
+              </button>
             </div>
           </form>
-          <div className="">
-            {userCategories &&
-              userCategories.length > 0 &&
-              userCategories.map((category: Category, index: number) => {
-                return (
-                  <TagButton
-                    key={uuidv4()}
-                    category={category}
-                    onClick={handleCategoryChange}
-                    isToggled={isCategorySelected(category.name)}
-                  />
-                );
-              })}
-          </div>
         </section>
       </section>
     </>

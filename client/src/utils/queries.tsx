@@ -69,6 +69,7 @@ export const QUERY_USER_CATEGORIES = gql`
 export const QUERY_USER_PRODUCT = gql`
   query userProduct($username: String!, $product: String!) {
     userProduct(username: $username, product: $product) {
+      _id
       description
       image
       name

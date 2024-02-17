@@ -96,24 +96,24 @@ export const ADD_PRODUCT = gql`
 
 export const UPDATE_PRODUCT = gql`
   mutation updateProduct(
-    $username: String!
+    $id: String!
     $name: String
     $description: String
     $categories: [String]
   ) {
     updateProduct(
-      username: $username
+      id: $id
       name: $name
       description: $description
       categories: $categories
     ) {
-      name
+      _id
       description
       image
+      name
       categories {
         name
         defaultCategory
-        image
       }
     }
   }

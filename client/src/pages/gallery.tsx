@@ -53,6 +53,7 @@ const Gallery = () => {
   if (data) {
     ({ categories } = data.userCategories);
   }
+  console.log(categories)
 
   // TODO Change this over to using global redux state similar to miniModal
   // useEffect(() => {

@@ -52,32 +52,24 @@ const TagButton = ({ category, onClick, isToggled }: Props) => {
   // TODO Change the toggle transition to a framer motion animation
   return (
     <>
-      <motion.button
+      <motion.div
         ref={scope}
         key={uuidv4()}
         id={`${category.name}`}
-        // initial={{
-        //   backgroundColor: "rgb(147 177 166)",
-        //   color: "rgb(24 61 61)",
-        //   boxShadow:
-        //     "inset 2px 2px 2px 0px rgba(255, 255, 255, 0.7), inset -2px -2px 2px 0px rgba(0,0,0,0.7)",
-        // }}
-        className={`test-button-shadow w-fit px-2 pb-1 mb-3 mx-2 rounded-full ${
+        className={`w-fit px-2 pb-1 mb-3 mx-2 rounded-full ${
           isToggled
             ? "bg-slate-800 bg-opacity-50 text-light shadow-[1px_1px_5px_rgba(0,0,0,0.7),2px_2px_2px_0px]"
             : "bg-light text-secondary shadow-[inset_2px_2px_2px_0px_rgba(255,255,255,0.7),inset_-2px_-2px_2px_0px_rgba(0,0,0,0.7)]"
         }`}
-        // className={`test-button-shadow w-fit px-2 pb-1 mb-3 mx-2 rounded-full  bg-green-400`}
-        type="button"
-        onClick={(event) => {
-          // event.preventDefault();
-          handleCategoryButtonClick(event);
-        }}
+        role="button"
+        tabIndex={0}
+        aria-pressed="false"
+        onClick={handleCategoryButtonClick}
       >
         <div className="pointer-events-none">
           <span className={`text-xl font-medium  `}>{category.name} </span>
         </div>
-      </motion.button>
+      </motion.div>
     </>
   );
 };

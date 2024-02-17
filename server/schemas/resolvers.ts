@@ -136,7 +136,7 @@ const resolvers = {
               name: { $first: "$name" },
               image: { $first: "$image" },
               description: { $first: "$description" },
-              categories: { $push:  "$categories"  },
+              categories: { $push: "$categories" },
             },
           },
           {
@@ -202,7 +202,6 @@ const resolvers = {
             throw new GraphQLError("Nothing Updated");
           }
 
-          // TODO Test if null or blank values form line 113 work without removing them
           const user = await User.findByIdAndUpdate(
             context.user.data._id,
             args,
@@ -292,8 +291,75 @@ const resolvers = {
       }
       throw new GraphQLError("You need to be logged in");
     },
-    updateProduct: async () => {
-      // Update will need to update the product info as well as its list of categories
+    updateProduct: async (
+      parent: any,
+      {
+        id,
+        name,
+        description,
+        categories,
+      }: {
+        id: string;
+        name: string;
+        description: string;
+        categories: string[];
+      },
+      context: any
+    ) => {
+      if (context.user) {
+        try {
+          let categoryIds = [];
+
+          // if (categories && categories.length > 0) {
+          //   categoryIds = await Category.find(
+          //     {
+          //       name: { $in: categories },
+          //     },
+          //     { _id: 1 }
+          //   );
+          // }
+
+          // const updatedCategories = await Category.updateMany(
+          //   { _id: categoryIds },
+          //   { $addToSet: { products: id } },
+          //   { new: true }
+          // );
+
+          /* FIXME Need to remove product Id from categories no longer selected - need to compare old product categories list 
+          with inbound categories list - find difference and update those categories */
+          if (categories && categories.length > 0) {
+            for (const categoryName of categories) {
+              const category = await Category.findOne({ name: categoryName });
+              if (category) {
+                await Category.updateOne(
+                  { _id: category._id },
+                  { $addToSet: { products: id } }
+                );
+                categoryIds.push(category._id);
+              }
+            }
+          }
+
+          console.log("updated Categories", categoryIds);
+
+          const updatedProduct = await Product.findByIdAndUpdate(
+            { _id: id },
+            {
+              name,
+              description,
+              categories: categoryIds,
+            },
+            { new: true }
+          );
+
+          console.log("updated Product", updatedProduct);
+          return updatedProduct;
+        } catch (err: any) {
+          console.log(err.message);
+          throw new GraphQLError("Failed to update product");
+        }
+      }
+      throw new GraphQLError("You need to be logged in");
     },
     deleteProduct: async () => {},
 

@@ -26,6 +26,7 @@ export type Category = {
 };
 
 export type Product = {
+  _id: string;
   __typename: string;
   name: string;
   description: string;
