@@ -330,7 +330,7 @@ const resolvers = {
               (categoryName) => !categories.includes(categoryName)
             );
 
-            console.log("categories to remove", removedCategories);
+            // console.log("categories to remove", removedCategories);
 
             if (removedCategories.length > 0) {
               for (const categoryName of removedCategories) {
@@ -346,9 +346,9 @@ const resolvers = {
 
                     await category.save();
 
-                    console.log(
-                      `Product removed from category: ${categoryName}`
-                    );
+                    // console.log(
+                    //   `Product removed from category: ${categoryName}`
+                    // );
                   }
                 } catch (err) {
                   // console.error(err);
