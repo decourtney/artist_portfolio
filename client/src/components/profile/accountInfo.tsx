@@ -1,3 +1,11 @@
+/* TODO
+Slider component has changed to accept a single category which has its list of products
+Need iterate over categories here displaying the category and list of products similar to
+the galary page but more compact. Edit still directs to the editProduct component
+
+Drag n Drop or file upload doesnt appear to be working again... could be due to shitty access from work
+*/
+
 import { useState, useRef, useEffect } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
@@ -41,9 +49,10 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
 
   const { loading, data } = useQuery(QUERY_ACCOUNT, {
     variables: { username: userParam },
+    onCompleted: (data) => { console.log(userParam); console.log(data) }
   });
 
-  const handleOnClickItem = () => {};
+  const handleOnClickItem = () => { };
 
   // if (!loading) console.log("query account:", data);
 
@@ -94,12 +103,9 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                   )}
                 </div>
                 <div className="relative edge-fade flex flex-grow w-full text-xs">
-                  <Slider
-                    handleOnClickItem={handleOnClickItem}
-                    itemsToDisplay={data.account.categories}
-                    numberToDisplay={categoryNumToDisplay}
-                    isCenteredSlides={isCenterSlides}
-                  />
+                  {/* <Slider
+                    categoryToDisplay={data.account.categories}
+                  /> */}
                 </div>
               </div>
 
@@ -147,15 +153,12 @@ const AccountInfo = ({ setIsEditForm, handleBackButton }: AccountProps) => {
                     </div>
 
                     <div
-                      className={`relative flex justify-center items-center w-full ${
-                        collectionNumToDisplay > 1 ? "edge-fade" : ""
-                      }`}
+                      className={`relative flex justify-center items-center w-full ${collectionNumToDisplay > 1 ? "edge-fade" : ""
+                        }`}
                     >
-                      <Slider
+                      {/* <Slider
                         itemsToDisplay={data.account.products}
-                        numberToDisplay={collectionNumToDisplay}
-                        isCenteredSlides={isCenterSlides}
-                      />
+                      /> */}
                     </div>
                   </>
                 )}

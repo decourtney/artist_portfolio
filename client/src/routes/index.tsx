@@ -15,7 +15,7 @@ import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 
 import About from "../pages/about";
-import Contact from "../components/gallery/editProduct";
+import EditProduct from "../components/gallery/editProduct";
 import Gallery from "../pages/gallery";
 import Home from "../pages/home";
 import Login from "../pages/login";
@@ -32,7 +32,7 @@ const AnimatedRoutes = () => {
       <Header />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Contact />} />{" "}
+          <Route path="/" element={<EditProduct />} />{" "}
           {/* This is just for initial development stages. delete when necessary */}
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
@@ -43,7 +43,7 @@ const AnimatedRoutes = () => {
             element={<Gallery />}
           />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+          {/* <Route path="/contact" element={<Contact />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/profile/:username" element={<Profile />} />
           <Route path="/profile/:username/:content" element={<Profile />} />

@@ -172,6 +172,14 @@ const resolvers = {
           $addToSet: { categories: defaultCategory?._id },
         });
 
+        // const bucketResponse = await uploadObject(
+        //   createReadStream(),
+        //   filename,
+        //   mimetype,
+        //   encoding,
+        //   context.user.data.username
+        // );
+
         // signToken is expecting _id to be a string
         const userIdAsString = user._id.toString();
 
