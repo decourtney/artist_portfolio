@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   category: Category;
-  onClick: (categoryName: string) => void;
+  onClick: (category: Category) => void;
   isToggled: boolean;
 }
 
@@ -27,7 +27,7 @@ const TagButton = ({ category, onClick, isToggled }: Props) => {
     const el = event.currentTarget;
 
     // setIsToggled(!isToggled);
-    onClick(el.id);
+    // onClick(el.id);
   };
 
   // useEffect(() => {
@@ -64,7 +64,7 @@ const TagButton = ({ category, onClick, isToggled }: Props) => {
         role="button"
         tabIndex={0}
         aria-pressed="false"
-        onClick={handleCategoryButtonClick}
+        onClick={() => onClick(category)}
       >
         <div className="pointer-events-none">
           <span className={`text-xl font-medium  `}>{category.name} </span>

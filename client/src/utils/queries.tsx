@@ -75,7 +75,7 @@ export const QUERY_USER_PRODUCT = gql`
       name
       categories {
         name
-        defaultCategory
+        defaultCategory  
       }
     }
   }

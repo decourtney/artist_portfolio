@@ -7,6 +7,7 @@ import {
   Link,
 } from "react-router-dom";
 import Auth from "../../utils/auth";
+import { motion } from "framer-motion";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_USER_PRODUCT, QUERY_USER_CATEGORIES } from "../../utils/queries";
 import { UPDATE_PRODUCT } from "../../utils/mutations";
@@ -23,12 +24,41 @@ interface EditProductProps {
   itemToEdit: string;
 }
 
-const tempData = 'US Flag'
+const tempData = "US Flag";
+
+// This is only checks if each key is the same length (string can be same length and different characters = equal)
+// and as objects match = userProduct
+const deepEqual = (obj1: any, obj2: any) => {
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let key of keys1) {
+    const val1 = obj1[key];
+    const val2 = obj2[key];
+
+    const areObjects = typeof val1 === "object" && typeof val2 === "object";
+    if (
+      (areObjects && !deepEqual(val1, val2)) ||
+      (!areObjects && val1 !== val2)
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
   const [formState, setFormState] = useState({});
   const [userProduct, setUserProduct] = useState<Product | null>(null);
-  const [userCategories, setUserCategories] = useState<Category[] | null>(null);
+  const [userAllCategories, setUserAllCategories] = useState<Category[] | null>(
+    null
+  );
+  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   // const [categoryList, setCategoryList] = useState<string[]>([""]);
   const [updateProduct] = useMutation(UPDATE_PRODUCT);
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -44,13 +74,14 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
         product: itemToEdit,
       },
       onCompleted: (data) => {
-        // NOTE Aggregate query returns an array
         setUserProduct(data?.userProduct[0]);
         selectedCategories.current = data.userProduct[0].categories.map(
           (category: Category) => {
             return category.name;
           }
         );
+
+        setFormState(data?.userProduct[0]);
       },
     }
   );
@@ -62,7 +93,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
         username: import.meta.env.VITE_BASE_USER,
       },
       onCompleted: (data) => {
-        setUserCategories(data?.userCategories.categories);
+        setUserAllCategories(data?.userCategories.categories);
       },
     }
   );
@@ -75,6 +106,17 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     // do stuff
   }
 
+  useEffect(() => {
+    if (Object.keys(formState).length > 0) {
+      console.log("formstate", formState, "userproduct", userProduct);
+      if (!deepEqual(formState, userProduct)) {
+        setIsSaveDisabled(false);
+      } else {
+        setIsSaveDisabled(true);
+      }
+    }
+  }, [formState]);
+
   const handleFormChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -85,19 +127,19 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     });
   };
 
+  // FIXME selectedCats never matches userProduct.categories after this
   // Update list of selected categories
-  const handleCategoryChange = (categoryName: string) => {
-    if (categoryName !== "All Artwork") {
-      if (!isCategorySelected(categoryName)) {
-        selectedCategories.current = [
-          ...selectedCategories.current,
-          categoryName,
-        ];
+  const handleCategoryChange = (c: Category) => {
+    if (!c.defaultCategory) {
+      if (!isCategorySelected(c.name)) {
+        selectedCategories.current = [...selectedCategories.current, c.name];
       } else {
         selectedCategories.current = selectedCategories.current.filter(
-          (category) => category !== categoryName
+          (categoryName) => categoryName !== c.name
         );
       }
+
+      console.log(selectedCategories.current);
 
       // TODO may need to make adjustment here - once backend is fully connected and mutated check for accuracy
       setFormState({
@@ -109,26 +151,29 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    console.log(formState);
     // First verify formState is not an empty object
-    if (Object.keys(formState).length > 0) {
-      try {
-        const { data } = await updateProduct({
-          variables: { id: userProduct?._id, ...formState },
-        });
+    // if (Object.keys(formState).length > 0) {
+    try {
+      const { data } = await updateProduct({
+        variables: { id: userProduct?._id, ...formState },
+      });
 
-        setUserProduct(data.updateProduct);
-      } catch (err) {
-        console.log({ err });
-      }
+      setUserProduct(data.updateProduct);
+    } catch (err) {
+      console.log({ err });
     }
+    // }
 
     // Reset form state
     setFormState({});
   };
 
-  const isCategorySelected = (name: string) => {
-    return selectedCategories.current.includes(name);
+  const isCategorySelected = (c: string) => {
+    const val = selectedCategories.current.some(
+      (selectedCat) => selectedCat === c
+    );
+    return val;
   };
 
   if (loadingProduct) return null;
@@ -162,7 +207,8 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
                   id="product-name"
                   name="name"
                   className="w-full px-1 text-3xl font-bold rounded-md bg-light bg-opacity-50"
-                  placeholder={userProduct?.name}
+                  // placeholder={userProduct?.name}
+                  defaultValue={userProduct?.name}
                   onChange={handleFormChange}
                 />
               </div>
@@ -172,16 +218,17 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
                   id="product-description"
                   name="description"
                   className="w-full h-10 px-1 text-lg font-medium rounded-md bg-light bg-opacity-50"
-                  placeholder={userProduct?.description}
+                  // placeholder={userProduct?.description}
+                  defaultValue={userProduct?.description}
                   onChange={handleFormChange}
                 />
               </div>
 
               {/* Category Buttons */}
               <div className="flex flex-wrap w-full">
-                {userCategories &&
-                  userCategories.length > 0 &&
-                  userCategories.map((category: Category, index: number) => {
+                {userAllCategories &&
+                  userAllCategories.length > 0 &&
+                  userAllCategories.map((category: Category, index: number) => {
                     return (
                       <TagButton
                         key={uuidv4()}
@@ -194,14 +241,21 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
               </div>
             </div>
 
+            {/* TODO Add cancel button that reverts chaange */}
             {/* Submit Button */}
-            <div className="flex w-full">
-              <button
-                className="w-full py-2 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
-                type="submit"
-              >
-                SAVE
-              </button>
+            <div className="flex justify-center w-full">
+              {!isSaveDisabled && (
+                <motion.button
+                  className="w-fit py-2 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
+                  type="submit"
+                  disabled={isSaveDisabled}
+                  // initial={{ width: "fit-content" }}
+                  // animate={{ width: "full" }}
+                  // exit={{ opacity: 0 }}
+                >
+                  SAVE
+                </motion.button>
+              )}
             </div>
           </form>
         </section>
