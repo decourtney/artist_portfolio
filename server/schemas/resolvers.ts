@@ -237,7 +237,7 @@ const resolvers = {
     ) => {
       if (context.user) {
         // Destructuring file avoids issue with promise wrap in objectLoader - it works, so good enough for now
-        const { createReadStream, filename, mimetype, encoding } = file;
+        const { createReadStream, filename, mimetype, encoding } = await file; // Await destructuring
 
         try {
           const bucketResponse = await uploadObject(
