@@ -13,20 +13,46 @@ interface IProduct extends Document {
   categories: ICategory[];
 }
 
+const mediumEnum = { 
+  values: ["acrylic", "oil" "paint", "pencil", "ink", "marker", "fresco", "watercolor", "watercolor pencil", "tempera", "chalk", "encaustic", "oil", "digital", "clay", "glass", "gouache", "pastel", "charcoal", "graphite", "oil pastels", "mixed", "crayon", "photography"],
+  message: 'enum validator failed for path `{PATH}` with value `{VALUE}`'
+}
+
+const substratesEnum = {
+  values: [acrylic, aluminum, construction paper, canvasd, paper, glass, metal, wood, plastic],
+  message: 'enum validator failed for path `{PATH}` with value `{VALUE}`'
+}
+
 const productSchema = new Schema<IProduct>({
   name: {
     type: String,
     required: true,
     trim: true,
+    maxLength: 30,
     unique: true,
-  },
-  description: {
-    type: String,
-    trim: true,
   },
   image: {
     type: String,
     required: true,
+  },
+  medium: {
+    type: String,
+    enum: mediumEnum,
+    required: false,
+  },
+  substrate: {
+    type: String,
+    enum: substratesEnum,
+    required: false,
+  },
+  dimensions: {
+    type: String,
+    required: false,
+  },
+  description: {
+    type: String,
+    trim: true,
+    maxLength: 200,
   },
   user: {
     type: Types.ObjectId,
@@ -43,7 +69,7 @@ const productSchema = new Schema<IProduct>({
 });
 
 // Define a pre-save middleware to handle name uniqueness
-productSchema.pre<IProduct>("save", async function (next) {
+productSchema.pre<IProduct>("save", async function(next) {
   try {
     if (!this.isNew || !this.isModified("name")) {
       // If the document is not new or the name is not modified, move on

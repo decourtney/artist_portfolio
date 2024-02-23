@@ -18,7 +18,6 @@ export type UserData = {
 };
 
 export type Category = {
-  __typename: string;
   name: string;
   defaultCategory: boolean;
   image: string;
@@ -27,10 +26,12 @@ export type Category = {
 
 export type Product = {
   _id: string;
-  __typename: string;
   name: string;
-  description: string;
   image: string;
+  medium: string;
+  substrate: string;
+  dimensions: string;
+  description: string;
   categories: [Category];
 };
 
