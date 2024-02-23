@@ -3,6 +3,11 @@ import gql from "graphql-tag";
 const typeDefs = gql`
   scalar Upload
 
+  input CategoryInput {
+    name: String
+    defaultCategory: Boolean
+  }
+
   type Category {
     _id: ID
     name: String
@@ -83,7 +88,7 @@ const typeDefs = gql`
       id: String!
       name: String
       description: String
-      categories: [String]
+      categories: [CategoryInput]
     ): Product
     deleteProduct(product: String!): Boolean
 

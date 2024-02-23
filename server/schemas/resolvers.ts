@@ -310,7 +310,7 @@ const resolvers = {
         id: string;
         name: string;
         description: string;
-        categories: string[];
+        categories: (typeof Category)[];
       },
       context: any
     ) => {
@@ -335,10 +335,11 @@ const resolvers = {
 
             // Find the categories that are in the old list but not in the new list
             const removedCategories = oldCategoryNames.filter(
-              (categoryName) => !categories.includes(categoryName)
+              (categoryName) =>
+                !categories.some((category) => category.name === categoryName)
             );
 
-            // console.log("categories to remove", removedCategories);
+            console.log("categories to remove", removedCategories);
 
             if (removedCategories.length > 0) {
               for (const categoryName of removedCategories) {
@@ -354,9 +355,9 @@ const resolvers = {
 
                     await category.save();
 
-                    // console.log(
-                    //   `Product removed from category: ${categoryName}`
-                    // );
+                    console.log(
+                      `Product removed from category: ${categoryName}`
+                    );
                   }
                 } catch (err) {
                   // console.error(err);
@@ -369,8 +370,8 @@ const resolvers = {
           }
 
           if (categories && categories.length > 0) {
-            for (const categoryName of categories) {
-              const category = await Category.findOne({ name: categoryName });
+            for (const c of categories) {
+              const category = await Category.findOne({ name: c.name });
               if (category) {
                 await Category.updateOne(
                   { _id: category._id },

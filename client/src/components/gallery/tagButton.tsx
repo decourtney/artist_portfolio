@@ -52,7 +52,7 @@ const TagButton = ({ category, onClick, isToggled }: Props) => {
   // TODO Change the toggle transition to a framer motion animation
   return (
     <>
-      <motion.div
+      <motion.button
         ref={scope}
         key={uuidv4()}
         id={`${category.name}`}
@@ -61,7 +61,7 @@ const TagButton = ({ category, onClick, isToggled }: Props) => {
             ? "bg-slate-800 bg-opacity-50 text-light shadow-[1px_1px_5px_rgba(0,0,0,0.7),2px_2px_2px_0px]"
             : "bg-light text-secondary shadow-[inset_2px_2px_2px_0px_rgba(255,255,255,0.7),inset_-2px_-2px_2px_0px_rgba(0,0,0,0.7)]"
         }`}
-        role="button"
+        type="button"
         tabIndex={0}
         aria-pressed="false"
         onClick={() => onClick(category)}
@@ -69,7 +69,7 @@ const TagButton = ({ category, onClick, isToggled }: Props) => {
         <div className="pointer-events-none">
           <span className={`text-xl font-medium  `}>{category.name} </span>
         </div>
-      </motion.div>
+      </motion.button>
     </>
   );
 };

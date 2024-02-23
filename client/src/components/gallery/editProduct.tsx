@@ -14,6 +14,7 @@ import { UPDATE_PRODUCT } from "../../utils/mutations";
 import { Category, Product } from "../../utils/customClientTypes";
 import { v4 as uuidv4 } from "uuid";
 import TagButton from "./tagButton";
+import CompareObjects from "../../utils/compareObjects";
 import data from "@iconify/icons-mdi/chevron-left";
 
 const baseCDN =
@@ -25,38 +26,11 @@ interface EditProductProps {
 }
 
 interface SelectedCategory {
-  __typename: string;
   name: string;
   defaultCategory: boolean;
 }
 
-const tempData = "US Flag";
-
-// This is only checks if each key is the same length (string can be same length and different characters = equal)
-// and as objects match = userProduct
-const compareFormAndUserproductStates = (obj1: any, obj2: any) => {
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  for (let key of keys1) {
-    const val1 = obj1[key];
-    const val2 = obj2[key];
-
-    const areObjects = typeof val1 === "object" && typeof val2 === "object";
-    if (
-      (areObjects && !compareFormAndUserproductStates(val1, val2)) ||
-      (!areObjects && val1 !== val2)
-    ) {
-      return false;
-    }
-  }
-
-  return true;
-};
+const tempData = "US Flag"; // TODO remove
 
 const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
   const [formState, setFormState] = useState({});
@@ -114,7 +88,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
 
   useEffect(() => {
     if (Object.keys(formState).length > 0) {
-      if (!compareFormAndUserproductStates(formState, userProduct)) {
+      if (!CompareObjects(formState, userProduct)) {
         setIsSaveDisabled(false);
       } else {
         setIsSaveDisabled(true);
@@ -132,13 +106,11 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     });
   };
 
-  // FIXME selectedCats never matches userProduct.categories after this
   // Update list of selected categories
   const handleCategoryChange = (cat: Category) => {
     // create new SelectedCategory obj from Category obj
-    const { __typename, name, defaultCategory } = cat;
+    const { name, defaultCategory } = cat;
     const newSelectedCategory: SelectedCategory = {
-      __typename,
       name,
       defaultCategory,
     };
@@ -174,8 +146,8 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
       });
 
       setUserProduct(data.updateProduct);
-    } catch (err) {
-      console.log({ err });
+    } catch (err:any) {
+      console.log(err.message);
     }
     // }
 
@@ -262,7 +234,6 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
                 <motion.button
                   className="w-fit py-2 px-4 rounded-l-full rounded-r-full text-md text-plight font-bold bg-green-500 shadow-[0px_0px_2px_#5B8FB9]"
                   type="submit"
-                  disabled={isSaveDisabled}
                   // initial={{ width: "fit-content" }}
                   // animate={{ width: "full" }}
                   // exit={{ opacity: 0 }}

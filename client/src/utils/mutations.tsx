@@ -99,7 +99,7 @@ export const UPDATE_PRODUCT = gql`
     $id: String!
     $name: String
     $description: String
-    $categories: [String]
+    $categories: [CategoryInput]
   ) {
     updateProduct(
       id: $id
