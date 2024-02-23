@@ -24,11 +24,17 @@ interface EditProductProps {
   itemToEdit: string;
 }
 
+interface SelectedCategory {
+  __typename: string;
+  name: string;
+  defaultCategory: boolean;
+}
+
 const tempData = "US Flag";
 
 // This is only checks if each key is the same length (string can be same length and different characters = equal)
 // and as objects match = userProduct
-const deepEqual = (obj1: any, obj2: any) => {
+const compareFormAndUserproductStates = (obj1: any, obj2: any) => {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
 
@@ -42,7 +48,7 @@ const deepEqual = (obj1: any, obj2: any) => {
 
     const areObjects = typeof val1 === "object" && typeof val2 === "object";
     if (
-      (areObjects && !deepEqual(val1, val2)) ||
+      (areObjects && !compareFormAndUserproductStates(val1, val2)) ||
       (!areObjects && val1 !== val2)
     ) {
       return false;
@@ -62,7 +68,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
   // const [categoryList, setCategoryList] = useState<string[]>([""]);
   const [updateProduct] = useMutation(UPDATE_PRODUCT);
   const formRef = useRef<HTMLFormElement | null>(null);
-  const selectedCategories = useRef<string[]>([]);
+  const selectedCategories = useRef<SelectedCategory[]>([]);
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
@@ -77,7 +83,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
         setUserProduct(data?.userProduct[0]);
         selectedCategories.current = data.userProduct[0].categories.map(
           (category: Category) => {
-            return category.name;
+            return category;
           }
         );
 
@@ -108,8 +114,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
 
   useEffect(() => {
     if (Object.keys(formState).length > 0) {
-      console.log("formstate", formState, "userproduct", userProduct);
-      if (!deepEqual(formState, userProduct)) {
+      if (!compareFormAndUserproductStates(formState, userProduct)) {
         setIsSaveDisabled(false);
       } else {
         setIsSaveDisabled(true);
@@ -129,17 +134,26 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
 
   // FIXME selectedCats never matches userProduct.categories after this
   // Update list of selected categories
-  const handleCategoryChange = (c: Category) => {
-    if (!c.defaultCategory) {
-      if (!isCategorySelected(c.name)) {
-        selectedCategories.current = [...selectedCategories.current, c.name];
+  const handleCategoryChange = (cat: Category) => {
+    // create new SelectedCategory obj from Category obj
+    const { __typename, name, defaultCategory } = cat;
+    const newSelectedCategory: SelectedCategory = {
+      __typename,
+      name,
+      defaultCategory,
+    };
+
+    if (!newSelectedCategory.defaultCategory) {
+      if (!isCategorySelected(newSelectedCategory.name)) {
+        selectedCategories.current = [
+          ...selectedCategories.current,
+          newSelectedCategory,
+        ];
       } else {
         selectedCategories.current = selectedCategories.current.filter(
-          (categoryName) => categoryName !== c.name
+          (category) => category.name !== newSelectedCategory.name
         );
       }
-
-      console.log(selectedCategories.current);
 
       // TODO may need to make adjustment here - once backend is fully connected and mutated check for accuracy
       setFormState({
@@ -169,9 +183,9 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
     setFormState({});
   };
 
-  const isCategorySelected = (c: string) => {
+  const isCategorySelected = (cat: string) => {
     const val = selectedCategories.current.some(
-      (selectedCat) => selectedCat === c
+      (selectedCategory) => selectedCategory.name === cat
     );
     return val;
   };
