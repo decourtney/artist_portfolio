@@ -50,13 +50,11 @@ export const QUERY_ACCOUNT = gql`
 export const QUERY_USER_CATEGORIES = gql`
   query userCategories($username: String!) {
     userCategories(username: $username) {
-      __typename
       categories {
         name
         defaultCategory
         image
         products {
-          __typename
           name
           description
           image
@@ -69,12 +67,13 @@ export const QUERY_USER_CATEGORIES = gql`
 export const QUERY_USER_PRODUCT = gql`
   query userProduct($username: String!, $product: String!) {
     userProduct(username: $username, product: $product) {
+      _id
       description
       image
       name
       categories {
         name
-        defaultCategory
+        defaultCategory  
       }
     }
   }
@@ -83,7 +82,6 @@ export const QUERY_USER_PRODUCT = gql`
 export const QUERY_CATEGORY = gql`
   query category($category: String!) {
     category(category: $category) {
-      __typename
       name
       description
       image

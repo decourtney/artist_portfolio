@@ -1,3 +1,9 @@
+/** TODO
+ * Refresh site breaks routes - Route /gallery/:productName will refresh to default gallery page
+ * but still be on appropriate route. Moving product to redux state introduced this bug
+ * Try using redux-persist
+ */
+
 import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import {
   Navigate,
@@ -53,6 +59,7 @@ const Gallery = () => {
   if (data) {
     ({ categories } = data.userCategories);
   }
+  console.log(categories)
 
   // TODO Change this over to using global redux state similar to miniModal
   // useEffect(() => {
@@ -77,7 +84,6 @@ const Gallery = () => {
 
   return (
     <>
-      {/* <Hero /> */}
       <section id="gallery" className="relative flex flex-col h-full min-h-screen">
         {categories &&
           categories.length > 0 &&

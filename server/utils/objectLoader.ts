@@ -3,6 +3,7 @@ import {
   GetObjectCommand,
   PutObjectCommand,
   S3,
+  ObjectCannedACL,
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { UploadFile } from "./customServerTypes";
@@ -30,13 +31,14 @@ export const uploadObject = async (
   username: string
 ) => {
   const s3Client = createS3Client();
+
   try {
     const bucketParams = {
+      ACL: "public-read" as ObjectCannedACL,
       Bucket: "chumbucket",
       Key: `artist_portfolio/${username}/${filename}`,
       Body: stream,
       ContentType: mimetype,
-      ACL: "public-read",
       // Metadata: {
       //   "x-amz-meta-my-key": "your-value",
       // },
@@ -45,6 +47,7 @@ export const uploadObject = async (
     const parallelUpload = new Upload({
       client: s3Client,
       params: bucketParams,
+      // optional
       tags: [],
       queueSize: 4,
       partSize: 1024 * 1024 * 5,

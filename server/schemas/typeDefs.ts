@@ -3,6 +3,11 @@ import gql from "graphql-tag";
 const typeDefs = gql`
   scalar Upload
 
+  input CategoryInput {
+    name: String
+    defaultCategory: Boolean
+  }
+
   type Category {
     _id: ID
     name: String
@@ -14,8 +19,11 @@ const typeDefs = gql`
   type Product {
     _id: ID
     name: String
-    description: String
     image: String
+    medium: String
+    substrate: String
+    dimensions: String
+    description: String
     categories: [Category]
   }
 
@@ -55,7 +63,12 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addUser(firstName: String!, lastName: String!, email: String!, password: String!): Auth
+    addUser(
+      firstName: String!
+      lastName: String!
+      email: String!
+      password: String!
+    ): Auth
     updateUser(
       firstName: String
       lastName: String
@@ -74,7 +87,12 @@ const typeDefs = gql`
     login(email: String!, password: String!): Auth
 
     addProduct(file: Upload!): Boolean
-    updateProduct(product: String!): Boolean
+    updateProduct(
+      id: String!
+      name: String
+      description: String
+      categories: [CategoryInput]
+    ): Product
     deleteProduct(product: String!): Boolean
 
     addCategory(username: String!, category: String!): User

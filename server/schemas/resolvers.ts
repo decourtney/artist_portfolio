@@ -136,7 +136,7 @@ const resolvers = {
               name: { $first: "$name" },
               image: { $first: "$image" },
               description: { $first: "$description" },
-              categories: { $push:  "$categories"  },
+              categories: { $push: "$categories" },
             },
           },
           {
@@ -172,6 +172,14 @@ const resolvers = {
           $addToSet: { categories: defaultCategory?._id },
         });
 
+        // const bucketResponse = await uploadObject(
+        //   createReadStream(),
+        //   filename,
+        //   mimetype,
+        //   encoding,
+        //   context.user.data.username
+        // );
+
         // signToken is expecting _id to be a string
         const userIdAsString = user._id.toString();
 
@@ -202,7 +210,6 @@ const resolvers = {
             throw new GraphQLError("Nothing Updated");
           }
 
-          // TODO Test if null or blank values form line 113 work without removing them
           const user = await User.findByIdAndUpdate(
             context.user.data._id,
             args,
@@ -230,7 +237,7 @@ const resolvers = {
     ) => {
       if (context.user) {
         // Destructuring file avoids issue with promise wrap in objectLoader - it works, so good enough for now
-        const { createReadStream, filename, mimetype, encoding } = file;
+        const { createReadStream, filename, mimetype, encoding } = await file; // Await destructuring
 
         try {
           const bucketResponse = await uploadObject(
@@ -292,8 +299,109 @@ const resolvers = {
       }
       throw new GraphQLError("You need to be logged in");
     },
-    updateProduct: async () => {
-      // Update will need to update the product info as well as its list of categories
+    updateProduct: async (
+      parent: any,
+      {
+        id,
+        name,
+        description,
+        categories,
+      }: {
+        id: string;
+        name: string;
+        description: string;
+        categories: (typeof Category)[];
+      },
+      context: any
+    ) => {
+      if (context.user) {
+        try {
+          let categoryIds = [];
+
+          // Get old list of categories
+          const oldProductCategories = await Product.findById(id)
+            .populate({
+              path: "categories",
+              model: "Category",
+              select: "name",
+            })
+            .select("categories");
+
+          // Need to update any Categories that are to be removed
+          if (oldProductCategories) {
+            const oldCategoryNames = oldProductCategories.categories.map(
+              (category) => category.name
+            );
+
+            // Find the categories that are in the old list but not in the new list
+            const removedCategories = oldCategoryNames.filter(
+              (categoryName) =>
+                !categories.some((category) => category.name === categoryName)
+            );
+
+            console.log("categories to remove", removedCategories);
+
+            if (removedCategories.length > 0) {
+              for (const categoryName of removedCategories) {
+                try {
+                  const category = await Category.findOne({
+                    name: categoryName,
+                  });
+
+                  if (category) {
+                    category.products = category.products.filter(
+                      (productId) => productId.toString() !== id
+                    );
+
+                    await category.save();
+
+                    console.log(
+                      `Product removed from category: ${categoryName}`
+                    );
+                  }
+                } catch (err) {
+                  // console.error(err);
+                  console.error(
+                    `Failed to remove product from category: ${categoryName}`
+                  );
+                }
+              }
+            }
+          }
+
+          if (categories && categories.length > 0) {
+            for (const c of categories) {
+              const category = await Category.findOne({ name: c.name });
+              if (category) {
+                await Category.updateOne(
+                  { _id: category._id },
+                  { $addToSet: { products: id } }
+                );
+                categoryIds.push(category._id);
+              }
+            }
+          }
+
+          console.log("updated Categories", categoryIds);
+
+          const updatedProduct = await Product.findByIdAndUpdate(
+            { _id: id },
+            {
+              name,
+              description,
+              categories: categoryIds,
+            },
+            { new: true }
+          );
+
+          console.log("updated Product", updatedProduct);
+          return updatedProduct;
+        } catch (err: any) {
+          console.log(err.message);
+          throw new GraphQLError("Failed to update product");
+        }
+      }
+      throw new GraphQLError("You need to be logged in");
     },
     deleteProduct: async () => {},
 
