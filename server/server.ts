@@ -8,6 +8,7 @@ import db from "./config/connection";
 import cors from "cors";
 import path from "path";
 
+const HOSTNAME = process.env.HOSTNAME
 const PORT = process.env.PORT || 3000;
 const app = express();
 const server = new ApolloServer({
@@ -48,7 +49,7 @@ const startApolloServer = async (typeDefs: any, resolvers: any, app: any) => {
   db.once("open", () => {
     app.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
-      console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
+      console.log(`Use GraphQL at http://${HOSTNAME}:${PORT}/graphql`);
     });
   });
 };

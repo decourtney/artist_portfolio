@@ -20,7 +20,7 @@ import { Category } from "../../utils/customClientTypes";
 import { useAnimate, motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { RootState } from "../../redux/store";
 import { setSliderState } from "../../redux/sliderSlice";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
@@ -246,7 +246,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   //-------------------------------------------------------------------------
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number | null>(null);
-  const deltaXThreshold = 40
+  const deltaXThreshold = 40;
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     touchStartX.current = event.touches[0].clientX;
@@ -257,7 +257,9 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handleTouchEnd = () => {
-    const deltaX = touchEndX.current ? touchEndX.current - touchStartX.current : 0;
+    const deltaX = touchEndX.current
+      ? touchEndX.current - touchStartX.current
+      : 0;
 
     if (deltaX > deltaXThreshold) {
       // Swipe right

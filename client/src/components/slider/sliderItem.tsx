@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { RootState } from "../../redux/store";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import DetectMobile from "../../utils/detectMobile";
@@ -33,7 +33,7 @@ const SliderItem = ({
   const sliderItemState = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState
   );
-  const {isSliding} = useAppSelector(
+  const { isSliding } = useAppSelector(
     (state: RootState) => state.slider.globalSettings
   );
   const { productContainerId, product, productRect, showProductModal } =

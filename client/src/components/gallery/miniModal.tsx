@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion, useAnimate } from "framer-motion";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { RootState } from "../../redux/store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import { setProductState } from "../../redux/productSlice";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
@@ -132,7 +132,7 @@ const MiniModal = () => {
   /* 
   On click get the current rect for the miniModal, dispatch and prime productState with current rect values,
   
-  */ 
+  */
   const handleOnClick = () => {
     const { bottom, height, left, right, top, width, x, y } =
       scope.current.getBoundingClientRect();

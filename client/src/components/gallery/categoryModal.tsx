@@ -1,5 +1,5 @@
 /** TODO
- * 
+ *
  */
 
 import React, { Dispatch, SetStateAction, useEffect } from "react";
@@ -11,9 +11,9 @@ import {
   Link,
 } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { setCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
 import { motion } from "framer-motion";
-import Slider from "../slider/Slider.1";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -31,11 +31,12 @@ const GalleryModal = () => {
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const handleClose = () => {
+    dispatch(setCategoryState({ showCategoryModal: false }));
     navigate("/gallery/");
   };
 
   const handleOnClickProduct = (item: Product | Category) => {
-    if (item.__typename === "Product") {
+    if (item.name === "Product") {
       navigate(`/gallery/c/${categoryData?.name}/${item.name}`);
     }
   };

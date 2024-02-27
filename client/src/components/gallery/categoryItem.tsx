@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
-import { RootState } from "../../store";
+import { RootState } from "../../redux/store";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { setCategoryState } from "../../redux/categorySlice";
 import { Category, Product } from "../../utils/customClientTypes";
@@ -18,12 +18,12 @@ interface CategoryItemProps {
   index: number;
 }
 
-const CategoryItem = ({ category }: CategoryItemProps) => {
+const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const handleOnClick = () => {
-    dispatch(setCategoryState({ data: category as Category }));
+    dispatch(setCategoryState({ data: category, showCategoryModal: true }));
     navigate(`/gallery/c/${category.name}`);
   };
 

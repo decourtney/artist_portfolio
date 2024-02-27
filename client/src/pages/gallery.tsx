@@ -22,7 +22,7 @@ import {
   usePresence,
 } from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { RootState } from "../store";
+import { RootState } from "../redux/store";
 import { setCategoryState } from "../redux/categorySlice";
 import { setProductState } from "../redux/productSlice";
 import { v4 as uuidv4 } from "uuid";
@@ -42,6 +42,9 @@ const Gallery = () => {
   const { showProductModal } = useAppSelector(
     (state) => state.product.productState
   );
+  const { showCategoryModal } = useAppSelector(
+    (state) => state.category.categoryState
+  );
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
   const location = useLocation();
@@ -59,7 +62,7 @@ const Gallery = () => {
   if (data) {
     ({ categories } = data.userCategories);
   }
-  console.log(categories)
+  console.log(categories);
 
   // TODO Change this over to using global redux state similar to miniModal
   // useEffect(() => {
@@ -84,7 +87,10 @@ const Gallery = () => {
 
   return (
     <>
-      <section id="gallery" className="relative flex flex-col h-full min-h-screen">
+      <section
+        id="gallery"
+        className="relative flex flex-col h-full min-h-screen"
+      >
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {
@@ -99,7 +105,7 @@ const Gallery = () => {
             }
           })}
 
-        {isCategoryModal && <CategoryModal />}
+        {showCategoryModal && <CategoryModal />}
         {showProductModal && <ProductModal />}
         {showMiniModal && <MiniModal />}
       </section>

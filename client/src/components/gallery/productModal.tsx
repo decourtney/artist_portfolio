@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { RootState } from "../../redux/store";
 import { setProductState } from "../../redux/productSlice";
 import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { Product } from "../../utils/customClientTypes";
@@ -15,11 +15,11 @@ const baseCDN =
 const ProductModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { productContainerId, product, productRect, showProductModal } = useAppSelector(
-    (state: RootState) => state.product.productState
-  );
+  const { productContainerId, product, productRect, showProductModal } =
+    useAppSelector((state: RootState) => state.product.productState);
   const { sliderItemRect, sliderItemVisibility } = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState[productContainerId]);
+    (state: RootState) => state.sliderItem.sliderItemState[productContainerId]
+  );
   const [imgDimensions, setImgDimensions] = useState<{
     width: number;
     height: number;
@@ -110,7 +110,7 @@ const ProductModal = () => {
   const handleBack = () => {
     dispatch(
       setProductState({
-        showProductModal: false
+        showProductModal: false,
       })
     );
     navigate(-1);
@@ -154,10 +154,8 @@ const ProductModal = () => {
   };
 
   return (
-    <section id="productModal"
-      className="absolute w-full h-full z-50"
-    >
-      <motion.div ref={scope} style={{ ...productRect}}>
+    <section id="productModal" className="absolute w-full h-full z-50">
+      <motion.div ref={scope} style={{ ...productRect }}>
         <div
           id="product-background"
           className="absolute top-0 left-0 w-full h-full opacity-50 bg-black -z-10"
