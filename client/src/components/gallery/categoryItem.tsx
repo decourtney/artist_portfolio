@@ -23,7 +23,7 @@ const CategoryItem = ({ category, index }: CategoryItemProps) => {
   const dispatch = useAppDispatch();
 
   const handleOnClick = () => {
-    dispatch(setCategoryState({ data: category, showCategoryModal: true }));
+    dispatch(setCategoryState({ data: category }));
     navigate(`/gallery/c/${category.name}`);
   };
 

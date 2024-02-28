@@ -21,9 +21,7 @@ import {
   AnimatePresence,
   usePresence,
 } from "framer-motion";
-import { store } from "../redux/store";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { resetStore } from "../redux/resetStore";
 import { RootState } from "../redux/store";
 import { setCategoryState } from "../redux/categorySlice";
 import { setProductState } from "../redux/productSlice";
@@ -38,6 +36,7 @@ import MiniModal from "../components/gallery/miniModal";
 import Hero from "../components/home/hero";
 
 const Gallery = () => {
+  const dispatch = useAppDispatch();
   const { showMiniModal } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
@@ -54,7 +53,6 @@ const Gallery = () => {
   const [isCategoryModal, setIsCategoryModal] = useState(false);
   const [isProductModal, setIsProductModal] = useState(false);
   const [isMiniModal, setIsMiniModal] = useState(false);
-  const dispatch = useAppDispatch();
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
     variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
@@ -66,30 +64,23 @@ const Gallery = () => {
   }
 
   // TODO Change this over to using global redux state similar to miniModal
-  // useEffect(() => {
-  //   if (data) {
-  //     if (productName) {
-  //       setIsProductModal(true);
-  //       // setIsCategoryModal(false);
-  //     } else if (categoryName) {
-  //       setIsCategoryModal(true);
-  //       // setIsProductModal(false);
-  //     }
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data) {
+      if (productName) {
+        dispatch(setProductState({ showProductModal: true }));
+        // setIsCategoryModal(false);
+      } else if (categoryName) {
+        dispatch(setCategoryState({ showCategoryModal: true }));
+        // setIsProductModal(false);
+      }
+    }
+  }, [data]);
 
   // TODO Currently this uselayouteffect doesnt seem to be necessary if not using the commented out miniModal render
   // TODO Continue monitoring for unintended effects
   // useLayoutEffect(() => {
   //   setIsMiniModal(miniModalState.showMiniModal);
   // }, [miniModalState.showMiniModal]);
-
-
-  /**
-   * FIXME Need to make a button to click on to clear the redux store
-   * Currently this is broken AF
-   */
-  dispatch(resetStore());
 
   if (loading) return null;
 

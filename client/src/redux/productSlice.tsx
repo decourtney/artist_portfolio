@@ -54,7 +54,7 @@ export const productSlice = createSlice({
           x: number;
           y: number;
         };
-        showProductModal: boolean
+        showProductModal?: boolean
       }>
     ) => {
       const { ...newState } = action.payload;

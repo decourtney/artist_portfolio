@@ -142,7 +142,6 @@ const MiniModal = () => {
         productContainerId: miniModalContainerId,
         product: modalItem as Product,
         productRect: { bottom, height, left, right, top, width, x, y },
-        showProductModal: true,
       })
     );
 
