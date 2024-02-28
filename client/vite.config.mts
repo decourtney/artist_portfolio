@@ -4,6 +4,9 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 import autoprefixer from "autoprefixer";
 import tailwindcss from "tailwindcss";
 
+const PORT = process.env.PORT || 3000;
+const HOSTNAME = process.env.HOSTNAME
+
 export default defineConfig({
   base: "/",
   plugins: [react(), viteTsconfigPaths()],
@@ -16,9 +19,11 @@ export default defineConfig({
     host: "0.0.0.0",
     proxy: {
       "/graphql": {
-        target: "http://localhost:3000",
+        target: `http://${HOSTNAME}:${PORT}`,
         changeOrigin: true,
       },
     },
   },
 });
+
+

@@ -21,7 +21,9 @@ import {
   AnimatePresence,
   usePresence,
 } from "framer-motion";
+import { store } from "../redux/store";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { resetStore } from "../redux/resetStore";
 import { RootState } from "../redux/store";
 import { setCategoryState } from "../redux/categorySlice";
 import { setProductState } from "../redux/productSlice";
@@ -62,7 +64,6 @@ const Gallery = () => {
   if (data) {
     ({ categories } = data.userCategories);
   }
-  console.log(categories);
 
   // TODO Change this over to using global redux state similar to miniModal
   // useEffect(() => {
@@ -82,6 +83,13 @@ const Gallery = () => {
   // useLayoutEffect(() => {
   //   setIsMiniModal(miniModalState.showMiniModal);
   // }, [miniModalState.showMiniModal]);
+
+
+  /**
+   * FIXME Need to make a button to click on to clear the redux store
+   * Currently this is broken AF
+   */
+  dispatch(resetStore());
 
   if (loading) return null;
 
