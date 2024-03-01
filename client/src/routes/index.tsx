@@ -32,7 +32,7 @@ const AnimatedRoutes = () => {
       <Header />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<EditProduct />} />{" "}
+          {/* <Route path="/" element={<EditProduct />} /> */}
           {/* This is just for initial development stages. delete when necessary */}
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />

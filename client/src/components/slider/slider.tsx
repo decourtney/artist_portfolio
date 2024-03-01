@@ -282,7 +282,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
       <motion.div
         ref={scope}
-        className="slider-row relative flex flex-row items-center h-[20dvh]"
+        className="slider-row relative flex flex-row items-center w-full h-[20dvh]"
         draggable="true"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -292,7 +292,8 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         <section className="absolute right-full flex h-full w-full pointer-events-none">
           <div
             id="groupPeek"
-            className="absolute right-full flex h-full w-full"
+            className="absolute flex h-full w-full"
+            style={{right: `${100 / itemsPerGroup}%`}}
           >
             <SliderItem
               key={previousPeekKey}

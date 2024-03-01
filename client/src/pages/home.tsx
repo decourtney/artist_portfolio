@@ -14,9 +14,37 @@ const Home = () => {
       id="home"
       className="flex flex-col justify-center items-center w-full h-full min-h-screen max-h-screen bg-secondary -z-10"
     >
-      <motion.div initial={{}} animate={{}} exit={{}} className="w-full h-full">
-        <img src={mountains} className="w-full" />
-      </motion.div>
+      <div className="relative w-[50%] h-24 bg-blue-400">
+        <div className="absolute right-full flex w-fit h-72 mt-10 p-1 space-x-1 bg-slate-500">
+
+          <div className="absolute right-full flex w-fit h-64 mt-10 p-1 space-x-1 bg-purple-500 z-50">
+            <div className="w-[25px] h-full bg-green-400"></div>
+          </div>
+
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+        </div>
+
+        <div className="absolute left-1/2 flex w-fit h-72 mt-10 p-1 space-x-1 bg-slate-500">
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+        </div>
+
+        <div className="absolute left-full flex w-fit h-72 mt-10 p-1 space-x-1 bg-slate-500">
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+          <div className="w-[25px] h-full bg-red-400"></div>
+
+          <div className="absolute left-full flex w-fit h-64 mt-10 p-1 space-x-1 bg-orange-500 z-50">
+            <div className="w-[25px] h-full bg-green-400"></div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
