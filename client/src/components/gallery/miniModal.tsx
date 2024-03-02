@@ -21,7 +21,7 @@ const MiniModal = () => {
   const sliderItemState = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState
   );
-  const [imgDimensions, setImgDimensions] = useState<{
+  const [miniImgDimensions, setMiniImgDimensions] = useState<{
     width: number;
     height: number;
     margin: string;
@@ -63,12 +63,12 @@ const MiniModal = () => {
         let finalWidth = Math.max(minWidth, minHeight);
         let finalHeight = finalWidth / aspectRatio;
 
-        // TODO This will affect how horizontal images are displayed = smaller if not used. Will Probably keep this code.
+        // NOTE Affects the size of horizontal images
         // If the calculated height is less than the minimum height, adjust dimensions
-        // if (finalHeight < minHeight) {
-        //   finalHeight = minHeight;
-        //   finalWidth = finalHeight * aspectRatio;
-        // }
+        if (finalHeight < minHeight) {
+          finalHeight = minHeight;
+          finalWidth = finalHeight * aspectRatio;
+        }
 
         // Calculate the margin to center the modal relative to modalItem size
         let horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
@@ -82,7 +82,7 @@ const MiniModal = () => {
           horizontalMargin = horizontalMargin * 2;
         }
 
-        setImgDimensions({
+        setMiniImgDimensions({
           width: finalWidth,
           height: finalHeight,
           margin: `${verticalMargin}px ${horizontalMargin}px`,
@@ -92,15 +92,15 @@ const MiniModal = () => {
   }, [imgSrc, sliderItemState]);
 
   useEffect(() => {
-    if (imgDimensions) animateOpen();
-  }, [imgDimensions]);
+    if (miniImgDimensions) animateOpen();
+  }, [miniImgDimensions]);
 
   const animateOpen = async () => {
     await animate([
       [
         scope.current,
         {
-          ...imgDimensions,
+          ...miniImgDimensions,
         },
         { duration: 0.2 },
       ],
@@ -129,10 +129,10 @@ const MiniModal = () => {
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
-  /* 
-  On click get the current rect for the miniModal, dispatch and prime productState with current rect values,
-  
-  */
+  const animateExpand = async ()=>{
+    
+  }
+
   const handleOnClick = () => {
     const { bottom, height, left, right, top, width, x, y } =
       scope.current.getBoundingClientRect();
