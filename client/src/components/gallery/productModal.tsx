@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { setProductState } from "../../redux/productSlice";
-import ProductModalDimensions from "./productModalDimensions";
+import { getModalDimensions } from "./getModalDimensions";
 import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { Product } from "../../utils/customClientTypes";
 import { current } from "@reduxjs/toolkit";
@@ -48,14 +48,18 @@ const ProductModal = () => {
       const handleWindowResize = () => {
         const img = new Image();
         img.src = imgSrc;
-        let targetWidth = window.innerWidth;
-        let targetHeight = window.innerHeight;
+        let windowWidth = window.innerWidth;
+        let windowHeight = window.innerHeight;
 
         img.onload = () => {
           const aspectRatio = img.width / img.height;
 
           setProductImgDimensions(
-            ProductModalDimensions({ aspectRatio, targetWidth, targetHeight })
+            getModalDimensions({
+              aspectRatio,
+              maxWidth: windowWidth,
+              maxHeight: windowHeight,
+            })
           );
         };
       };

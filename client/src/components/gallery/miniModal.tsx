@@ -7,6 +7,7 @@ import { RootState } from "../../redux/store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import { setProductState } from "../../redux/productSlice";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
+import { getModalDimensions } from "./getModalDimensions";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -28,8 +29,8 @@ const MiniModal = () => {
   } | null>(null);
   const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [scope, animate] = useAnimate();
-  const maxModalWidth = 300;
-  const maxModalHeight = 300;
+  const maxModalWidth = 350;
+  const maxModalHeight = 250;
   const sliderItemWidth =
     sliderItemState[miniModalContainerId].sliderItemRect.width;
   const sliderItemHeight =
@@ -39,7 +40,7 @@ const MiniModal = () => {
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  // responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
+  // TODO responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
   // the modal stays open and lost = need to close when sliderItem leaves.
 
   useEffect(() => {
@@ -55,38 +56,16 @@ const MiniModal = () => {
       img.onload = () => {
         const aspectRatio = img.width / img.height;
 
-        // Determine minimal width and height
-        const minWidth = Math.max(sliderItemWidth, maxModalWidth);
-        const minHeight = Math.max(sliderItemHeight, maxModalHeight);
-
-        // Calculate final width and height based on the aspect ratio
-        let finalWidth = Math.max(minWidth, minHeight);
-        let finalHeight = finalWidth / aspectRatio;
-
-        // NOTE Affects the size of horizontal images
-        // If the calculated height is less than the minimum height, adjust dimensions
-        if (finalHeight < minHeight) {
-          finalHeight = minHeight;
-          finalWidth = finalHeight * aspectRatio;
-        }
-
-        // Calculate the margin to center the modal relative to modalItem size
-        let horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
-        const verticalMargin =
-          (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
-
-        // Adjust margin for first and last item
-        if (marginPosition === "left") {
-          horizontalMargin = 0;
-        } else if (marginPosition === "right") {
-          horizontalMargin = horizontalMargin * 2;
-        }
-
-        setMiniImgDimensions({
-          width: finalWidth,
-          height: finalHeight,
-          margin: `${verticalMargin}px ${horizontalMargin}px`,
-        });
+        setMiniImgDimensions(
+          getModalDimensions({
+            aspectRatio,
+            maxWidth: maxModalWidth,
+            maxHeight: maxModalHeight,
+            minWidth: sliderItemWidth,
+            minHeight: sliderItemHeight,
+            marginPosition,
+          })
+        );
       };
     }
   }, [imgSrc, sliderItemState]);
@@ -129,9 +108,7 @@ const MiniModal = () => {
     dispatch(setMiniModalState({ showMiniModal: false }));
   };
 
-  const animateExpand = async ()=>{
-    
-  }
+  const animateExpand = async () => {};
 
   const handleOnClick = () => {
     const { bottom, height, left, right, top, width, x, y } =
