@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, useAnimate } from "framer-motion";
 import { Category, Product } from "../../utils/customClientTypes";
@@ -22,120 +22,110 @@ const MiniModal = () => {
   const sliderItemState = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState
   );
-  const [miniImgDimensions, setMiniImgDimensions] = useState<{
+  const [scope, animate] = useAnimate();
+  const miniImgDimensions = useRef<{
     width: number;
     height: number;
     margin: string;
   } | null>(null);
-  const [imgSrc, setImgSrc] = useState<string | null>(null);
-  const [scope, animate] = useAnimate();
+  const aspectRatio = useRef<number>(0);
   const maxModalWidth = 350;
   const maxModalHeight = 250;
   const sliderItemWidth =
     sliderItemState[miniModalContainerId].sliderItemRect.width;
   const sliderItemHeight =
     sliderItemState[miniModalContainerId].sliderItemRect.height;
-  const detailsHeight = 96;
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
+
+  const imgSrc = `${baseCDN}/${userParam}/${modalItem.image}`;
 
   // TODO responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
   // the modal stays open and lost = need to close when sliderItem leaves.
 
   useEffect(() => {
-    // Construct image URL
-    if (modalItem) setImgSrc(`${baseCDN}/${userParam}/${modalItem.image}`);
-  }, [userParam, modalItem]);
+    const img = new Image();
+    img.src = imgSrc;
 
-  useEffect(() => {
-    if (imgSrc) {
-      const img = new Image();
-      img.src = imgSrc;
+    img.onload = () => {
+      aspectRatio.current = img.width / img.height;
 
-      img.onload = () => {
-        const aspectRatio = img.width / img.height;
+      miniImgDimensions.current = getModalDimensions({
+        aspectRatio: aspectRatio.current,
+        maxWidth: maxModalWidth,
+        maxHeight: maxModalHeight,
+        minWidth: sliderItemWidth,
+        minHeight: sliderItemHeight,
+        marginPosition,
+      });
 
-        setMiniImgDimensions(
-          getModalDimensions({
-            aspectRatio,
-            maxWidth: maxModalWidth,
-            maxHeight: maxModalHeight,
-            minWidth: sliderItemWidth,
-            minHeight: sliderItemHeight,
-            marginPosition,
-          })
-        );
-      };
-    }
-  }, [imgSrc, sliderItemState]);
-
-  useEffect(() => {
-    if (miniImgDimensions) animateOpen();
-  }, [miniImgDimensions]);
+      animateOpen();
+    };
+  }, []);
 
   const animateOpen = async () => {
-    await animate([
-      [
-        scope.current,
-        {
-          ...miniImgDimensions,
-        },
-        { duration: 0.2 },
-      ],
-      [
-        ".details-div",
-        { height: `${detailsHeight}px` },
-        { duration: 0.2, at: 0 },
-      ],
-    ]);
+    await animate(
+      scope.current,
+      {
+        ...miniImgDimensions.current,
+      },
+      {
+        duration: 0.2,
+      }
+    );
   };
 
   const animateClose = async () => {
-    await animate([
-      [
-        scope.current,
-        {
-          ...sliderItemState[miniModalContainerId].sliderItemRect,
-          width: sliderItemWidth,
-          height: sliderItemHeight,
-          margin: 0,
-        },
-        { duration: 0.2 },
-      ],
-      [".details-div", { height: 0 }, { duration: 0.2, at: 0 }],
-    ]);
-    dispatch(setMiniModalState({ showMiniModal: false }));
+    await animate(
+      scope.current,
+      {
+        ...sliderItemState[miniModalContainerId].sliderItemRect,
+        width: sliderItemWidth,
+        height: sliderItemHeight,
+        margin: 0,
+      },
+      {
+        duration: 0.2,
+        onComplete: () => dispatch(setMiniModalState({ showMiniModal: false })),
+      }
+    );
   };
 
-  const animateExpand = async () => {};
+  const animateExpand = async () => {
+    const targetDimensions = await getModalDimensions({
+      aspectRatio: aspectRatio.current,
+      maxWidth: window.innerWidth,
+      maxHeight: window.innerHeight,
+    });
 
-  const handleOnClick = () => {
-    const { bottom, height, left, right, top, width, x, y } =
-      scope.current.getBoundingClientRect();
+    await animate(
+      scope.current,
+      { ...targetDimensions, x: 0, y: 0 },
+      {
+        duration: 0.2,
+        ease: "easeInOut",
+        onComplete: () => {
+          const { height, width, x, y } = scope.current.getBoundingClientRect();
 
-    dispatch(
-      setProductState({
-        productContainerId: miniModalContainerId,
-        product: modalItem as Product,
-        productRect: { bottom, height, left, right, top, width, x, y },
-      })
+          dispatch(
+            setMiniModalState({
+              showMiniModal: false,
+            })
+          );
+          dispatch(
+            setProductState({
+              productContainerId: miniModalContainerId,
+              product: modalItem as Product,
+              productRect: { height, width, x, y },
+              showProductModal: true,
+            })
+          );
+
+          navigate(`/gallery/${modalItem.name}`);
+        },
+      }
     );
-
-    dispatch(
-      setSliderItemState({
-        sliderItemId: miniModalContainerId,
-        sliderItemVisibility: "hidden",
-      })
-    );
-
-    dispatch(
-      setMiniModalState({
-        showMiniModal: false,
-      })
-    );
-
-    navigate(`/gallery/${modalItem.name}`);
   };
 
   return (
@@ -152,25 +142,17 @@ const MiniModal = () => {
         onMouseLeave={animateClose}
         onClick={(event) => {
           event.stopPropagation();
-          handleOnClick();
+          animateExpand();
         }}
       >
         {imgSrc && (
-          <>
-            <img
-              src={imgSrc}
-              className="w-full h-full shadow-lg object-cover rounded-t-md"
-              style={{ imageRendering: "auto" }}
-              alt={`${modalItem.name}`}
-              loading="lazy"
-            />
-            <motion.div
-              className="details-div w-full h-24 shadow-lg rounded-b-md bg-plight text-center"
-              initial={{ height: 0 }}
-            >
-              Words and stuff go here
-            </motion.div>
-          </>
+          <img
+            src={imgSrc}
+            className="w-full h-full shadow-lg object-cover rounded-t-md"
+            style={{ imageRendering: "auto" }}
+            alt={`${modalItem.name}`}
+            loading="lazy"
+          />
         )}
       </motion.div>
     </section>

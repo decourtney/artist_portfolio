@@ -64,17 +64,17 @@ const Gallery = () => {
   }
 
   // TODO Change this over to using global redux state similar to miniModal
-  useEffect(() => {
-    if (data) {
-      if (productName) {
-        dispatch(setProductState({ showProductModal: true }));
-        // setIsCategoryModal(false);
-      } else if (categoryName) {
-        dispatch(setCategoryState({ showCategoryModal: true }));
-        // setIsProductModal(false);
-      }
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     if (productName) {
+  //       dispatch(setProductState({ showProductModal: true }));
+  //       // setIsCategoryModal(false);
+  //     } else if (categoryName) {
+  //       dispatch(setCategoryState({ showCategoryModal: true }));
+  //       // setIsProductModal(false);
+  //     }
+  //   }
+  // }, [data]);
 
   // TODO Currently this uselayouteffect doesnt seem to be necessary if not using the commented out miniModal render
   // TODO Continue monitoring for unintended effects

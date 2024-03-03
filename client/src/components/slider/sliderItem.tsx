@@ -13,7 +13,7 @@ interface SliderItemProps {
   partialSliderItemId: string;
   itemToDisplay: Category | Product;
   sliderItemWidth: number;
-  marginPosition?: string | null;
+  marginPosition?: string | undefined;
 
   // onClick: (item: Category | Product) => void;
 }
@@ -57,7 +57,7 @@ const SliderItem = ({
 
         if (rect) {
           const { bottom, height, left, right, top, width, x, y } = rect;
-          if (!marginPosition) marginPosition = null; // Default null
+          if (!marginPosition) marginPosition = undefined; // Default undefined
 
           dispatch(
             setSliderItemState({
@@ -104,7 +104,7 @@ const SliderItem = ({
     }
 
     timeoutId = setTimeout(() => {
-      if (!marginPosition) marginPosition = null; // Default null
+      if (!marginPosition) marginPosition = undefined; // Default undefined
 
       dispatch(
         setMiniModalState({
@@ -114,6 +114,12 @@ const SliderItem = ({
           marginPosition: marginPosition,
         })
       );
+       dispatch(
+         setSliderItemState({
+           sliderItemId: sliderItemId,
+           sliderItemVisibility: "hidden",
+         })
+       );
     }, modalOpenDelay);
   };
 

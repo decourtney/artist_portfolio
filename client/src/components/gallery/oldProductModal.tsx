@@ -18,50 +18,61 @@ const ProductModal = () => {
   const dispatch = useAppDispatch();
   const { productContainerId, product, productRect, showProductModal } =
     useAppSelector((state: RootState) => state.product.productState);
+
   const { sliderItemRect, sliderItemVisibility } = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState[productContainerId]
   );
   const [productImgDimensions, setProductImgDimensions] = useState<{
     width: number;
     height: number;
-    x: number;
-    y: number;
     margin: string;
   } | null>(null);
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
+  const [imageIsLoaded, setImageIsLoaded] = useState<boolean>(false);
+  const [currentWindowSize, setCurrentWindowSize] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
   const [scope, animate] = useAnimate();
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
-
-  const imgSrc = `${baseCDN}/${userParam}/${product.image}`;
+  if (!product) return null;
 
   useLayoutEffect(() => {
-    const handleWindowResize = () => {
-      const img = new Image();
-      img.src = imgSrc;
-      let windowWidth = window.innerWidth;
-      let windowHeight = window.innerHeight;
+    if (product) setImgSrc(`${baseCDN}/${userParam}/${product.image}`);
+  }, [userParam, product]);
 
-      img.onload = () => {
-        const aspectRatio = img.width / img.height;
+  useLayoutEffect(() => {
+    if (imgSrc) {
+      const handleWindowResize = () => {
+        const img = new Image();
+        img.src = imgSrc;
+        let windowWidth = window.innerWidth;
+        let windowHeight = window.innerHeight;
 
-        const imgDimensions = getModalDimensions({
-          aspectRatio,
-          maxWidth: windowWidth,
-          maxHeight: windowHeight,
-        });
-        setProductImgDimensions({ ...imgDimensions, x: 0, y: 0 });
+        img.onload = () => {
+          const aspectRatio = img.width / img.height;
+
+          setProductImgDimensions(
+            getModalDimensions({
+              aspectRatio,
+              maxWidth: windowWidth,
+              maxHeight: windowHeight,
+            })
+          );
+        };
       };
-    };
 
-    handleWindowResize();
+      handleWindowResize();
 
-    window.addEventListener("resize", handleWindowResize);
+      window.addEventListener("resize", handleWindowResize);
 
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, []);
+      return () => {
+        window.removeEventListener("resize", handleWindowResize);
+      };
+    }
+  }, [imgSrc]);
 
   const handleBack = () => {
     dispatch(
@@ -95,10 +106,7 @@ const ProductModal = () => {
         className="absolute top-0 left-0 w-full h-full opacity-50 bg-black -z-10"
         onClick={animateClose}
       />
-      <motion.div
-        ref={scope}
-        style={{ ...productRect, ...productImgDimensions }}
-      >
+      <div ref={scope} style={{ ...productImgDimensions }}>
         <div id="product-buttons" className="relative">
           <button
             className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
@@ -119,13 +127,16 @@ const ProductModal = () => {
           </button>
         </div>
 
-        <img
-          src={imgSrc}
-          className="w-full h-full object-cover rounded-sm"
-          alt={`${product.name}`}
-          loading="lazy"
-        />
-      </motion.div>
+        {imgSrc && (
+          <img
+            src={imgSrc}
+            className="w-full h-full object-cover rounded-sm"
+            // style={{ ...productImgDimensions }}
+            alt={`${product.name}`}
+            loading="lazy"
+          />
+        )}
+      </div>
     </section>
   );
 };

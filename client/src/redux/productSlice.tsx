@@ -4,18 +4,14 @@ import { Category, Product } from "../utils/customClientTypes";
 interface ProductState {
   productState: {
     productContainerId: string;
-    product: Product,
+    product: Product;
     productRect: {
-      bottom: number;
       height: number;
-      left: number;
-      right: number;
-      top: number;
       width: number;
       x: number;
       y: number;
     };
-    showProductModal: boolean
+    showProductModal: boolean;
   };
 }
 
@@ -26,17 +22,13 @@ export const productSlice = createSlice({
       productContainerId: string;
       product: Product;
       productRect: {
-        bottom: number;
         height: number;
-        left: number;
-        right: number;
-        top: number;
         width: number;
         x: number;
         y: number;
       };
-      showProductModal: boolean
-    }
+      showProductModal: boolean;
+    },
   },
   reducers: {
     setProductState: (
@@ -45,16 +37,12 @@ export const productSlice = createSlice({
         productContainerId?: string;
         product?: Product;
         productRect?: {
-          bottom: number;
           height: number;
-          left: number;
-          right: number;
-          top: number;
           width: number;
           x: number;
           y: number;
         };
-        showProductModal?: boolean
+        showProductModal?: boolean;
       }>
     ) => {
       const { ...newState } = action.payload;
