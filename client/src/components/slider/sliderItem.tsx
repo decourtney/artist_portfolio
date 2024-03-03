@@ -30,14 +30,21 @@ const SliderItem = ({
 }: SliderItemProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const sliderItemState = useAppSelector(
+  const { sliderItemState } = useAppSelector(
+    (state: RootState) => state.sliderItem
+  );
+  const { isSliderItemVisible } = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState
   );
   const { isSliding } = useAppSelector(
     (state: RootState) => state.slider.globalSettings
   );
+  const { showMiniModal } = useAppSelector(
+    (state: RootState) => state.miniModal.miniModalState
+  );
   const { productContainerId, product, productRect, showProductModal } =
     useAppSelector((state: RootState) => state.product.productState);
+  // const [isSliderItemVisible, setIsSliderItemVisible] = useState(true);
   const sliderItemRef = useRef<HTMLElement>(null);
   const isMobile = DetectMobile();
   const eventHandler = isMobile ? "onClick" : "onMouseEnter";
@@ -88,14 +95,20 @@ const SliderItem = ({
   }, []);
 
   useEffect(() => {
-    if (showProductModal) {
+    if (showMiniModal) {
       if (sliderItemRef.current && sliderItemId === productContainerId) {
         // This is being called 4 times
-        sliderItemRef.current.style.visibility =
-          sliderItemState[productContainerId].sliderItemVisibility;
+        dispatch(
+          setSliderItemState({
+            sliderItemId: productContainerId,
+            isSliderItemVisible: false,
+          })
+        );
+        // sliderItemRef.current.style.visibility =
+        //   sliderItemState[productContainerId].sliderItemVisibility;
       }
     }
-  }, [showProductModal]);
+  }, [showMiniModal]);
 
   const handleMouseOrTouchEvent = () => {
     if (timeoutId) {
@@ -114,12 +127,13 @@ const SliderItem = ({
           marginPosition: marginPosition,
         })
       );
-       dispatch(
-         setSliderItemState({
-           sliderItemId: sliderItemId,
-           sliderItemVisibility: "hidden",
-         })
-       );
+
+      //  dispatch(
+      //    setSliderItemState({
+      //      sliderItemId: sliderItemId,
+      //      sliderItemVisibility: "hidden",
+      //    })
+      //  );
     }, modalOpenDelay);
   };
 
@@ -130,13 +144,15 @@ const SliderItem = ({
     }
   };
 
-  const istrue = true;
   return (
     <section
       ref={sliderItemRef}
       id={sliderItemId}
       className={`slider-item px-1 shadow-md`}
-      style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
+      style={{
+        width: `${sliderItemWidth ? sliderItemWidth : 100}%`,
+        // visibility: isSliderItemVisible ? "visible" : "hidden",
+      }}
       {...(!isSliding && { [eventHandler]: handleMouseOrTouchEvent })}
       onMouseLeave={handleMouseLeave}
     >

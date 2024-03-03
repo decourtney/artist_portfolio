@@ -10,6 +10,10 @@ interface ProductState {
       width: number;
       x: number;
       y: number;
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
     };
     showProductModal: boolean;
   };
@@ -26,6 +30,10 @@ export const productSlice = createSlice({
         width: number;
         x: number;
         y: number;
+        top: number;
+        bottom: number;
+        left: number;
+        right: number;
       };
       showProductModal: boolean;
     },
@@ -41,6 +49,10 @@ export const productSlice = createSlice({
           width: number;
           x: number;
           y: number;
+          top: number;
+          bottom: number;
+          left: number;
+          right: number;
         };
         showProductModal?: boolean;
       }>

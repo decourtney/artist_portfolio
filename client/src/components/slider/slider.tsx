@@ -224,7 +224,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     } else if (index === arrLength - 1) {
       return "right";
     } else {
-      return null;
+      return undefined;
     }
   };
 

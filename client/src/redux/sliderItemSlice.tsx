@@ -13,7 +13,8 @@ interface SliderItemState {
         x: number;
         y: number;
       };
-      sliderItemVisibility: string,
+      sliderItemVisibility: string;
+      isSliderItemVisible: boolean;
     };
   };
 }
@@ -33,7 +34,8 @@ export const sliderItemSlice = createSlice({
           x: number;
           y: number;
         };
-        sliderItemVisibility: string,
+        sliderItemVisibility: string;
+        isSliderItemVisible: true;
       };
     },
   },
@@ -52,7 +54,8 @@ export const sliderItemSlice = createSlice({
           x: number;
           y: number;
         };
-        sliderItemVisibility?: string
+        sliderItemVisibility?: string;
+        isSliderItemVisible?: boolean;
       }>
     ) => {
       const { sliderItemId, ...newState } = action.payload;

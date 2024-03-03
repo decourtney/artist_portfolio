@@ -18,7 +18,7 @@ const ProductModal = () => {
   const dispatch = useAppDispatch();
   const { productContainerId, product, productRect, showProductModal } =
     useAppSelector((state: RootState) => state.product.productState);
-  const { sliderItemRect, sliderItemVisibility } = useAppSelector(
+  const { sliderItemRect } = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState[productContainerId]
   );
   const [productImgDimensions, setProductImgDimensions] = useState<{

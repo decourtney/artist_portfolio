@@ -28,6 +28,7 @@ const MiniModal = () => {
     height: number;
     margin: string;
   } | null>(null);
+  const isExpanding = useRef<boolean>(false);
   const aspectRatio = useRef<number>(0);
   const maxModalWidth = 350;
   const maxModalHeight = 250;
@@ -60,6 +61,12 @@ const MiniModal = () => {
         marginPosition,
       });
 
+      // dispatch(
+      //   setSliderItemState({
+      //     sliderItemId: miniModalContainerId,
+      //     sliderItemVisibility: "hidden",
+      //   })
+      // );
       animateOpen();
     };
   }, []);
@@ -72,27 +79,46 @@ const MiniModal = () => {
       },
       {
         duration: 0.2,
+        onComplete: () => {
+          // dispatch(
+          //   setSliderItemState({
+          //     sliderItemId: miniModalContainerId,
+          //     sliderItemVisibility: "hidden",
+          //   })
+          // );
+        },
       }
     );
   };
 
   const animateClose = async () => {
-    await animate(
-      scope.current,
-      {
-        ...sliderItemState[miniModalContainerId].sliderItemRect,
-        width: sliderItemWidth,
-        height: sliderItemHeight,
-        margin: 0,
-      },
-      {
-        duration: 0.2,
-        onComplete: () => dispatch(setMiniModalState({ showMiniModal: false })),
-      }
-    );
+    if (!isExpanding.current) {
+      await animate(
+        scope.current,
+        {
+          ...sliderItemState[miniModalContainerId].sliderItemRect,
+          width: sliderItemWidth,
+          height: sliderItemHeight,
+          margin: 0,
+        },
+        {
+          duration: 0.2,
+          onComplete: () => {
+            dispatch(setMiniModalState({ showMiniModal: false }));
+            // dispatch(
+            //   setSliderItemState({
+            //     sliderItemId: miniModalContainerId,
+            //     sliderItemVisibility: "visible",
+            //   })
+            // );
+          },
+        }
+      );
+    }
   };
 
   const animateExpand = async () => {
+    isExpanding.current = true;
     const targetDimensions = await getModalDimensions({
       aspectRatio: aspectRatio.current,
       maxWidth: window.innerWidth,
@@ -106,7 +132,8 @@ const MiniModal = () => {
         duration: 0.2,
         ease: "easeInOut",
         onComplete: () => {
-          const { height, width, x, y } = scope.current.getBoundingClientRect();
+          const { height, width, x, y, top, bottom, left, right } =
+            scope.current.getBoundingClientRect();
 
           dispatch(
             setMiniModalState({
@@ -117,7 +144,7 @@ const MiniModal = () => {
             setProductState({
               productContainerId: miniModalContainerId,
               product: modalItem as Product,
-              productRect: { height, width, x, y },
+              productRect: { height, width, x, y, top, bottom, left, right },
               showProductModal: true,
             })
           );
@@ -148,7 +175,7 @@ const MiniModal = () => {
         {imgSrc && (
           <img
             src={imgSrc}
-            className="w-full h-full shadow-lg object-cover rounded-t-md"
+            className="w-full h-full shadow-lg object-cover rounded-sm"
             style={{ imageRendering: "auto" }}
             alt={`${modalItem.name}`}
             loading="lazy"
