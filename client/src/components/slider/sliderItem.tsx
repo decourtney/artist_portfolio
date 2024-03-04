@@ -28,33 +28,22 @@ const SliderItem = ({
   sliderItemWidth,
   marginPosition,
 }: SliderItemProps) => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { sliderItemState } = useAppSelector(
-    (state: RootState) => state.sliderItem
-  );
-  const { sliderItemVisibility, isSliderItemVisible } = useAppSelector(
+  const sliderItemState = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState
   );
   const { isSliding } = useAppSelector(
     (state: RootState) => state.slider.globalSettings
   );
-  const { showMiniModal } = useAppSelector(
-    (state: RootState) => state.miniModal.miniModalState
-  );
-  const { productContainerId, product, productRect, showProductModal } =
-    useAppSelector((state: RootState) => state.product.productState);
-  // const [isSliderItemVisible, setIsSliderItemVisible] = useState(true);
   const sliderItemRef = useRef<HTMLElement>(null);
   const isMobile = DetectMobile();
   const eventHandler = isMobile ? "onClick" : "onMouseEnter";
-  const modalOpenDelay = isMobile ? 100 : 450;
+  const modalOpenDelay = isMobile ? 100 : 350;
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  // if (!itemToDisplay) return null;
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
 
   useLayoutEffect(() => {
@@ -94,17 +83,6 @@ const SliderItem = ({
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (
-  //     showMiniModal &&
-  //     sliderItemRef.current &&
-  //     sliderItemId === productContainerId
-  //   ) {
-  //     sliderItemRef.current.style.visibility =
-  //       sliderItemState[productContainerId].sliderItemVisibility;
-  //   }
-  // }, [showMiniModal]);
-
   const handleMouseOrTouchEvent = () => {
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -120,6 +98,14 @@ const SliderItem = ({
           modalItem: itemToDisplay,
           showMiniModal: true,
           marginPosition: marginPosition,
+        })
+      );
+
+      dispatch(
+        setSliderItemState({
+          sliderItemId: sliderItemId,
+          sliderItemVisibility: "hidden",
+          isSliderItemVisible: false,
         })
       );
     }, modalOpenDelay);
@@ -139,6 +125,7 @@ const SliderItem = ({
       className={`slider-item px-1 shadow-md`}
       style={{
         width: `${sliderItemWidth ? sliderItemWidth : 100}%`,
+        visibility: `${sliderItemState[sliderItemId]?.sliderItemVisibility}`,
       }}
       {...(!isSliding && { [eventHandler]: handleMouseOrTouchEvent })}
       onMouseLeave={handleMouseLeave}

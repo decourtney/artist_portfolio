@@ -61,13 +61,6 @@ const MiniModal = () => {
         marginPosition,
       });
 
-      dispatch(
-        setSliderItemState({
-          sliderItemId: miniModalContainerId,
-          sliderItemVisibility: "hidden",
-          isSliderItemVisible: false,
-        })
-      );
       animateOpen();
     };
   }, []);
@@ -80,14 +73,6 @@ const MiniModal = () => {
       },
       {
         duration: 0.2,
-        onComplete: () => {
-          // dispatch(
-          //   setSliderItemState({
-          //     sliderItemId: miniModalContainerId,
-          //     sliderItemVisibility: "hidden",
-          //   })
-          // );
-        },
       }
     );
   };
@@ -106,12 +91,12 @@ const MiniModal = () => {
           duration: 0.2,
           onComplete: () => {
             dispatch(setMiniModalState({ showMiniModal: false }));
-            // dispatch(
-            //   setSliderItemState({
-            //     sliderItemId: miniModalContainerId,
-            //     sliderItemVisibility: "visible",
-            //   })
-            // );
+            dispatch(
+              setSliderItemState({
+                sliderItemId: miniModalContainerId,
+                sliderItemVisibility: "visible",
+              })
+            );
           },
         }
       );

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-interface SliderItemState {
+export interface SliderItemState {
   sliderItemState: {
     [sliderItemId: string]: {
       sliderItemRect: {
@@ -13,32 +13,19 @@ interface SliderItemState {
         x: number;
         y: number;
       };
-      sliderItemVisibility: string;
+      sliderItemVisibility: "visible" | "hidden";
       isSliderItemVisible: boolean;
     };
   };
 }
 
+const initialState: SliderItemState = {
+  sliderItemState: {},
+};
+
 export const sliderItemSlice = createSlice({
   name: "sliderItem",
-  initialState: {
-    sliderItemState: {} as {
-      [sliderItemId: string]: {
-        sliderItemRect: {
-          bottom: number;
-          height: number;
-          left: number;
-          right: number;
-          top: number;
-          width: number;
-          x: number;
-          y: number;
-        };
-        sliderItemVisibility: string;
-        isSliderItemVisible: boolean;
-      };
-    },
-  },
+  initialState,
   reducers: {
     setSliderItemState: (
       state: SliderItemState,
@@ -54,7 +41,7 @@ export const sliderItemSlice = createSlice({
           x: number;
           y: number;
         };
-        sliderItemVisibility?: string;
+        sliderItemVisibility?: "visible" | "hidden";
         isSliderItemVisible?: boolean;
       }>
     ) => {

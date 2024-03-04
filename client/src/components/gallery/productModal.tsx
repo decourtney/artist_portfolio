@@ -4,9 +4,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { setProductState } from "../../redux/productSlice";
 import { getModalDimensions } from "./getModalDimensions";
-import { AnimatePresence, motion, useAnimate } from "framer-motion";
-import { Product } from "../../utils/customClientTypes";
-import { current } from "@reduxjs/toolkit";
+import { motion, useAnimate } from "framer-motion";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
 
 const baseCDN =
@@ -18,7 +16,7 @@ const ProductModal = () => {
   const dispatch = useAppDispatch();
   const { productContainerId, product, productRect, showProductModal } =
     useAppSelector((state: RootState) => state.product.productState);
-  const { sliderItemRect } = useAppSelector(
+  const { sliderItemRect, sliderItemVisibility } = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState[productContainerId]
   );
   const [productImgDimensions, setProductImgDimensions] = useState<{
@@ -63,28 +61,37 @@ const ProductModal = () => {
     };
   }, []);
 
-  const handleBack = () => {
+  const animateClose = async () => {
+    await animate(
+      scope.current,
+      {
+        ...sliderItemRect,
+        margin: 0,
+      },
+      { duration: 0.2 }
+    );
+
+    setSliderItemVisibilityToVisible();
+    dispatch(setProductState({ showProductModal: false }));
+  };
+
+  const setSliderItemVisibilityToVisible = () => {
     dispatch(
-      setProductState({
-        showProductModal: false,
+      setSliderItemState({
+        sliderItemId: productContainerId,
+        sliderItemVisibility: "visible",
+        isSliderItemVisible: false,
       })
     );
+  };
+
+  const handleBack = async () => {
+    // await animateClose();
     navigate(-1);
   };
 
-  const animateClose = async () => {
-    await animate([
-      [
-        scope.current,
-        {
-          ...sliderItemRect,
-          margin: 0,
-        },
-        { duration: 0.2 },
-      ],
-    ]);
-
-    dispatch(setProductState({ showProductModal: false }));
+  const handleClose = async () => {
+    await animateClose();
     navigate("/gallery/");
   };
 
@@ -93,7 +100,7 @@ const ProductModal = () => {
       <div
         id="product-background"
         className="absolute top-0 left-0 w-full h-full opacity-50 bg-black -z-10"
-        onClick={animateClose}
+        onClick={handleClose}
       />
       <motion.div
         ref={scope}
@@ -111,7 +118,7 @@ const ProductModal = () => {
 
           <button
             className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
-            onClick={animateClose}
+            onClick={handleClose}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
               close
