@@ -20,7 +20,7 @@ import { Category } from "../../utils/customClientTypes";
 import { useAnimate, motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { RootState } from "../../redux/store";
 import { setSliderState } from "../../redux/sliderSlice";
 import SliderItem from "./sliderItem";
 import SliderControl from "./sliderControl";
@@ -224,7 +224,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     } else if (index === arrLength - 1) {
       return "right";
     } else {
-      return null;
+      return undefined;
     }
   };
 
@@ -246,7 +246,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   //-------------------------------------------------------------------------
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number | null>(null);
-  const deltaXThreshold = 40
+  const deltaXThreshold = 40;
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     touchStartX.current = event.touches[0].clientX;
@@ -257,7 +257,9 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handleTouchEnd = () => {
-    const deltaX = touchEndX.current ? touchEndX.current - touchStartX.current : 0;
+    const deltaX = touchEndX.current
+      ? touchEndX.current - touchStartX.current
+      : 0;
 
     if (deltaX > deltaXThreshold) {
       // Swipe right
@@ -280,7 +282,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
       <motion.div
         ref={scope}
-        className="slider-row relative flex flex-row items-center h-[20dvh]"
+        className="slider-row relative flex flex-row items-center w-full h-[20dvh]"
         draggable="true"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -290,7 +292,8 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
         <section className="absolute right-full flex h-full w-full pointer-events-none">
           <div
             id="groupPeek"
-            className="absolute right-full flex h-full w-full"
+            className="absolute flex h-full w-full"
+            style={{right: `${100 / itemsPerGroup}%`}}
           >
             <SliderItem
               key={previousPeekKey}

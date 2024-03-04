@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { RootState } from "../../redux/store";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import DetectMobile from "../../utils/detectMobile";
@@ -13,7 +13,7 @@ interface SliderItemProps {
   partialSliderItemId: string;
   itemToDisplay: Category | Product;
   sliderItemWidth: number;
-  marginPosition?: string | null;
+  marginPosition?: string | undefined;
 
   // onClick: (item: Category | Product) => void;
 }
@@ -28,26 +28,22 @@ const SliderItem = ({
   sliderItemWidth,
   marginPosition,
 }: SliderItemProps) => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const sliderItemState = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState
   );
-  const {isSliding} = useAppSelector(
+  const { isSliding } = useAppSelector(
     (state: RootState) => state.slider.globalSettings
   );
-  const { productContainerId, product, productRect, showProductModal } =
-    useAppSelector((state: RootState) => state.product.productState);
   const sliderItemRef = useRef<HTMLElement>(null);
   const isMobile = DetectMobile();
   const eventHandler = isMobile ? "onClick" : "onMouseEnter";
-  const modalOpenDelay = isMobile ? 100 : 450;
+  const modalOpenDelay = isMobile ? 100 : 350;
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  if (!itemToDisplay) return null;
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
 
   useLayoutEffect(() => {
@@ -57,7 +53,7 @@ const SliderItem = ({
 
         if (rect) {
           const { bottom, height, left, right, top, width, x, y } = rect;
-          if (!marginPosition) marginPosition = null; // Default null
+          if (!marginPosition) marginPosition = undefined; // Default undefined
 
           dispatch(
             setSliderItemState({
@@ -87,16 +83,6 @@ const SliderItem = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (showProductModal) {
-      if (sliderItemRef.current && sliderItemId === productContainerId) {
-        // This is being called 4 times
-        sliderItemRef.current.style.visibility =
-          sliderItemState[productContainerId].sliderItemVisibility;
-      }
-    }
-  }, [showProductModal]);
-
   const handleMouseOrTouchEvent = () => {
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -104,7 +90,7 @@ const SliderItem = ({
     }
 
     timeoutId = setTimeout(() => {
-      if (!marginPosition) marginPosition = null; // Default null
+      if (!marginPosition) marginPosition = undefined; // Default undefined
 
       dispatch(
         setMiniModalState({
@@ -124,13 +110,15 @@ const SliderItem = ({
     }
   };
 
-  const istrue = true;
   return (
     <section
       ref={sliderItemRef}
       id={sliderItemId}
       className={`slider-item px-1 shadow-md`}
-      style={{ width: `${sliderItemWidth ? sliderItemWidth : 100}%` }}
+      style={{
+        width: `${sliderItemWidth ? sliderItemWidth : 100}%`,
+        visibility: `${sliderItemState[sliderItemId]?.sliderItemVisibility}`,
+      }}
       {...(!isSliding && { [eventHandler]: handleMouseOrTouchEvent })}
       onMouseLeave={handleMouseLeave}
     >

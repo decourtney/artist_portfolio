@@ -22,7 +22,7 @@ import {
   usePresence,
 } from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { RootState } from "../store";
+import { RootState } from "../redux/store";
 import { setCategoryState } from "../redux/categorySlice";
 import { setProductState } from "../redux/productSlice";
 import { v4 as uuidv4 } from "uuid";
@@ -36,11 +36,15 @@ import MiniModal from "../components/gallery/miniModal";
 import Hero from "../components/home/hero";
 
 const Gallery = () => {
+  const dispatch = useAppDispatch();
   const { showMiniModal } = useAppSelector(
     (state: RootState) => state.miniModal.miniModalState
   );
   const { showProductModal } = useAppSelector(
     (state) => state.product.productState
+  );
+  const { showCategoryModal } = useAppSelector(
+    (state) => state.category.categoryState
   );
   const { categoryName, productName } = useParams();
   const { ref, inView, entry } = useInView({ threshold: 0 });
@@ -49,7 +53,6 @@ const Gallery = () => {
   const [isCategoryModal, setIsCategoryModal] = useState(false);
   const [isProductModal, setIsProductModal] = useState(false);
   const [isMiniModal, setIsMiniModal] = useState(false);
-  const dispatch = useAppDispatch();
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
     variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
@@ -59,16 +62,15 @@ const Gallery = () => {
   if (data) {
     ({ categories } = data.userCategories);
   }
-  console.log(categories)
 
   // TODO Change this over to using global redux state similar to miniModal
   // useEffect(() => {
   //   if (data) {
   //     if (productName) {
-  //       setIsProductModal(true);
+  //       dispatch(setProductState({ showProductModal: true }));
   //       // setIsCategoryModal(false);
   //     } else if (categoryName) {
-  //       setIsCategoryModal(true);
+  //       dispatch(setCategoryState({ showCategoryModal: true }));
   //       // setIsProductModal(false);
   //     }
   //   }
@@ -84,7 +86,10 @@ const Gallery = () => {
 
   return (
     <>
-      <section id="gallery" className="relative flex flex-col h-full min-h-screen">
+      <section
+        id="gallery"
+        className="relative flex flex-col h-full min-h-screen"
+      >
         {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {
@@ -99,7 +104,7 @@ const Gallery = () => {
             }
           })}
 
-        {isCategoryModal && <CategoryModal />}
+        {showCategoryModal && <CategoryModal />}
         {showProductModal && <ProductModal />}
         {showMiniModal && <MiniModal />}
       </section>

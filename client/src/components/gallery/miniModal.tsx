@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion, useAnimate } from "framer-motion";
+import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import { RootState } from "../../store";
+import { RootState } from "../../redux/store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import { setProductState } from "../../redux/productSlice";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
+import { getModalDimensions } from "./getModalDimensions";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -19,144 +20,128 @@ const MiniModal = () => {
     (state: RootState) => state.miniModal.miniModalState
   );
   const sliderItemState = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState
+    (state: RootState) => state.sliderItem.sliderItemState[miniModalContainerId]
   );
-  const [imgDimensions, setImgDimensions] = useState<{
+  const [scope, animate] = useAnimate();
+  const miniImgDimensions = useRef<{
     width: number;
     height: number;
     margin: string;
   } | null>(null);
-  const [imgSrc, setImgSrc] = useState<string | null>(null);
-  const [scope, animate] = useAnimate();
-  const maxModalWidth = 300;
-  const maxModalHeight = 300;
-  const sliderItemWidth =
-    sliderItemState[miniModalContainerId].sliderItemRect.width;
-  const sliderItemHeight =
-    sliderItemState[miniModalContainerId].sliderItemRect.height;
-  const detailsHeight = 96;
+  const isExpanding = useRef<boolean>(false);
+  const aspectRatio = useRef<number>(0);
+  const maxModalWidth = 350;
+  const maxModalHeight = 250;
+  const sliderItemWidth = sliderItemState.sliderItemRect.width;
+  const sliderItemHeight = sliderItemState.sliderItemRect.height;
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  // responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
+  const imgSrc = `${baseCDN}/${userParam}/${modalItem.image}`;
+
+  // TODO responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
   // the modal stays open and lost = need to close when sliderItem leaves.
 
   useEffect(() => {
-    // Construct image URL
-    if (modalItem) setImgSrc(`${baseCDN}/${userParam}/${modalItem.image}`);
-  }, [userParam, modalItem]);
+    const img = new Image();
+    img.src = imgSrc;
 
-  useEffect(() => {
-    if (imgSrc) {
-      const img = new Image();
-      img.src = imgSrc;
+    img.onload = () => {
+      aspectRatio.current = img.width / img.height;
 
-      img.onload = () => {
-        const aspectRatio = img.width / img.height;
+      miniImgDimensions.current = getModalDimensions({
+        aspectRatio: aspectRatio.current,
+        maxWidth: maxModalWidth,
+        maxHeight: maxModalHeight,
+        minWidth: sliderItemWidth,
+        minHeight: sliderItemHeight,
+        marginPosition,
+      });
 
-        // Determine minimal width and height
-        const minWidth = Math.max(sliderItemWidth, maxModalWidth);
-        const minHeight = Math.max(sliderItemHeight, maxModalHeight);
-
-        // Calculate final width and height based on the aspect ratio
-        let finalWidth = Math.max(minWidth, minHeight);
-        let finalHeight = finalWidth / aspectRatio;
-
-        // TODO This will affect how horizontal images are displayed = smaller if not used. Will Probably keep this code.
-        // If the calculated height is less than the minimum height, adjust dimensions
-        // if (finalHeight < minHeight) {
-        //   finalHeight = minHeight;
-        //   finalWidth = finalHeight * aspectRatio;
-        // }
-
-        // Calculate the margin to center the modal relative to modalItem size
-        let horizontalMargin = (sliderItemWidth - finalWidth) * 0.5;
-        const verticalMargin =
-          (sliderItemHeight - finalHeight + -detailsHeight) * 0.5;
-
-        // Adjust margin for first and last item
-        if (marginPosition === "left") {
-          horizontalMargin = 0;
-        } else if (marginPosition === "right") {
-          horizontalMargin = horizontalMargin * 2;
-        }
-
-        setImgDimensions({
-          width: finalWidth,
-          height: finalHeight,
-          margin: `${verticalMargin}px ${horizontalMargin}px`,
-        });
-      };
-    }
-  }, [imgSrc, sliderItemState]);
-
-  useEffect(() => {
-    if (imgDimensions) animateOpen();
-  }, [imgDimensions]);
+      animateOpen();
+    };
+  }, []);
 
   const animateOpen = async () => {
-    await animate([
-      [
-        scope.current,
-        {
-          ...imgDimensions,
+    await animate(
+      scope.current,
+      {
+        ...miniImgDimensions.current,
+      },
+      {
+        duration: 0.2,
+        onComplete: () => {
+          dispatch(
+            setSliderItemState({
+              sliderItemId: miniModalContainerId,
+              sliderItemVisibility: "hidden",
+            })
+          );
         },
-        { duration: 0.2 },
-      ],
-      [
-        ".details-div",
-        { height: `${detailsHeight}px` },
-        { duration: 0.2, at: 0 },
-      ],
-    ]);
+      }
+    );
   };
 
   const animateClose = async () => {
-    await animate([
-      [
+    if (!isExpanding.current) {
+      await animate(
         scope.current,
         {
-          ...sliderItemState[miniModalContainerId].sliderItemRect,
+          ...sliderItemState.sliderItemRect,
           width: sliderItemWidth,
           height: sliderItemHeight,
           margin: 0,
         },
-        { duration: 0.2 },
-      ],
-      [".details-div", { height: 0 }, { duration: 0.2, at: 0 }],
-    ]);
-    dispatch(setMiniModalState({ showMiniModal: false }));
+        {
+          duration: 0.2,
+          onComplete: () => {
+            dispatch(setMiniModalState({ showMiniModal: false }));
+            dispatch(
+              setSliderItemState({
+                sliderItemId: miniModalContainerId,
+                sliderItemVisibility: "visible",
+              })
+            );
+          },
+        }
+      );
+    }
   };
 
-  /* 
-  On click get the current rect for the miniModal, dispatch and prime productState with current rect values,
-  
-  */ 
-  const handleOnClick = () => {
-    const { bottom, height, left, right, top, width, x, y } =
-      scope.current.getBoundingClientRect();
+  const animateExpand = async () => {
+    isExpanding.current = true;
+    const targetDimensions = await getModalDimensions({
+      aspectRatio: aspectRatio.current,
+      maxWidth: window.innerWidth,
+      maxHeight: window.innerHeight,
+    });
 
-    dispatch(
-      setProductState({
-        productContainerId: miniModalContainerId,
-        product: modalItem as Product,
-        productRect: { bottom, height, left, right, top, width, x, y },
-        showProductModal: true,
-      })
-    );
+    await animate(
+      scope.current,
+      { ...targetDimensions, x: 0, y: 0 },
+      {
+        duration: 0.2,
+        ease: "easeInOut",
+        onComplete: () => {
+          const { height, width, x, y, top, bottom, left, right } =
+            scope.current.getBoundingClientRect();
 
-    dispatch(
-      setSliderItemState({
-        sliderItemId: miniModalContainerId,
-        sliderItemVisibility: "hidden",
-      })
-    );
-
-    dispatch(
-      setMiniModalState({
-        showMiniModal: false,
-      })
+          dispatch(
+            setMiniModalState({
+              showMiniModal: false,
+            })
+          );
+          dispatch(
+            setProductState({
+              productContainerId: miniModalContainerId,
+              product: modalItem as Product,
+              productRect: { height, width, x, y, top, bottom, left, right },
+              showProductModal: true,
+            })
+          );
+        },
+      }
     );
 
     navigate(`/gallery/${modalItem.name}`);
@@ -172,29 +157,21 @@ const MiniModal = () => {
         ref={scope}
         key={modalItem.name}
         className="z-20"
-        style={{ ...sliderItemState[miniModalContainerId].sliderItemRect }}
+        style={{ ...sliderItemState.sliderItemRect }}
         onMouseLeave={animateClose}
         onClick={(event) => {
           event.stopPropagation();
-          handleOnClick();
+          animateExpand();
         }}
       >
         {imgSrc && (
-          <>
-            <img
-              src={imgSrc}
-              className="w-full h-full shadow-lg object-cover rounded-t-md"
-              style={{ imageRendering: "auto" }}
-              alt={`${modalItem.name}`}
-              loading="lazy"
-            />
-            <motion.div
-              className="details-div w-full h-24 shadow-lg rounded-b-md bg-plight text-center"
-              initial={{ height: 0 }}
-            >
-              Words and stuff go here
-            </motion.div>
-          </>
+          <img
+            src={imgSrc}
+            className="w-full h-full shadow-lg object-cover rounded-sm"
+            style={{ imageRendering: "auto" }}
+            alt={`${modalItem.name}`}
+            loading="lazy"
+          />
         )}
       </motion.div>
     </section>

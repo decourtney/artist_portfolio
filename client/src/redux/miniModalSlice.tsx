@@ -16,7 +16,7 @@ interface MiniModalState {
       y: number;
     };
     showMiniModal: boolean;
-    marginPosition: string | null;
+    marginPosition: string | undefined;
   };
 }
 
@@ -37,7 +37,7 @@ export const miniModalSlice = createSlice({
         y: number;
       };
       showMiniModal: false;
-      marginPosition: string | null;
+      marginPosition: string | undefined;
     },
   },
   reducers: {
@@ -57,7 +57,7 @@ export const miniModalSlice = createSlice({
           y: number;
         };
         showMiniModal: boolean;
-        marginPosition?: string | null;
+        marginPosition?: string | undefined;
       }>
     ) => {
       const { ...newState } = action.payload;
