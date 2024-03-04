@@ -33,7 +33,7 @@ const SliderItem = ({
   const { sliderItemState } = useAppSelector(
     (state: RootState) => state.sliderItem
   );
-  const { isSliderItemVisible } = useAppSelector(
+  const { sliderItemVisibility, isSliderItemVisible } = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState
   );
   const { isSliding } = useAppSelector(
@@ -54,7 +54,7 @@ const SliderItem = ({
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
-  if (!itemToDisplay) return null;
+  // if (!itemToDisplay) return null;
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
 
   useLayoutEffect(() => {
@@ -94,21 +94,16 @@ const SliderItem = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (showMiniModal) {
-      if (sliderItemRef.current && sliderItemId === productContainerId) {
-        // This is being called 4 times
-        dispatch(
-          setSliderItemState({
-            sliderItemId: productContainerId,
-            isSliderItemVisible: false,
-          })
-        );
-        // sliderItemRef.current.style.visibility =
-        //   sliderItemState[productContainerId].sliderItemVisibility;
-      }
-    }
-  }, [showMiniModal]);
+  // useEffect(() => {
+  //   if (
+  //     showMiniModal &&
+  //     sliderItemRef.current &&
+  //     sliderItemId === productContainerId
+  //   ) {
+  //     sliderItemRef.current.style.visibility =
+  //       sliderItemState[productContainerId].sliderItemVisibility;
+  //   }
+  // }, [showMiniModal]);
 
   const handleMouseOrTouchEvent = () => {
     if (timeoutId) {
@@ -127,13 +122,6 @@ const SliderItem = ({
           marginPosition: marginPosition,
         })
       );
-
-      //  dispatch(
-      //    setSliderItemState({
-      //      sliderItemId: sliderItemId,
-      //      sliderItemVisibility: "hidden",
-      //    })
-      //  );
     }, modalOpenDelay);
   };
 
@@ -151,7 +139,6 @@ const SliderItem = ({
       className={`slider-item px-1 shadow-md`}
       style={{
         width: `${sliderItemWidth ? sliderItemWidth : 100}%`,
-        // visibility: isSliderItemVisible ? "visible" : "hidden",
       }}
       {...(!isSliding && { [eventHandler]: handleMouseOrTouchEvent })}
       onMouseLeave={handleMouseLeave}

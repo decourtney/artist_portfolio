@@ -35,7 +35,7 @@ export const sliderItemSlice = createSlice({
           y: number;
         };
         sliderItemVisibility: string;
-        isSliderItemVisible: true;
+        isSliderItemVisible: boolean;
       };
     },
   },

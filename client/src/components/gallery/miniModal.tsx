@@ -61,12 +61,13 @@ const MiniModal = () => {
         marginPosition,
       });
 
-      // dispatch(
-      //   setSliderItemState({
-      //     sliderItemId: miniModalContainerId,
-      //     sliderItemVisibility: "hidden",
-      //   })
-      // );
+      dispatch(
+        setSliderItemState({
+          sliderItemId: miniModalContainerId,
+          sliderItemVisibility: "hidden",
+          isSliderItemVisible: false,
+        })
+      );
       animateOpen();
     };
   }, []);
