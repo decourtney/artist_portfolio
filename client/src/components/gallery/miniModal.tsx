@@ -134,11 +134,11 @@ const MiniModal = () => {
               showProductModal: true,
             })
           );
-
-          navigate(`/gallery/${modalItem.name}`);
         },
       }
     );
+
+    navigate(`/gallery/${modalItem.name}`);
   };
 
   return (

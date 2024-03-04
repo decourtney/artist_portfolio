@@ -86,7 +86,7 @@ const ProductModal = () => {
   };
 
   const handleBack = async () => {
-    // await animateClose();
+    await animateClose();
     navigate(-1);
   };
 
