@@ -100,14 +100,6 @@ const SliderItem = ({
           marginPosition: marginPosition,
         })
       );
-
-      dispatch(
-        setSliderItemState({
-          sliderItemId: sliderItemId,
-          sliderItemVisibility: "hidden",
-          isSliderItemVisible: false,
-        })
-      );
     }, modalOpenDelay);
   };
 

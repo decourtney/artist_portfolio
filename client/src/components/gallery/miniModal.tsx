@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion, useAnimate } from "framer-motion";
+import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
@@ -20,7 +20,7 @@ const MiniModal = () => {
     (state: RootState) => state.miniModal.miniModalState
   );
   const sliderItemState = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState
+    (state: RootState) => state.sliderItem.sliderItemState[miniModalContainerId]
   );
   const [scope, animate] = useAnimate();
   const miniImgDimensions = useRef<{
@@ -32,10 +32,8 @@ const MiniModal = () => {
   const aspectRatio = useRef<number>(0);
   const maxModalWidth = 350;
   const maxModalHeight = 250;
-  const sliderItemWidth =
-    sliderItemState[miniModalContainerId].sliderItemRect.width;
-  const sliderItemHeight =
-    sliderItemState[miniModalContainerId].sliderItemRect.height;
+  const sliderItemWidth = sliderItemState.sliderItemRect.width;
+  const sliderItemHeight = sliderItemState.sliderItemRect.height;
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
@@ -73,6 +71,14 @@ const MiniModal = () => {
       },
       {
         duration: 0.2,
+        onComplete: () => {
+          dispatch(
+            setSliderItemState({
+              sliderItemId: miniModalContainerId,
+              sliderItemVisibility: "hidden",
+            })
+          );
+        },
       }
     );
   };
@@ -82,7 +88,7 @@ const MiniModal = () => {
       await animate(
         scope.current,
         {
-          ...sliderItemState[miniModalContainerId].sliderItemRect,
+          ...sliderItemState.sliderItemRect,
           width: sliderItemWidth,
           height: sliderItemHeight,
           margin: 0,
@@ -151,7 +157,7 @@ const MiniModal = () => {
         ref={scope}
         key={modalItem.name}
         className="z-20"
-        style={{ ...sliderItemState[miniModalContainerId].sliderItemRect }}
+        style={{ ...sliderItemState.sliderItemRect }}
         onMouseLeave={animateClose}
         onClick={(event) => {
           event.stopPropagation();

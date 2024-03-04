@@ -47,7 +47,6 @@ export const sliderItemSlice = createSlice({
     ) => {
       const { sliderItemId, ...newState } = action.payload;
       if (sliderItemId) {
-        // Update individual slider state
         state.sliderItemState[sliderItemId] = {
           ...state.sliderItemState[sliderItemId],
           ...newState,
