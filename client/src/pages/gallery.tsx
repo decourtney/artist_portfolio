@@ -104,9 +104,11 @@ const Gallery = () => {
             }
           })}
 
-        {showCategoryModal && <CategoryModal />}
-        {showProductModal && <ProductModal />}
-        {showMiniModal && <MiniModal />}
+        <AnimatePresence mode="wait">
+          {showCategoryModal && <CategoryModal />}
+          {showProductModal && <ProductModal />}
+          {showMiniModal && <MiniModal />}
+        </AnimatePresence>
       </section>
     </>
   );

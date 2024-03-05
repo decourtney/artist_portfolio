@@ -14,8 +14,6 @@ interface SliderItemProps {
   itemToDisplay: Category | Product;
   sliderItemWidth: number;
   marginPosition?: string | undefined;
-
-  // onClick: (item: Category | Product) => void;
 }
 
 const baseCDN =
