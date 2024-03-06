@@ -43,6 +43,7 @@ const SliderItem = ({
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
+  const imgSrc = `${baseCDN}/${userParam}/${itemToDisplay.image}`;
 
   useLayoutEffect(() => {
     const handleWindowResize = () => {
@@ -121,10 +122,10 @@ const SliderItem = ({
       onMouseLeave={handleMouseLeave}
     >
       {/* FIXME Shadow doesnt appear below image */}
-      {itemToDisplay && (
+      {imgSrc && (
         <img
           className="w-full h-full object-cover rounded-sm "
-          src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
+          src={imgSrc}
           alt={itemToDisplay.name}
           loading="lazy"
         />

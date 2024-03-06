@@ -12,7 +12,7 @@ import { RootState } from "../../redux/store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import { setProductState } from "../../redux/productSlice";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
-import { getModalDimensions } from "./getModalDimensions";
+import GetModalDimensions from "../../utils/getModalDimensions";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -34,6 +34,7 @@ const MiniModal = () => {
     height: number;
     margin: string;
   } | null>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const isExpanding = useRef<boolean>(false);
   const aspectRatio = useRef<number>(0);
   const maxModalWidth = 350;
@@ -46,50 +47,50 @@ const MiniModal = () => {
 
   const imgSrc = `${baseCDN}/${userParam}/${modalItem.image}`;
 
-  // TODO responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
-  // the modal stays open and lost = need to close when sliderItem leaves.
-
   useEffect(() => {
     if (isPresent) {
-      const img = new Image();
-      img.src = imgSrc;
+      if (imgRef.current) {
+        const imgWidth = imgRef.current.naturalWidth;
+        const imgHeight = imgRef.current.naturalHeight;
 
-      const openAnimation = async () => {
-        await animate(
-          scope.current,
-          {
-            ...miniImgDimensions.current,
-          },
-          {
-            duration: 0.2,
-            onComplete: () => {
-              dispatch(
-                setSliderItemState({
-                  sliderItemId: miniModalContainerId,
-                  sliderItemVisibility: "hidden",
-                })
-              );
+        const openAnimation = async () => {
+          await animate(
+            scope.current,
+            {
+              ...miniImgDimensions.current,
             },
-          }
-        );
-      };
+            {
+              duration: 0.2,
+              ease: "easeInOut",
+              onComplete: () => {
+                dispatch(
+                  setSliderItemState({
+                    sliderItemId: miniModalContainerId,
+                    sliderItemVisibility: "hidden",
+                  })
+                );
+              },
+            }
+          );
+        };
 
-      img.onload = () => {
-        aspectRatio.current = img.width / img.height;
+        imgRef.current.onload = () => {
+          aspectRatio.current = imgWidth / imgHeight;
 
-        miniImgDimensions.current = getModalDimensions({
-          aspectRatio: aspectRatio.current,
-          maxWidth: maxModalWidth,
-          maxHeight: maxModalHeight,
-          minWidth: sliderItemWidth,
-          minHeight: sliderItemHeight,
-          marginPosition,
-        });
+          miniImgDimensions.current = GetModalDimensions({
+            aspectRatio: aspectRatio.current,
+            maxWidth: maxModalWidth,
+            maxHeight: maxModalHeight,
+            minWidth: sliderItemWidth,
+            minHeight: sliderItemHeight,
+            marginPosition,
+          });
 
-        openAnimation();
-      };
+          openAnimation();
+        };
+      }
     } else {
-      const exitAnimation = async () => {
+      const closeAnimation = async () => {
         await animate(
           scope.current,
           {
@@ -100,19 +101,20 @@ const MiniModal = () => {
           },
           {
             duration: 0.2,
+            ease: "easeInOut",
           }
         );
 
         safeToRemove();
       };
 
-      exitAnimation();
+      closeAnimation();
     }
-  }, [isPresent]);
+  }, [isPresent, imgRef]);
 
   const animateExpand = async () => {
     isExpanding.current = true;
-    const targetDimensions = await getModalDimensions({
+    const targetDimensions = await GetModalDimensions({
       aspectRatio: aspectRatio.current,
       maxWidth: window.innerWidth,
       maxHeight: window.innerHeight,
@@ -165,7 +167,6 @@ const MiniModal = () => {
       id="miniModal"
       className="absolute w-full h-full "
       onClick={handleClose}
-      // onMouseEnter={handleClose}
     >
       <motion.div
         ref={scope}
@@ -180,6 +181,7 @@ const MiniModal = () => {
       >
         {imgSrc && (
           <img
+            ref={imgRef}
             src={imgSrc}
             className="w-full h-full shadow-lg object-cover rounded-sm pointer-events-none"
             style={{ imageRendering: "auto" }}

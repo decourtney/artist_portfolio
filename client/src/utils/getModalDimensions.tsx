@@ -7,7 +7,7 @@ interface Props {
   marginPosition?: string;
 }
 
-export const getModalDimensions = ({
+const GetModalDimensions = ({
   aspectRatio,
   maxWidth,
   maxHeight,
@@ -74,3 +74,5 @@ export const getModalDimensions = ({
 
   return calculateDimensions();
 };
+
+export default GetModalDimensions;

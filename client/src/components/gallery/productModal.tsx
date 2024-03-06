@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { setProductState } from "../../redux/productSlice";
-import { getModalDimensions } from "./getModalDimensions";
+import GetModalDimensions from "../../utils/getModalDimensions";
 import { motion, useAnimate } from "framer-motion";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
 
@@ -27,6 +27,7 @@ const ProductModal = () => {
     margin: string;
   } | null>(null);
   const [scope, animate] = useAnimate();
+  const imgRef = useRef<HTMLImageElement>(null);
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
@@ -35,21 +36,22 @@ const ProductModal = () => {
 
   useLayoutEffect(() => {
     const handleWindowResize = () => {
-      const img = new Image();
-      img.src = imgSrc;
-      let windowWidth = window.innerWidth;
-      let windowHeight = window.innerHeight;
+      if (imgRef.current) {
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const imgWidth = imgRef.current.naturalWidth;
+        const imgHeight = imgRef.current.naturalHeight;
 
-      img.onload = () => {
-        const aspectRatio = img.width / img.height;
+        const aspectRatio = imgWidth / imgHeight;
 
-        const imgDimensions = getModalDimensions({
+        const imgDimensions = GetModalDimensions({
           aspectRatio,
           maxWidth: windowWidth,
           maxHeight: windowHeight,
         });
+
         setProductImgDimensions({ ...imgDimensions, x: 0, y: 0 });
-      };
+      }
     };
 
     handleWindowResize();
@@ -127,6 +129,7 @@ const ProductModal = () => {
         </div>
 
         <img
+          ref={imgRef}
           src={imgSrc}
           className="w-full h-full object-cover rounded-sm"
           alt={`${product.name}`}
