@@ -35,8 +35,8 @@ const MiniModal = () => {
     margin: string;
   } | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const isExpanding = useRef<boolean>(false);
   const aspectRatio = useRef<number>(0);
+  const isAnimating = useRef<boolean>(false);
   const maxModalWidth = 350;
   const maxModalHeight = 250;
   const sliderItemWidth = sliderItemState.sliderItemRect.width;
@@ -54,6 +54,7 @@ const MiniModal = () => {
         const imgHeight = imgRef.current.naturalHeight;
 
         const openAnimation = async () => {
+          if (isAnimating.current) return;
           await animate(
             scope.current,
             {
@@ -62,7 +63,11 @@ const MiniModal = () => {
             {
               duration: 0.2,
               ease: "easeInOut",
+              onPlay() {
+                isAnimating.current = true;
+              },
               onComplete: () => {
+                isAnimating.current = false;
                 dispatch(
                   setSliderItemState({
                     sliderItemId: miniModalContainerId,
@@ -91,6 +96,8 @@ const MiniModal = () => {
       }
     } else {
       const closeAnimation = async () => {
+        if (isAnimating.current) return;
+
         await animate(
           scope.current,
           {
@@ -113,7 +120,8 @@ const MiniModal = () => {
   }, [isPresent, imgRef]);
 
   const animateExpand = async () => {
-    isExpanding.current = true;
+    if (isAnimating.current) return;
+
     const targetDimensions = await GetModalDimensions({
       aspectRatio: aspectRatio.current,
       maxWidth: window.innerWidth,
@@ -126,7 +134,11 @@ const MiniModal = () => {
       {
         duration: 0.2,
         ease: "easeInOut",
+        onPlay() {
+          isAnimating.current = true;
+        },
         onComplete: () => {
+          isAnimating.current = false;
           const { height, width, x, y, top, bottom, left, right } =
             scope.current.getBoundingClientRect();
 
@@ -151,15 +163,15 @@ const MiniModal = () => {
   };
 
   const handleClose = () => {
-    if (!isExpanding.current) {
-      dispatch(setMiniModalState({ showMiniModal: false }));
-      dispatch(
-        setSliderItemState({
-          sliderItemId: miniModalContainerId,
-          sliderItemVisibility: "visible",
-        })
-      );
-    }
+    if (isAnimating.current) return;
+    
+    dispatch(setMiniModalState({ showMiniModal: false }));
+    dispatch(
+      setSliderItemState({
+        sliderItemId: miniModalContainerId,
+        sliderItemVisibility: "visible",
+      })
+    );
   };
 
   return (
