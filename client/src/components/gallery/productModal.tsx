@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { setProductState } from "../../redux/productSlice";
 import GetModalDimensions from "../../utils/getModalDimensions";
-import { motion, useAnimate } from "framer-motion";
+import { motion, useAnimate, usePresence } from "framer-motion";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
 
 const baseCDN =
@@ -27,7 +27,9 @@ const ProductModal = () => {
     margin: string;
   } | null>(null);
   const [scope, animate] = useAnimate();
+  const [isPresent, safeToRemove] = usePresence();
   const imgRef = useRef<HTMLImageElement>(null);
+  const isAnimating = useRef<boolean>(false);
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
@@ -63,6 +65,36 @@ const ProductModal = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isPresent) {
+      const animateClose = async () => {
+        await animate(
+          scope.current,
+          {
+            ...sliderItemRect,
+            margin: 0,
+          },
+          {
+            duration: 0.2,
+            onComplete() {
+              // isAnimating.current = false;
+              dispatch(
+                setSliderItemState({
+                  sliderItemId: productContainerId,
+                  sliderItemVisibility: "visible",
+                })
+              );
+            },
+          }
+        );
+
+        safeToRemove();
+      };
+
+      animateClose();
+    }
+  }, [isPresent]);
+
   const animateClose = async () => {
     await animate(
       scope.current,
@@ -70,30 +102,39 @@ const ProductModal = () => {
         ...sliderItemRect,
         margin: 0,
       },
-      { duration: 0.2 }
+      {
+        duration: 0.2,
+        onComplete() {
+          isAnimating.current = false;
+        },
+      }
     );
 
-    setSliderItemVisibilityToVisible();
-    dispatch(setProductState({ showProductModal: false }));
-  };
-
-  const setSliderItemVisibilityToVisible = () => {
+    // setSliderItemVisibilityToVisible();
     dispatch(
       setSliderItemState({
         sliderItemId: productContainerId,
         sliderItemVisibility: "visible",
-        isSliderItemVisible: false,
       })
     );
+    dispatch(setProductState({ showProductModal: false }));
   };
 
   const handleBack = async () => {
-    await animateClose();
+    if (isAnimating.current) return;
+    // isAnimating.current = true;
+    // dispatch(setProductState({ showProductModal: false }));
+
+    // await animateClose();
     navigate(-1);
   };
 
   const handleClose = async () => {
-    await animateClose();
+    if (isAnimating.current) return;
+    // isAnimating.current = true;
+    // dispatch(setProductState({ showProductModal: false }));
+
+    // await animateClose();
     navigate("/gallery/");
   };
 
@@ -106,6 +147,7 @@ const ProductModal = () => {
       />
       <motion.div
         ref={scope}
+        key={product.name}
         style={{ ...productRect, ...productImgDimensions }}
       >
         <div id="product-buttons" className="relative">

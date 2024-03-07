@@ -48,81 +48,84 @@ const MiniModal = () => {
   const imgSrc = `${baseCDN}/${userParam}/${modalItem.image}`;
 
   useEffect(() => {
-    if (isPresent) {
-      if (imgRef.current) {
-        const imgWidth = imgRef.current.naturalWidth;
-        const imgHeight = imgRef.current.naturalHeight;
+    if (imgRef.current && !isAnimating.current) {
+      isAnimating.current = true;
+      const imgWidth = imgRef.current.naturalWidth;
+      const imgHeight = imgRef.current.naturalHeight;
 
-        const openAnimation = async () => {
-          if (isAnimating.current) return;
-          await animate(
-            scope.current,
-            {
-              ...miniImgDimensions.current,
-            },
-            {
-              duration: 0.2,
-              ease: "easeInOut",
-              onPlay() {
-                isAnimating.current = true;
-              },
-              onComplete: () => {
-                isAnimating.current = false;
-                dispatch(
-                  setSliderItemState({
-                    sliderItemId: miniModalContainerId,
-                    sliderItemVisibility: "hidden",
-                  })
-                );
-              },
-            }
-          );
-        };
-
-        imgRef.current.onload = () => {
-          aspectRatio.current = imgWidth / imgHeight;
-
-          miniImgDimensions.current = GetModalDimensions({
-            aspectRatio: aspectRatio.current,
-            maxWidth: maxModalWidth,
-            maxHeight: maxModalHeight,
-            minWidth: sliderItemWidth,
-            minHeight: sliderItemHeight,
-            marginPosition,
-          });
-
-          openAnimation();
-        };
-      }
-    } else {
-      const closeAnimation = async () => {
-        if (isAnimating.current) return;
-
+      const openAnimation = async () => {
         await animate(
           scope.current,
           {
-            ...sliderItemState.sliderItemRect,
-            width: sliderItemWidth,
-            height: sliderItemHeight,
-            margin: 0,
+            ...miniImgDimensions.current,
           },
           {
             duration: 0.2,
             ease: "easeInOut",
+            onComplete: () => {
+              isAnimating.current = false;
+              dispatch(
+                setSliderItemState({
+                  sliderItemId: miniModalContainerId,
+                  sliderItemVisibility: "hidden",
+                })
+              );
+            },
           }
         );
-
-        safeToRemove();
       };
 
-      closeAnimation();
+      imgRef.current.onload = () => {
+        aspectRatio.current = imgWidth / imgHeight;
+
+        miniImgDimensions.current = GetModalDimensions({
+          aspectRatio: aspectRatio.current,
+          maxWidth: maxModalWidth,
+          maxHeight: maxModalHeight,
+          minWidth: sliderItemWidth,
+          minHeight: sliderItemHeight,
+          marginPosition,
+        });
+
+        openAnimation();
+      };
     }
-  }, [isPresent, imgRef]);
+  }, [imgRef]);
+
+  const closeAnimation = async () => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
+
+    await animate(
+      scope.current,
+      {
+        ...sliderItemState.sliderItemRect,
+        width: sliderItemWidth,
+        height: sliderItemHeight,
+        margin: 0,
+      },
+      {
+        duration: 0.2,
+        ease: "easeInOut",
+        onComplete() {
+          isAnimating.current = false;
+          dispatch(setMiniModalState({ showMiniModal: false }));
+          dispatch(
+            setSliderItemState({
+              sliderItemId: miniModalContainerId,
+              sliderItemVisibility: "visible",
+            })
+          );
+        },
+      }
+    );
+  };
 
   const animateExpand = async () => {
     if (isAnimating.current) return;
+    isAnimating.current = true;
 
-    const targetDimensions = await GetModalDimensions({
+    const targetDimensions = GetModalDimensions({
       aspectRatio: aspectRatio.current,
       maxWidth: window.innerWidth,
       maxHeight: window.innerHeight,
@@ -134,9 +137,6 @@ const MiniModal = () => {
       {
         duration: 0.2,
         ease: "easeInOut",
-        onPlay() {
-          isAnimating.current = true;
-        },
         onComplete: () => {
           isAnimating.current = false;
           const { height, width, x, y, top, bottom, left, right } =
@@ -145,6 +145,12 @@ const MiniModal = () => {
           dispatch(
             setMiniModalState({
               showMiniModal: false,
+            })
+          );
+          dispatch(
+            setSliderItemState({
+              sliderItemId: miniModalContainerId,
+              sliderItemVisibility: "hidden",
             })
           );
           dispatch(
@@ -163,8 +169,8 @@ const MiniModal = () => {
   };
 
   const handleClose = () => {
-    if (isAnimating.current) return;
-    
+    // if (isAnimating.current) return;
+
     dispatch(setMiniModalState({ showMiniModal: false }));
     dispatch(
       setSliderItemState({
@@ -178,14 +184,14 @@ const MiniModal = () => {
     <section
       id="miniModal"
       className="absolute w-full h-full "
-      onClick={handleClose}
+      onClick={closeAnimation}
     >
       <motion.div
         ref={scope}
         key={modalItem.name}
         className=" "
         style={{ ...sliderItemState.sliderItemRect }}
-        onMouseLeave={handleClose}
+        onMouseLeave={closeAnimation}
         onClick={(event) => {
           event.stopPropagation();
           animateExpand();

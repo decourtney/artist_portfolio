@@ -14,7 +14,6 @@ export interface SliderItemState {
         y: number;
       };
       sliderItemVisibility: "visible" | "hidden";
-      isSliderItemVisible: boolean;
     };
   };
 }
@@ -42,7 +41,6 @@ export const sliderItemSlice = createSlice({
           y: number;
         };
         sliderItemVisibility?: "visible" | "hidden";
-        isSliderItemVisible?: boolean;
       }>
     ) => {
       const { sliderItemId, ...newState } = action.payload;

@@ -47,6 +47,8 @@ const Gallery = () => {
     (state) => state.category.categoryState
   );
   const { categoryName, productName } = useParams();
+  const [categories, setCategories] = useState<Category[]>();
+  const cats = useRef<Category[]>();
   const { ref, inView, entry } = useInView({ threshold: 0 });
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,21 +58,34 @@ const Gallery = () => {
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
     variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
+    // onCompleted: (data) => {
+    //   if (data) {
+    //     // setCategories(data.userCategories.categories);
+    //     // cats.current = data.userCategories.categories;
+    //   }
+    // }
   });
 
-  let categories: Category[] | null = null;
+
+
+  let categories2: Category[] | null = null;
   if (data) {
-    ({ categories } = data.userCategories);
+    ({ categories2 } = data.userCategories);
   }
+    console.log(cats.current);
+    console.log(categories);
+    console.log(categories2);
 
   // TODO Change this over to using global redux state similar to miniModal
   // useEffect(() => {
   //   if (data) {
-  //     if (productName) {
-  //       dispatch(setProductState({ showProductModal: true }));
+  //     if (!productName) {
+  //       console.log("setting product state to false")
+  //       dispatch(setProductState({ showProductModal: false }));
   //       // setIsCategoryModal(false);
-  //     } else if (categoryName) {
-  //       dispatch(setCategoryState({ showCategoryModal: true }));
+  //     }
+  //     if (!categoryName) {
+  //       dispatch(setCategoryState({ showCategoryModal: false }));
   //       // setIsProductModal(false);
   //     }
   //   }
@@ -90,9 +105,9 @@ const Gallery = () => {
         id="gallery"
         className="relative flex flex-col h-full min-h-screen"
       >
-        {categories &&
-          categories.length > 0 &&
-          categories.map((category: Category, index: number) => {
+        {categories2 &&
+          categories2.length > 0 &&
+          categories2.map((category: Category, index: number) => {
             if (category.products.length > 0) {
               return (
                 <CategoryItem
@@ -104,11 +119,11 @@ const Gallery = () => {
             }
           })}
 
-        <AnimatePresence mode="wait">
-          {showCategoryModal && <CategoryModal />}
+        {showCategoryModal && <CategoryModal />}
+        <AnimatePresence mode="sync">
           {showProductModal && <ProductModal />}
-          {showMiniModal && <MiniModal />}
         </AnimatePresence>
+        {showMiniModal && <MiniModal />}
       </section>
     </>
   );
