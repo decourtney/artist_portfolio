@@ -40,12 +40,12 @@ const MiniModal = () => {
 
   const imgSrc = `${baseCDN}/${userParam}/${modalItem.image}`;
 
-  const openAnimation = async () => {
+  const animateOpen = async () => {
     if (imgRef.current) {
       const imgWidth = imgRef.current.naturalWidth;
       const imgHeight = imgRef.current.naturalHeight;
 
-      const openAnimation = async () => {
+      const animateOpen = async () => {
         await animate(
           scope.current,
           {
@@ -54,14 +54,6 @@ const MiniModal = () => {
           {
             duration: 0.2,
             ease: "easeInOut",
-            onComplete: () => {
-              dispatch(
-                setSliderItemState({
-                  sliderItemId: miniModalContainerId,
-                  sliderItemVisibility: "hidden",
-                })
-              );
-            },
           }
         );
       };
@@ -77,11 +69,11 @@ const MiniModal = () => {
         marginPosition,
       });
 
-      openAnimation();
+      animateOpen();
     }
   };
 
-  const closeAnimation = async () => {
+  const animateClose = async () => {
     if (isExpanding.current) return;
 
     await animate(
@@ -121,6 +113,14 @@ const MiniModal = () => {
       {
         duration: 0.2,
         ease: "easeInOut",
+        onPlay: () => {
+          dispatch(
+            setSliderItemState({
+              sliderItemId: miniModalContainerId,
+              sliderItemVisibility: "hidden",
+            })
+          );
+        },
         onComplete: () => {
           isExpanding.current = false;
           const { height, width, x, y, top, bottom, left, right } =
@@ -129,12 +129,6 @@ const MiniModal = () => {
           dispatch(
             setMiniModalState({
               showMiniModal: false,
-            })
-          );
-          dispatch(
-            setSliderItemState({
-              sliderItemId: miniModalContainerId,
-              sliderItemVisibility: "hidden",
             })
           );
           dispatch(
@@ -163,13 +157,13 @@ const MiniModal = () => {
     <section
       id="miniModal"
       className="absolute w-full h-full"
-      onClick={closeAnimation}
+      onClick={animateClose}
     >
       <motion.div
         ref={scope}
         key={modalItem.name}
         style={{ ...sliderItemState.sliderItemRect }}
-        onMouseLeave={closeAnimation}
+        onMouseLeave={animateClose}
         onClick={handleExpandModal}
       >
         {imgSrc && (
@@ -180,7 +174,7 @@ const MiniModal = () => {
             style={{ imageRendering: "auto" }}
             alt={`${modalItem.name}`}
             loading="lazy"
-            onLoad={() => openAnimation()}
+            onLoad={() => animateOpen()}
           />
         )}
       </motion.div>

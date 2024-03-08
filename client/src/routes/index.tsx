@@ -30,7 +30,7 @@ const AnimatedRoutes = () => {
   return (
     <>
       <Header />
-      <AnimatePresence mode="wait">
+      {/* <AnimatePresence mode="wait"> */}
         <Routes location={location} key={location.pathname}>
           {/* <Route path="/" element={<EditProduct />} /> */}
           {/* This is just for initial development stages. delete when necessary */}
@@ -48,7 +48,7 @@ const AnimatedRoutes = () => {
           <Route path="/profile/:username" element={<Profile />} />
           <Route path="/profile/:username/:content" element={<Profile />} />
         </Routes>
-      </AnimatePresence>
+      {/* </AnimatePresence> */}
       {/* FOOTER will need to be imported components on individual pages - not wanted on home page */}
       <Footer />
     </>

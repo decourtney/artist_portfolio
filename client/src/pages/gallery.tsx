@@ -4,7 +4,8 @@
  * Try using redux-persist
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { QUERY_CATEGORY, QUERY_USER_CATEGORIES } from "../utils/queries";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
@@ -29,9 +30,13 @@ const Gallery = () => {
     (state) => state.category.categoryState
   );
   const [categories, setCategories] = useState<Category[]>();
+  const { categoryName, productName } = useParams();
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
     variables: { username: import.meta.env.VITE_BASE_USER },
+    // onCompleted: (data) => {
+    //   setCategories(data.userCategories.categories);
+    // }
   });
 
   useEffect(() => {
@@ -62,9 +67,9 @@ const Gallery = () => {
             }
           })}
 
-          {showCategoryModal && <CategoryModal />}
-          {showProductModal && <ProductModal />}
-          {showMiniModal && <MiniModal />}
+        {showCategoryModal && <CategoryModal />}
+        {showProductModal && <ProductModal />}
+        {showMiniModal && <MiniModal />}
       </section>
     </>
   );
