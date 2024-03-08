@@ -53,7 +53,11 @@ const ProductModal = () => {
           maxHeight: windowHeight,
         });
 
-        setProductImgDimensions({ ...imgDimensions, x: 0, y: 0 });
+        animate(
+          scope.current,
+          { ...imgDimensions },
+          { duration: 0.2, ease: "easeInOut" }
+        );
       }
     };
 
@@ -66,10 +70,34 @@ const ProductModal = () => {
     };
   }, []);
 
+  const stuff = () => {
+    if (imgRef.current) {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const imgWidth = imgRef.current.naturalWidth;
+      const imgHeight = imgRef.current.naturalHeight;
+
+      const aspectRatio = imgWidth / imgHeight;
+
+      const imgDimensions = GetModalDimensions({
+        aspectRatio,
+        maxWidth: windowWidth,
+        maxHeight: windowHeight,
+      });
+
+      animate(
+        scope.current,
+        { ...imgDimensions },
+        { duration: 0.2, ease: "easeInOut" }
+      );
+    }
+  };
+
   const animateClose = async () => {
     await animate(
       scope.current,
       {
+        
         ...sliderItemRect,
         margin: 0,
       },
@@ -106,6 +134,8 @@ const ProductModal = () => {
     navigate("/gallery/");
   };
 
+  if (!imgRef) return null;
+
   return (
     <section id="productModal" className="absolute w-full h-full z-50">
       <div
@@ -116,7 +146,8 @@ const ProductModal = () => {
       <motion.div
         ref={scope}
         key={product.name}
-        style={{ ...productRect, ...productImgDimensions }}
+        className="w-full h-full"
+        // style={{ ...productImgDimensions }}
       >
         <div id="product-buttons" className="relative">
           <button
@@ -142,6 +173,7 @@ const ProductModal = () => {
           ref={imgRef}
           src={imgSrc}
           className="w-full h-full object-cover rounded-sm"
+          style={{ objectFit: "contain" }}
           alt={`${product.name}`}
           loading="lazy"
         />
