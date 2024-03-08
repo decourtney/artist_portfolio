@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import useBackButton from "../../utils/useBackButton";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { setProductState } from "../../redux/productSlice";
@@ -14,9 +15,10 @@ const baseCDN =
 const ProductModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { productContainerId, product, productRect, showProductModal } =
-    useAppSelector((state: RootState) => state.product.productState);
-  const { sliderItemRect, sliderItemVisibility } = useAppSelector(
+  const { productContainerId, product, productRect } = useAppSelector(
+    (state: RootState) => state.product.productState
+  );
+  const { sliderItemRect } = useAppSelector(
     (state: RootState) => state.sliderItem.sliderItemState[productContainerId]
   );
   const [productImgDimensions, setProductImgDimensions] = useState<{
@@ -27,7 +29,6 @@ const ProductModal = () => {
     margin: string;
   } | null>(null);
   const [scope, animate] = useAnimate();
-  const [isPresent, safeToRemove] = usePresence();
   const imgRef = useRef<HTMLImageElement>(null);
   const isAnimating = useRef<boolean>(false);
 
@@ -36,7 +37,7 @@ const ProductModal = () => {
 
   const imgSrc = `${baseCDN}/${userParam}/${product.image}`;
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleWindowResize = () => {
       if (imgRef.current) {
         const windowWidth = window.innerWidth;
@@ -65,36 +66,6 @@ const ProductModal = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!isPresent) {
-      const animateClose = async () => {
-        await animate(
-          scope.current,
-          {
-            ...sliderItemRect,
-            margin: 0,
-          },
-          {
-            duration: 0.2,
-            onComplete() {
-              // isAnimating.current = false;
-              dispatch(
-                setSliderItemState({
-                  sliderItemId: productContainerId,
-                  sliderItemVisibility: "visible",
-                })
-              );
-            },
-          }
-        );
-
-        safeToRemove();
-      };
-
-      animateClose();
-    }
-  }, [isPresent]);
-
   const animateClose = async () => {
     await animate(
       scope.current,
@@ -104,37 +75,34 @@ const ProductModal = () => {
       },
       {
         duration: 0.2,
+        onPlay() {
+          isAnimating.current = true;
+        },
         onComplete() {
           isAnimating.current = false;
+          dispatch(
+            setSliderItemState({
+              sliderItemId: productContainerId,
+              sliderItemVisibility: "visible",
+            })
+          );
+          dispatch(setProductState({ showProductModal: false }));
         },
       }
     );
-
-    // setSliderItemVisibilityToVisible();
-    dispatch(
-      setSliderItemState({
-        sliderItemId: productContainerId,
-        sliderItemVisibility: "visible",
-      })
-    );
-    dispatch(setProductState({ showProductModal: false }));
   };
 
   const handleBack = async () => {
     if (isAnimating.current) return;
-    // isAnimating.current = true;
-    // dispatch(setProductState({ showProductModal: false }));
 
-    // await animateClose();
+    await animateClose();
     navigate(-1);
   };
 
   const handleClose = async () => {
     if (isAnimating.current) return;
-    // isAnimating.current = true;
-    // dispatch(setProductState({ showProductModal: false }));
 
-    // await animateClose();
+    await animateClose();
     navigate("/gallery/");
   };
 
@@ -153,7 +121,7 @@ const ProductModal = () => {
         <div id="product-buttons" className="relative">
           <button
             className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
-            onClick={handleBack}
+            onClick={handleClose}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
               arrow_back
@@ -162,7 +130,7 @@ const ProductModal = () => {
 
           <button
             className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
-            onClick={handleClose}
+            onClick={handleBack}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
               close

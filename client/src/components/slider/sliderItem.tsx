@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
@@ -45,7 +45,7 @@ const SliderItem = ({
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
   const imgSrc = `${baseCDN}/${userParam}/${itemToDisplay.image}`;
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleWindowResize = () => {
       if (sliderItemRef.current) {
         const rect = sliderItemRef.current?.getBoundingClientRect();
