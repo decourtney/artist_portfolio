@@ -70,34 +70,12 @@ const ProductModal = () => {
     };
   }, []);
 
-  const stuff = () => {
-    if (imgRef.current) {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const imgWidth = imgRef.current.naturalWidth;
-      const imgHeight = imgRef.current.naturalHeight;
-
-      const aspectRatio = imgWidth / imgHeight;
-
-      const imgDimensions = GetModalDimensions({
-        aspectRatio,
-        maxWidth: windowWidth,
-        maxHeight: windowHeight,
-      });
-
-      animate(
-        scope.current,
-        { ...imgDimensions },
-        { duration: 0.2, ease: "easeInOut" }
-      );
-    }
-  };
+  useEffect(() => {}, []);
 
   const animateClose = async () => {
     await animate(
       scope.current,
       {
-        
         ...sliderItemRect,
         margin: 0,
       },
@@ -173,7 +151,6 @@ const ProductModal = () => {
           ref={imgRef}
           src={imgSrc}
           className="w-full h-full object-cover rounded-sm"
-          style={{ objectFit: "contain" }}
           alt={`${product.name}`}
           loading="lazy"
         />
