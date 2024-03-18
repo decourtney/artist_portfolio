@@ -55,7 +55,7 @@ const ProductModal = () => {
 
         animate(
           scope.current,
-          { ...imgDimensions },
+          { ...imgDimensions, x: 0, y: 0 },
           { duration: 0.2, ease: "easeInOut" }
         );
       }
@@ -124,7 +124,8 @@ const ProductModal = () => {
       <motion.div
         ref={scope}
         key={product.name}
-        className="w-full h-full"
+        // className="w-full h-full"
+        initial={{ ...productRect }}
         // style={{ ...productImgDimensions }}
       >
         <div id="product-buttons" className="relative">
