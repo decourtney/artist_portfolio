@@ -14,12 +14,6 @@ import rootReducerWithReset from "./reducers";
 
 const store = configureStore({
   reducer: rootReducerWithReset,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
 });
 
 const persistor = persistStore(store);

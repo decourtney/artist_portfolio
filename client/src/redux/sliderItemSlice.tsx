@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface SliderItemState {
-  sliderItemState: {
+  // sliderItemState: {               // Removed to prevent sliderItemState from becoming bloated and dramatically slow down redux-persist
     [sliderItemId: string]: {
       sliderItemRect: {
         bottom: number;
@@ -15,11 +15,11 @@ export interface SliderItemState {
       };
       sliderItemVisibility: "visible" | "hidden";
     };
-  };
+  // };
 }
 
 const initialState: SliderItemState = {
-  sliderItemState: {},
+  // sliderItemState: {},
 };
 
 export const sliderItemSlice = createSlice({
@@ -29,7 +29,7 @@ export const sliderItemSlice = createSlice({
     setSliderItemState: (
       state: SliderItemState,
       action: PayloadAction<{
-        sliderItemId?: string;
+        sliderItemId: string;
         sliderItemRect?: {
           bottom: number;
           height: number;
@@ -45,8 +45,8 @@ export const sliderItemSlice = createSlice({
     ) => {
       const { sliderItemId, ...newState } = action.payload;
       if (sliderItemId) {
-        state.sliderItemState[sliderItemId] = {
-          ...state.sliderItemState[sliderItemId],
+        state[sliderItemId] = {
+          ...state[sliderItemId],
           ...newState,
         };
       }

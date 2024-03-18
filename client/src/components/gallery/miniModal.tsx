@@ -19,7 +19,7 @@ const MiniModal = () => {
   const { miniModalContainerId, modalItem, marginPosition, showMiniModal } =
     useAppSelector((state: RootState) => state.miniModal.miniModalState);
   const sliderItemState = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState[miniModalContainerId]
+    (state: RootState) => state.sliderItem[miniModalContainerId]
   );
   const [scope, animate] = useAnimate();
   const miniImgDimensions = useRef<{

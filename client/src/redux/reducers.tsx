@@ -40,4 +40,4 @@ const rootReducerWithReset = (state:any, action:any) => {
   return rootPersistedReducer(state, action);
 };
 
-export default reducers;
+export default rootPersistedReducer;

@@ -27,8 +27,9 @@ const SliderItem = ({
   marginPosition,
 }: SliderItemProps) => {
   const dispatch = useAppDispatch();
+
   const sliderItemState = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState
+    (state: RootState) => state.sliderItem
   );
   const { isSliding } = useAppSelector(
     (state: RootState) => state.slider.globalSettings

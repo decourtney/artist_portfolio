@@ -19,7 +19,7 @@ const ProductModal = () => {
     (state: RootState) => state.product.productState
   );
   const { sliderItemRect } = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState[productContainerId]
+    (state: RootState) => state.sliderItem[productContainerId]
   );
   const [productImgDimensions, setProductImgDimensions] = useState<{
     width: number;
