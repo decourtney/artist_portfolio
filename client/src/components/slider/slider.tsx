@@ -88,18 +88,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     sliderItemWidth.current = 100 / itemsPerGroup;
   }, [itemsPerGroup, lowestVisibleIndex]);
 
-  // useEffect(() => {
-  //   if (!sliderState[sliderId]) {
-  //     dispatch(
-  //       setSliderState({
-  //         sliderId: `${categoryToDisplay.name}-slider`,
-  //         lowestVisibleIndex: 0,
-  //         sliderHasMoved: false,
-  //       })
-  //     );
-  //   }
-  // }, []);
-
   // Get the indexes of the previous, visible and next groups
   useEffect(() => {
     if (sliderGlobalState.isSliding) {
@@ -150,7 +138,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     }
   }, [sliderGlobalState.isSliding]);
 
-  // handle window resize and sets items in row
+  // handle window resize and sets items per group
   const handleWindowResize = () => {
     const innerWidth = window.innerWidth;
     let newItemsPerGroup;
@@ -293,11 +281,11 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           <div
             id="groupPeek"
             className="absolute flex h-full w-full"
-            style={{right: `${100 / itemsPerGroup}%`}}
+            style={{ right: `${100 / itemsPerGroup}%` }}
           >
             <SliderItem
               key={previousPeekKey}
-              partialSliderItemId={previousPeekKey}
+              partialSliderItemId={"previousPeekKey"}
               itemToDisplay={itemsToDisplay[previousPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />
@@ -357,7 +345,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           <div id="groupPeek" className="absolute left-full flex h-full w-full">
             <SliderItem
               key={nextPeekKey}
-              partialSliderItemId={nextPeekKey}
+              partialSliderItemId={"nextPeekKey"}
               itemToDisplay={itemsToDisplay[nextPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />
