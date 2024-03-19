@@ -47,7 +47,6 @@ const Gallery = () => {
 
   useEffect(() => {
     // if(productName) dispatch(setProductState({ showProductModal: true }));
-
   }, [categories]);
 
   if (loading) return null;

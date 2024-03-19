@@ -1,3 +1,12 @@
+// TODO
+/**
+ * The productModal is good enough for now
+ * Currently the productModal doesnt fully recover when the user leaves the page then back-button navigates back to the page.
+ * I verified that the productModal is still in the redux state and unchanged but the modal is not using the correct dimensions.
+ * The issue resides with the initial loading of the image - it uses the tailwind classes to set the dimensions of the image 
+ * and never re-renders with the redux values. This on only occurs in this specific case so far
+ */
+
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useBackButton from "../../utils/useBackButton";
@@ -69,8 +78,6 @@ const ProductModal = () => {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
-
-  useEffect(() => {}, []);
 
   const animateClose = async () => {
     await animate(

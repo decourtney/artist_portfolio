@@ -39,6 +39,9 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const sliderGlobalState = useAppSelector(
     (state: RootState) => state.slider.globalSettings
   );
+  const { showMiniModal } = useAppSelector(
+    (state: RootState) => state.miniModal.miniModalState
+  );
   const [itemsPerGroup, setItemsPerGroup] = useState<number>(8); // This value is dynamically changed with window size
   const [scrollAmount, setScrollAmount] = useState<number>(1); // Controls how many items are scrolled through
   const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
@@ -88,6 +91,12 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     sliderItemWidth.current = 100 / itemsPerGroup;
   }, [itemsPerGroup, lowestVisibleIndex]);
 
+  // TODO
+  /**
+   * This useEffect seems unnecessary and might better be used as a function.
+   * It checks for sliderGlobalState.isSliding changes so this might be causing and extra render?? will test later
+   * Possible fixes - make the useEffect dependent on slideDirection changes; change useEffect into a function 
+   * */
   // Get the indexes of the previous, visible and next groups
   useEffect(() => {
     if (sliderGlobalState.isSliding) {
@@ -217,14 +226,15 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handlePrev = async () => {
-    if (!sliderGlobalState.isSliding) {
+    if (!sliderGlobalState.isSliding && !showMiniModal) {
       setSlideDirection("prev");
       dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
   };
 
   const handleNext = async () => {
-    if (!sliderGlobalState.isSliding) {
+    if (!sliderGlobalState.isSliding && !showMiniModal) {
+      console.log("handleNext called");
       setSlideDirection("next");
       dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
