@@ -4,31 +4,14 @@
  * Try using redux-persist
  */
 
-import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
-import {
-  Navigate,
-  useParams,
-  useNavigate,
-  useLocation,
-  Link,
-} from "react-router-dom";
-import Auth from "../utils/auth";
+import React, { useEffect, useState, memo } from "react";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { QUERY_CATEGORY, QUERY_USER_CATEGORIES } from "../utils/queries";
-import {
-  motion,
-  useAnimate,
-  AnimatePresence,
-  usePresence,
-} from "framer-motion";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { RootState } from "../redux/store";
-import { setCategoryState } from "../redux/categorySlice";
-import { setProductState } from "../redux/productSlice";
 import { v4 as uuidv4 } from "uuid";
 import { Category, Product } from "../utils/customClientTypes";
-import { LoggedInUser } from "../utils/customClientTypes";
-import { useInView } from "react-intersection-observer";
 import CategoryItem from "../components/gallery/categoryItem";
 import CategoryModal from "../components/gallery/categoryModal";
 import ProductModal from "../components/gallery/productModal";
@@ -46,41 +29,25 @@ const Gallery = () => {
   const { showCategoryModal } = useAppSelector(
     (state) => state.category.categoryState
   );
+  const [categories, setCategories] = useState<Category[]>();
   const { categoryName, productName } = useParams();
-  const { ref, inView, entry } = useInView({ threshold: 0 });
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [isCategoryModal, setIsCategoryModal] = useState(false);
-  const [isProductModal, setIsProductModal] = useState(false);
-  const [isMiniModal, setIsMiniModal] = useState(false);
 
   const { loading, data } = useQuery(QUERY_USER_CATEGORIES, {
-    variables: { username: import.meta.env.VITE_BASE_USER }, // FIXME need to change to a global variable thats set when a user
+    variables: { username: import.meta.env.VITE_BASE_USER },
+    // onCompleted: (data) => {
+    //   setCategories(data.userCategories.categories);
+    // }
   });
 
-  let categories: Category[] | null = null;
-  if (data) {
-    ({ categories } = data.userCategories);
-  }
+  useEffect(() => {
+    if (data) {
+      setCategories(data.userCategories.categories);
+    }
+  }, [data]);
 
-  // TODO Change this over to using global redux state similar to miniModal
-  // useEffect(() => {
-  //   if (data) {
-  //     if (productName) {
-  //       dispatch(setProductState({ showProductModal: true }));
-  //       // setIsCategoryModal(false);
-  //     } else if (categoryName) {
-  //       dispatch(setCategoryState({ showCategoryModal: true }));
-  //       // setIsProductModal(false);
-  //     }
-  //   }
-  // }, [data]);
-
-  // TODO Currently this uselayouteffect doesnt seem to be necessary if not using the commented out miniModal render
-  // TODO Continue monitoring for unintended effects
-  // useLayoutEffect(() => {
-  //   setIsMiniModal(miniModalState.showMiniModal);
-  // }, [miniModalState.showMiniModal]);
+  useEffect(() => {
+    // if(productName) dispatch(setProductState({ showProductModal: true }));
+  }, [categories]);
 
   if (loading) return null;
 
@@ -88,7 +55,7 @@ const Gallery = () => {
     <>
       <section
         id="gallery"
-        className="relative flex flex-col h-full min-h-screen"
+        className="relative flex flex-col w-full h-full min-h-screen"
       >
         {categories &&
           categories.length > 0 &&

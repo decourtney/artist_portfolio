@@ -1,10 +1,20 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+// TODO
+/**
+ * The productModal is good enough for now
+ * Currently the productModal doesnt fully recover when the user leaves the page then back-button navigates back to the page.
+ * I verified that the productModal is still in the redux state and unchanged but the modal is not using the correct dimensions.
+ * The issue resides with the initial loading of the image - it uses the tailwind classes to set the dimensions of the image 
+ * and never re-renders with the redux values. This on only occurs in this specific case so far
+ */
+
+import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import useBackButton from "../../utils/useBackButton";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { setProductState } from "../../redux/productSlice";
-import { getModalDimensions } from "./getModalDimensions";
-import { motion, useAnimate } from "framer-motion";
+import GetModalDimensions from "../../utils/getModalDimensions";
+import { motion, useAnimate, usePresence } from "framer-motion";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
 
 const baseCDN =
@@ -14,10 +24,11 @@ const baseCDN =
 const ProductModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { productContainerId, product, productRect, showProductModal } =
-    useAppSelector((state: RootState) => state.product.productState);
-  const { sliderItemRect, sliderItemVisibility } = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState[productContainerId]
+  const { productContainerId, product, productRect } = useAppSelector(
+    (state: RootState) => state.product.productState
+  );
+  const { sliderItemRect } = useAppSelector(
+    (state: RootState) => state.sliderItem[productContainerId]
   );
   const [productImgDimensions, setProductImgDimensions] = useState<{
     width: number;
@@ -27,29 +38,36 @@ const ProductModal = () => {
     margin: string;
   } | null>(null);
   const [scope, animate] = useAnimate();
+  const imgRef = useRef<HTMLImageElement>(null);
+  const isAnimating = useRef<boolean>(false);
 
   let { username: userParam } = useParams();
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const imgSrc = `${baseCDN}/${userParam}/${product.image}`;
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleWindowResize = () => {
-      const img = new Image();
-      img.src = imgSrc;
-      let windowWidth = window.innerWidth;
-      let windowHeight = window.innerHeight;
+      if (imgRef.current) {
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const imgWidth = imgRef.current.naturalWidth;
+        const imgHeight = imgRef.current.naturalHeight;
 
-      img.onload = () => {
-        const aspectRatio = img.width / img.height;
+        const aspectRatio = imgWidth / imgHeight;
 
-        const imgDimensions = getModalDimensions({
+        const imgDimensions = GetModalDimensions({
           aspectRatio,
           maxWidth: windowWidth,
           maxHeight: windowHeight,
         });
-        setProductImgDimensions({ ...imgDimensions, x: 0, y: 0 });
-      };
+
+        animate(
+          scope.current,
+          { ...imgDimensions, x: 0, y: 0 },
+          { duration: 0.2, ease: "easeInOut" }
+        );
+      }
     };
 
     handleWindowResize();
@@ -68,32 +86,40 @@ const ProductModal = () => {
         ...sliderItemRect,
         margin: 0,
       },
-      { duration: 0.2 }
-    );
-
-    setSliderItemVisibilityToVisible();
-    dispatch(setProductState({ showProductModal: false }));
-  };
-
-  const setSliderItemVisibilityToVisible = () => {
-    dispatch(
-      setSliderItemState({
-        sliderItemId: productContainerId,
-        sliderItemVisibility: "visible",
-        isSliderItemVisible: false,
-      })
+      {
+        duration: 0.2,
+        onPlay() {
+          isAnimating.current = true;
+        },
+        onComplete() {
+          isAnimating.current = false;
+          dispatch(
+            setSliderItemState({
+              sliderItemId: productContainerId,
+              sliderItemVisibility: "visible",
+            })
+          );
+          dispatch(setProductState({ showProductModal: false }));
+        },
+      }
     );
   };
 
   const handleBack = async () => {
+    if (isAnimating.current) return;
+
     await animateClose();
     navigate(-1);
   };
 
   const handleClose = async () => {
+    if (isAnimating.current) return;
+
     await animateClose();
     navigate("/gallery/");
   };
+
+  if (!imgRef) return null;
 
   return (
     <section id="productModal" className="absolute w-full h-full z-50">
@@ -104,12 +130,15 @@ const ProductModal = () => {
       />
       <motion.div
         ref={scope}
-        style={{ ...productRect, ...productImgDimensions }}
+        key={product.name}
+        // className="w-full h-full"
+        initial={{ ...productRect }}
+        // style={{ ...productImgDimensions }}
       >
         <div id="product-buttons" className="relative">
           <button
             className="absolute -top-1 left-0 bg-transparent border-0 outline-none focus:outline-none"
-            onClick={handleBack}
+            onClick={handleClose}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
               arrow_back
@@ -118,7 +147,7 @@ const ProductModal = () => {
 
           <button
             className="absolute -top-1 right-0 bg-transparent border-0 outline-none focus:outline-none"
-            onClick={handleClose}
+            onClick={handleBack}
           >
             <span className="material-symbols-rounded bg-transparent text-2xl outline-none focus:outline-none">
               close
@@ -127,6 +156,7 @@ const ProductModal = () => {
         </div>
 
         <img
+          ref={imgRef}
           src={imgSrc}
           className="w-full h-full object-cover rounded-sm"
           alt={`${product.name}`}

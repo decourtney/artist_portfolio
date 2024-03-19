@@ -39,6 +39,9 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   const sliderGlobalState = useAppSelector(
     (state: RootState) => state.slider.globalSettings
   );
+  const { showMiniModal } = useAppSelector(
+    (state: RootState) => state.miniModal.miniModalState
+  );
   const [itemsPerGroup, setItemsPerGroup] = useState<number>(8); // This value is dynamically changed with window size
   const [scrollAmount, setScrollAmount] = useState<number>(1); // Controls how many items are scrolled through
   const [previousGroup, setPreviousGroup] = useState<number[]>([]); // Stores indexes of previous group
@@ -88,18 +91,12 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     sliderItemWidth.current = 100 / itemsPerGroup;
   }, [itemsPerGroup, lowestVisibleIndex]);
 
-  // useEffect(() => {
-  //   if (!sliderState[sliderId]) {
-  //     dispatch(
-  //       setSliderState({
-  //         sliderId: `${categoryToDisplay.name}-slider`,
-  //         lowestVisibleIndex: 0,
-  //         sliderHasMoved: false,
-  //       })
-  //     );
-  //   }
-  // }, []);
-
+  // TODO
+  /**
+   * This useEffect seems unnecessary and might better be used as a function.
+   * It checks for sliderGlobalState.isSliding changes so this might be causing and extra render?? will test later
+   * Possible fixes - make the useEffect dependent on slideDirection changes; change useEffect into a function 
+   * */
   // Get the indexes of the previous, visible and next groups
   useEffect(() => {
     if (sliderGlobalState.isSliding) {
@@ -150,7 +147,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
     }
   }, [sliderGlobalState.isSliding]);
 
-  // handle window resize and sets items in row
+  // handle window resize and sets items per group
   const handleWindowResize = () => {
     const innerWidth = window.innerWidth;
     let newItemsPerGroup;
@@ -229,14 +226,15 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   };
 
   const handlePrev = async () => {
-    if (!sliderGlobalState.isSliding) {
+    if (!sliderGlobalState.isSliding && !showMiniModal) {
       setSlideDirection("prev");
       dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
   };
 
   const handleNext = async () => {
-    if (!sliderGlobalState.isSliding) {
+    if (!sliderGlobalState.isSliding && !showMiniModal) {
+      console.log("handleNext called");
       setSlideDirection("next");
       dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }
@@ -293,11 +291,11 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           <div
             id="groupPeek"
             className="absolute flex h-full w-full"
-            style={{right: `${100 / itemsPerGroup}%`}}
+            style={{ right: `${100 / itemsPerGroup}%` }}
           >
             <SliderItem
               key={previousPeekKey}
-              partialSliderItemId={previousPeekKey}
+              partialSliderItemId={"previousPeekKey"}
               itemToDisplay={itemsToDisplay[previousPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />
@@ -357,7 +355,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
           <div id="groupPeek" className="absolute left-full flex h-full w-full">
             <SliderItem
               key={nextPeekKey}
-              partialSliderItemId={nextPeekKey}
+              partialSliderItemId={"nextPeekKey"}
               itemToDisplay={itemsToDisplay[nextPeek]}
               sliderItemWidth={sliderItemWidth.current}
             />

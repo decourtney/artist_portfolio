@@ -14,9 +14,9 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       {/* PersistGate causes errors when leaving and returning to site so not using for now */}
-      {/* <PersistGate loading={null} persistor={persistor}>  */}
+      <PersistGate loading={null} persistor={persistor}> 
         <App />
-      {/* </PersistGate> */}
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );

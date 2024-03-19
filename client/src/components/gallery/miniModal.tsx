@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { AnimatePresence, motion, useAnimate } from "framer-motion";
-import { Category, Product } from "../../utils/customClientTypes";
+import { motion, useAnimate } from "framer-motion";
+import { Product } from "../../utils/customClientTypes";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { setMiniModalState } from "../../redux/miniModalSlice";
 import { setProductState } from "../../redux/productSlice";
 import { setSliderItemState } from "../../redux/sliderItemSlice";
-import { getModalDimensions } from "./getModalDimensions";
+import GetModalDimensions from "../../utils/getModalDimensions";
 
 const baseCDN =
   import.meta.env.VITE_BASE_CDN ||
@@ -16,11 +16,10 @@ const baseCDN =
 const MiniModal = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { miniModalContainerId, modalItem, marginPosition } = useAppSelector(
-    (state: RootState) => state.miniModal.miniModalState
-  );
+  const { miniModalContainerId, modalItem, marginPosition, showMiniModal } =
+    useAppSelector((state: RootState) => state.miniModal.miniModalState);
   const sliderItemState = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState[miniModalContainerId]
+    (state: RootState) => state.sliderItem[miniModalContainerId]
   );
   const [scope, animate] = useAnimate();
   const miniImgDimensions = useRef<{
@@ -28,8 +27,9 @@ const MiniModal = () => {
     height: number;
     margin: string;
   } | null>(null);
-  const isExpanding = useRef<boolean>(false);
+  const imgRef = useRef<HTMLImageElement>(null);
   const aspectRatio = useRef<number>(0);
+  const isExpanding = useRef<boolean>(false);
   const maxModalWidth = 350;
   const maxModalHeight = 250;
   const sliderItemWidth = sliderItemState.sliderItemRect.width;
@@ -40,17 +40,27 @@ const MiniModal = () => {
 
   const imgSrc = `${baseCDN}/${userParam}/${modalItem.image}`;
 
-  // TODO responsiveness much better but need to fix bug - when modal's sliderItem leaves visible space
-  // the modal stays open and lost = need to close when sliderItem leaves.
+  const animateOpen = async () => {
+    if (imgRef.current) {
+      const imgWidth = imgRef.current.naturalWidth;
+      const imgHeight = imgRef.current.naturalHeight;
 
-  useEffect(() => {
-    const img = new Image();
-    img.src = imgSrc;
+      const animateOpen = async () => {
+        await animate(
+          scope.current,
+          {
+            ...miniImgDimensions.current,
+          },
+          {
+            duration: 0.2,
+            ease: "easeInOut",
+          }
+        );
+      };
 
-    img.onload = () => {
-      aspectRatio.current = img.width / img.height;
+      aspectRatio.current = imgWidth / imgHeight;
 
-      miniImgDimensions.current = getModalDimensions({
+      miniImgDimensions.current = GetModalDimensions({
         aspectRatio: aspectRatio.current,
         maxWidth: maxModalWidth,
         maxHeight: maxModalHeight,
@@ -60,22 +70,29 @@ const MiniModal = () => {
       });
 
       animateOpen();
-    };
-  }, []);
+    }
+  };
 
-  const animateOpen = async () => {
+  const animateClose = async () => {
+    if (isExpanding.current) return;
+
     await animate(
       scope.current,
       {
-        ...miniImgDimensions.current,
+        ...sliderItemState.sliderItemRect,
+        width: sliderItemWidth,
+        height: sliderItemHeight,
+        margin: 0,
       },
       {
         duration: 0.2,
-        onComplete: () => {
+        ease: "easeInOut",
+        onComplete() {
+          dispatch(setMiniModalState({ showMiniModal: false }));
           dispatch(
             setSliderItemState({
               sliderItemId: miniModalContainerId,
-              sliderItemVisibility: "hidden",
+              sliderItemVisibility: "visible",
             })
           );
         },
@@ -83,35 +100,8 @@ const MiniModal = () => {
     );
   };
 
-  const animateClose = async () => {
-    if (!isExpanding.current) {
-      await animate(
-        scope.current,
-        {
-          ...sliderItemState.sliderItemRect,
-          width: sliderItemWidth,
-          height: sliderItemHeight,
-          margin: 0,
-        },
-        {
-          duration: 0.2,
-          onComplete: () => {
-            dispatch(setMiniModalState({ showMiniModal: false }));
-            dispatch(
-              setSliderItemState({
-                sliderItemId: miniModalContainerId,
-                sliderItemVisibility: "visible",
-              })
-            );
-          },
-        }
-      );
-    }
-  };
-
   const animateExpand = async () => {
-    isExpanding.current = true;
-    const targetDimensions = await getModalDimensions({
+    const targetDimensions = GetModalDimensions({
       aspectRatio: aspectRatio.current,
       maxWidth: window.innerWidth,
       maxHeight: window.innerHeight,
@@ -123,7 +113,16 @@ const MiniModal = () => {
       {
         duration: 0.2,
         ease: "easeInOut",
+        onPlay: () => {
+          dispatch(
+            setSliderItemState({
+              sliderItemId: miniModalContainerId,
+              sliderItemVisibility: "hidden",
+            })
+          );
+        },
         onComplete: () => {
+          isExpanding.current = false;
           const { height, width, x, y, top, bottom, left, right } =
             scope.current.getBoundingClientRect();
 
@@ -147,30 +146,35 @@ const MiniModal = () => {
     navigate(`/gallery/${modalItem.name}`);
   };
 
+  const handleExpandModal = (event: React.MouseEvent) => {
+    if (isExpanding.current) return;
+    isExpanding.current = true;
+    event.stopPropagation();
+    animateExpand();
+  };
+
   return (
     <section
       id="miniModal"
-      className="absolute w-full h-full z-10"
+      className="absolute w-full h-full"
       onClick={animateClose}
     >
       <motion.div
         ref={scope}
         key={modalItem.name}
-        className="z-20"
         style={{ ...sliderItemState.sliderItemRect }}
         onMouseLeave={animateClose}
-        onClick={(event) => {
-          event.stopPropagation();
-          animateExpand();
-        }}
+        onClick={handleExpandModal}
       >
         {imgSrc && (
           <img
+            ref={imgRef}
             src={imgSrc}
-            className="w-full h-full shadow-lg object-cover rounded-sm"
+            className="w-full h-full shadow-lg object-cover rounded-sm pointer-events-none"
             style={{ imageRendering: "auto" }}
             alt={`${modalItem.name}`}
             loading="lazy"
+            onLoad={() => animateOpen()}
           />
         )}
       </motion.div>

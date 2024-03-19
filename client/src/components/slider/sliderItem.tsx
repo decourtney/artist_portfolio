@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Category, Product } from "../../utils/customClientTypes";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
@@ -14,8 +14,6 @@ interface SliderItemProps {
   itemToDisplay: Category | Product;
   sliderItemWidth: number;
   marginPosition?: string | undefined;
-
-  // onClick: (item: Category | Product) => void;
 }
 
 const baseCDN =
@@ -29,8 +27,9 @@ const SliderItem = ({
   marginPosition,
 }: SliderItemProps) => {
   const dispatch = useAppDispatch();
+
   const sliderItemState = useAppSelector(
-    (state: RootState) => state.sliderItem.sliderItemState
+    (state: RootState) => state.sliderItem
   );
   const { isSliding } = useAppSelector(
     (state: RootState) => state.slider.globalSettings
@@ -45,8 +44,9 @@ const SliderItem = ({
   if (!userParam) userParam = import.meta.env.VITE_BASE_USER;
 
   const sliderItemId = `${partialSliderItemId}-${itemToDisplay.name}`;
+  const imgSrc = `${baseCDN}/${userParam}/${itemToDisplay.image}`;
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleWindowResize = () => {
       if (sliderItemRef.current) {
         const rect = sliderItemRef.current?.getBoundingClientRect();
@@ -123,10 +123,10 @@ const SliderItem = ({
       onMouseLeave={handleMouseLeave}
     >
       {/* FIXME Shadow doesnt appear below image */}
-      {itemToDisplay && (
+      {imgSrc && (
         <img
           className="w-full h-full object-cover rounded-sm "
-          src={`${baseCDN}/${userParam}/${itemToDisplay.image}`}
+          src={imgSrc}
           alt={itemToDisplay.name}
           loading="lazy"
         />
