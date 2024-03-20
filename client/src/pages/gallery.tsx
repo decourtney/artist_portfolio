@@ -58,7 +58,30 @@ const Gallery = () => {
         id="gallery"
         className="relative flex flex-col w-full h-full min-h-screen"
       >
-        {categories &&
+        {categories && (
+          <InfiniteScroll
+            dataLength={categories.length}
+            next={() => console.log("next")}
+            hasMore={true}
+            loader={<h4>Loading...</h4>}
+            scrollableTarget="scrollableDiv"
+          >
+            {categories.length > 0 &&
+              categories.map((category: Category, index: number) => {
+                if (category.products.length > 0) {
+                  return (
+                    <CategoryItem
+                      key={uuidv4()}
+                      category={category}
+                      index={index}
+                    />
+                  );
+                }
+              })}
+          </InfiniteScroll>
+        )}
+
+        {/* {categories &&
           categories.length > 0 &&
           categories.map((category: Category, index: number) => {
             if (category.products.length > 0) {
@@ -70,7 +93,7 @@ const Gallery = () => {
                 />
               );
             }
-          })}
+          })} */}
 
         {showCategoryModal && <CategoryModal />}
         {showProductModal && <ProductModal />}
