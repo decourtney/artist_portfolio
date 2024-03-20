@@ -16,6 +16,7 @@ import CategoryItem from "../components/gallery/categoryItem";
 import CategoryModal from "../components/gallery/categoryModal";
 import ProductModal from "../components/gallery/productModal";
 import MiniModal from "../components/gallery/miniModal";
+import InfiniteScroll from "react-infinite-scroll-component";
 import Hero from "../components/home/hero";
 
 const Gallery = () => {
