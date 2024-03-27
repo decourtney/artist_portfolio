@@ -95,7 +95,7 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
   /**
    * This useEffect seems unnecessary and might better be used as a function.
    * It checks for sliderGlobalState.isSliding changes so this might be causing and extra render?? will test later
-   * Possible fixes - make the useEffect dependent on slideDirection changes; change useEffect into a function 
+   * Possible fixes - make the useEffect dependent on slideDirection changes; change useEffect into a function
    * */
   // Get the indexes of the previous, visible and next groups
   useEffect(() => {
@@ -234,7 +234,6 @@ const Slider = ({ categoryToDisplay }: SliderProps) => {
 
   const handleNext = async () => {
     if (!sliderGlobalState.isSliding && !showMiniModal) {
-      console.log("handleNext called");
       setSlideDirection("next");
       dispatch(setSliderState({ globalSettings: { isSliding: true } }));
     }

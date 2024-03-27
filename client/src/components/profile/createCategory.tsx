@@ -33,14 +33,8 @@ const CreateCategory = ({ setAddCategory }: CreateCatProps) => {
 
         console.log(response);
       } catch (err: any) {
-        // TODO Work on proper error display
+        // TODO Add error handling
         console.log(err);
-        if (err.name === "ApolloError") {
-          const errorMsg = err.message.split(":").pop().trim();
-          // setErrorMsg(errorMsg);
-        } else {
-          // setErrorMsg(err.message);
-        }
       }
     }
 

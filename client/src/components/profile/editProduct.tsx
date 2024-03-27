@@ -13,7 +13,7 @@ import { QUERY_USER_PRODUCT, QUERY_USER_CATEGORIES } from "../../utils/queries";
 import { UPDATE_PRODUCT } from "../../utils/mutations";
 import { Category, Product } from "../../utils/customClientTypes";
 import { v4 as uuidv4 } from "uuid";
-import TagButton from "./tagButton";
+import TagButton from "../gallery/tagButton";
 import CompareObjects from "../../utils/compareObjects";
 import data from "@iconify/icons-mdi/chevron-left";
 
@@ -146,7 +146,7 @@ const EditProduct = ({ itemToEdit = tempData }: EditProductProps) => {
       });
 
       setUserProduct(data.updateProduct);
-    } catch (err:any) {
+    } catch (err: any) {
       console.log(err.message);
     }
     // }

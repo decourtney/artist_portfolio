@@ -6,7 +6,7 @@ import { QUERY_USER } from "../utils/queries";
 import Auth from "../utils/auth";
 import ProfileMenu from "../components/profile/profileMenu";
 import Avatar from "../components/profile/avatar";
-import AccountInfo from "../components/profile/accountInfo";
+import ProductInfo from "../components/profile/productInfo";
 import PersonalInfo from "../components/profile/personalInfo";
 import EditProfile from "../components/profile/editPersonalInfo";
 import BiographyInfo from "../components/profile/biographyInfo";
@@ -50,13 +50,13 @@ const Profile = () => {
     switch (p) {
       case "account":
         return (
-          <AccountInfo
+          <ProductInfo
             setIsEditForm={setIsEditForm}
             handleBackButton={handleButtonClick}
           />
         );
       case "personal":
-        // TODO Change edit mode controlled within PersonalInfo. Reference AccountInfo's createCategory
+        // TODO Change edit mode controlled within PersonalInfo. Reference ProductInfo's createCategory
         return isEditForm ? (
           <EditProfile userData={user} setIsEditForm={setIsEditForm} />
         ) : (
@@ -86,12 +86,12 @@ const Profile = () => {
         );
       default:
         // return (
-        //   <AccountInfo
+        //   <ProductInfo
         //     userData={user}
         //     setIsEditForm={setIsEditForm}
         //     handleBackButton={handleButtonClick}
         //   />
-        // ); // FIXME Temporary insert accountInfo
+        // ); // FIXME Temporary insert ProductInfo
         return (
           <>
             <ProfileMenu handleButtonClick={handleButtonClick} />
